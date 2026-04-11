@@ -4,216 +4,433 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사주미리 — AI 사주 풀이</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream: #FAFAF8;
-  --cream-2: #F4F2EE;
-  --lilac-light: #EDE8F8;
-  --lilac-mid: #D8CFF0;
-  --lilac: #B8A9E0;
-  --purple: #7C5CBF;
-  --purple-dark: #5A3E99;
-  --text-main: #1E1A2E;
-  --text-sub: #4A4560;
-  --text-muted: #8A85A0;
+  --cream: #FFFDF5;
+  --cream-2: #FFF8E8;
+  --yellow-light: #FFF5CC;
+  --yellow-mid: #FFE680;
+  --pink-light: #FFF0F5;
+  --pink-mid: #FFD6E7;
+  --pink: #FFB3D1;
+  --red: #D63B3B;
+  --red-dark: #B52E2E;
+  --red-soft: #F5E8E8;
+  --text-main: #2A1A1A;
+  --text-sub: #5A3A3A;
+  --text-muted: #9A7A7A;
   --white: #FFFFFF;
-  --border: rgba(124,92,191,0.15);
-  --shadow-sm: 0 2px 12px rgba(124,92,191,0.08);
-  --shadow-md: 0 8px 32px rgba(124,92,191,0.12);
+  --border: rgba(214,59,59,0.12);
+  --border-yellow: rgba(255,215,0,0.3);
+  --shadow-sm: 0 2px 12px rgba(214,59,59,0.07);
+  --shadow-md: 0 8px 32px rgba(214,59,59,0.1);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--cream); color:var(--text-main); font-family:'Noto Sans KR',sans-serif; min-height:100vh; }
+body {
+  background: var(--cream);
+  color: var(--text-main);
+  font-family: 'Pretendard', sans-serif;
+  min-height: 100vh;
+}
 
-/* 네비 */
+/* ── 네비 ── */
 nav {
-  position:fixed; top:0; left:0; right:0; z-index:100;
-  background:rgba(250,250,248,0.92); backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
-  height:60px; padding:0 24px;
-  display:flex; align-items:center; justify-content:space-between;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,253,245,0.93);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-yellow);
+  height: 62px; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.nav-logo { font-family:'Noto Serif KR',serif; font-size:18px; font-weight:700; color:var(--text-main); text-decoration:none; }
-.nav-logo em { font-style:normal; color:var(--purple); }
-.nav-back { font-size:13px; color:var(--text-sub); text-decoration:none; display:flex; align-items:center; gap:4px; padding:7px 14px; border-radius:100px; border:1px solid var(--border); transition:all .2s; }
-.nav-back:hover { background:var(--lilac-light); color:var(--purple); border-color:var(--lilac); }
+.nav-logo { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 700; color: var(--text-main); text-decoration: none; }
+.nav-logo em { font-style: normal; color: var(--red); }
+.nav-back { font-size: 13px; color: var(--text-sub); text-decoration: none; display: flex; align-items: center; gap: 4px; padding: 7px 14px; border-radius: 100px; border: 1px solid var(--border-yellow); transition: all .2s; font-weight: 500; }
+.nav-back:hover { background: var(--yellow-light); color: var(--red); border-color: var(--yellow-mid); }
 
-/* 히어로 인트로 */
-.intro-section {
-  padding: 100px 24px 0;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
+/* ── 인트로 ── */
+.intro-section { padding: 96px 24px 0; text-align: center; position: relative; overflow: hidden; }
 .intro-bg {
-  position:absolute; inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184,169,224,0.2) 0%, transparent 70%);
-  pointer-events:none;
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,179,209,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 20% 20%, rgba(255,230,128,0.22) 0%, transparent 60%);
+  pointer-events: none;
 }
-.intro-inner { max-width:700px; margin:0 auto; position:relative; }
+.intro-inner { max-width: 680px; margin: 0 auto; position: relative; }
 .intro-badge {
-  display:inline-flex; align-items:center; gap:6px;
-  background:var(--lilac-light); border:1px solid var(--lilac-mid);
-  color:var(--purple); font-size:12px; font-weight:600;
-  letter-spacing:.08em; padding:6px 16px; border-radius:100px;
-  margin-bottom:24px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--yellow-light); border: 1px solid var(--yellow-mid);
+  color: #8A6000; font-size: 12px; font-weight: 600;
+  letter-spacing: .06em; padding: 6px 18px; border-radius: 100px;
+  margin-bottom: 22px;
 }
 .intro-title {
-  font-family:'Noto Serif KR',serif;
-  font-size:clamp(26px,5vw,40px);
-  font-weight:700; line-height:1.35;
-  color:var(--text-main); margin-bottom:24px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(24px, 5vw, 38px);
+  font-weight: 700; line-height: 1.32;
+  color: var(--text-main); margin-bottom: 22px;
+  letter-spacing: -0.02em;
 }
-.intro-title em { font-style:normal; color:var(--purple); }
+.intro-title em { font-style: normal; color: var(--red); }
 .intro-body {
-  font-size:15px; line-height:2.1;
-  color:var(--text-sub); margin-bottom:0;
-  text-align:left;
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:28px 32px;
-  box-shadow:var(--shadow-sm);
+  font-size: 14px; line-height: 2.0;
+  color: var(--text-sub); margin-bottom: 0;
+  text-align: left;
+  background: var(--white);
+  border: 1px solid var(--border-yellow);
+  border-radius: 20px; padding: 24px 28px;
+  box-shadow: var(--shadow-sm);
 }
-.intro-body p { margin-bottom:10px; }
-.intro-body p:last-child { margin-bottom:0; }
-.intro-highlight {
-  color:var(--purple); font-weight:700;
-}
+.intro-body p { margin-bottom: 10px; }
+.intro-body p:last-child { margin-bottom: 0; }
+.intro-highlight { color: var(--red); font-weight: 700; }
 
-/* 입력 카드 */
-.form-section { padding:40px 24px 80px; max-width:600px; margin:0 auto; }
+/* ── 저장 알림 ── */
+.saved-notice {
+  display: none;
+  background: var(--yellow-light);
+  border: 1px solid var(--yellow-mid);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #8A6000;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.saved-notice.show { display: block; }
+
+/* ── 입력 폼 ── */
+.form-section { padding: 36px 24px 60px; max-width: 580px; margin: 0 auto; }
 .form-card {
-  background:var(--white);
-  border:1.5px solid var(--border);
-  border-radius:24px; padding:32px;
-  box-shadow:var(--shadow-sm);
+  background: var(--white);
+  border: 1.5px solid var(--border-yellow);
+  border-radius: 24px; padding: 30px;
+  box-shadow: var(--shadow-sm);
 }
 .form-title {
-  font-family:'Noto Serif KR',serif;
-  font-size:18px; font-weight:700;
-  color:var(--text-main); margin-bottom:6px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--text-main); margin-bottom: 6px;
+  letter-spacing: -0.02em;
 }
-.form-sub { font-size:13px; color:var(--text-muted); margin-bottom:28px; line-height:1.6; }
-
-.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
-.form-full { margin-bottom:16px; }
-.lbl { font-size:12px; font-weight:600; color:var(--text-sub); letter-spacing:.04em; margin-bottom:7px; display:block; }
+.form-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 26px; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.form-full { margin-bottom: 16px; }
+.lbl { font-size: 12px; font-weight: 600; color: var(--text-sub); letter-spacing: .02em; margin-bottom: 7px; display: block; }
 .inp {
-  width:100%;
-  background:var(--cream);
-  border:1.5px solid var(--lilac-mid);
-  border-radius:12px; padding:12px 16px;
-  font-size:14px; font-family:'Noto Sans KR',sans-serif;
-  color:var(--text-main); outline:none; display:block;
-  transition:border-color .2s;
+  width: 100%;
+  background: var(--cream);
+  border: 1.5px solid var(--pink-mid);
+  border-radius: 12px; padding: 11px 15px;
+  font-size: 14px; font-family: 'Pretendard', sans-serif;
+  color: var(--text-main); outline: none; display: block;
+  transition: border-color .2s;
 }
-.inp:focus { border-color:var(--purple); background:var(--white); }
+.inp:focus { border-color: var(--red); background: var(--white); }
 select.inp {
-  -webkit-appearance:none; appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237C5CBF' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 14px center;
-  padding-right:40px; cursor:pointer;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23D63B3B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  padding-right: 40px; cursor: pointer;
 }
-select.inp option { background:white; color:var(--text-main); }
-
-.gender-wrap { display:flex; gap:8px; }
+.gender-wrap { display: flex; gap: 8px; }
 .gbtn {
-  flex:1; padding:12px;
-  background:var(--cream); border:1.5px solid var(--lilac-mid);
-  border-radius:12px; font-size:14px;
-  font-family:'Noto Sans KR',sans-serif;
-  color:var(--text-sub); cursor:pointer; text-align:center;
-  transition:all .2s;
+  flex: 1; padding: 11px;
+  background: var(--cream); border: 1.5px solid var(--pink-mid);
+  border-radius: 12px; font-size: 14px;
+  font-family: 'Pretendard', sans-serif;
+  color: var(--text-sub); cursor: pointer; text-align: center;
+  transition: all .2s;
 }
-.gbtn.on { background:var(--lilac-light); border-color:var(--purple); color:var(--purple); font-weight:700; }
+.gbtn.on { background: var(--red-soft); border-color: var(--red); color: var(--red); font-weight: 700; }
+.note-text { font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.6; }
 
-.note-text { font-size:11px; color:var(--text-muted); margin-top:6px; line-height:1.6; }
-
-/* 상대방 섹션 */
+/* ── 상대방 섹션 ── */
 .partner-section {
-  display:none;
-  margin-top:20px; padding-top:20px;
-  border-top:1px solid var(--border);
+  display: none;
+  margin-top: 20px; padding-top: 20px;
+  border-top: 1px solid var(--border-yellow);
 }
 .partner-title {
-  font-family:'Noto Serif KR',serif;
-  font-size:15px; font-weight:700;
-  color:var(--text-main); margin-bottom:16px;
-  display:flex; align-items:center; gap:8px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--text-main); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
 }
-.partner-title::before { content:''; width:3px; height:16px; background:var(--purple); border-radius:2px; display:inline-block; }
+.partner-title::before { content: ''; width: 3px; height: 16px; background: var(--red); border-radius: 2px; display: inline-block; }
 
-/* 사주 박스 */
+/* ── 사주 박스 ── */
 .saju-box {
-  background:var(--lilac-light);
-  border:1px solid var(--lilac-mid);
-  border-radius:14px; padding:18px;
-  margin-top:16px; display:none;
+  background: linear-gradient(135deg, var(--yellow-light), var(--pink-light));
+  border: 1px solid var(--pink-mid);
+  border-radius: 14px; padding: 18px;
+  margin-top: 16px; display: none;
 }
-.saju-box.show { display:block; }
-.saju-box-title { font-size:12px; font-weight:700; color:var(--purple); letter-spacing:.08em; margin-bottom:14px; }
-.saju-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
-.saju-col { text-align:center; background:var(--white); border-radius:10px; padding:12px 6px; border:1px solid var(--border); }
-.saju-label { font-size:10px; color:var(--text-muted); margin-bottom:6px; }
-.saju-gan { font-family:'Noto Serif KR',serif; font-size:17px; font-weight:700; color:var(--purple-dark); display:block; }
-.saju-ji { font-family:'Noto Serif KR',serif; font-size:17px; font-weight:700; color:var(--purple); display:block; }
-.saju-sub { font-size:10px; color:var(--text-muted); margin-top:4px; }
-.jeolgi-info { font-size:11px; color:var(--text-muted); margin-top:12px; padding-top:12px; border-top:1px solid var(--lilac-mid); line-height:1.8; }
+.saju-box.show { display: block; }
+.saju-box-title { font-size: 12px; font-weight: 700; color: var(--red); letter-spacing: .06em; margin-bottom: 14px; }
+.saju-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.saju-col { text-align: center; background: var(--white); border-radius: 10px; padding: 12px 6px; border: 1px solid var(--border-yellow); }
+.saju-label { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; }
+.saju-gan { font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 700; color: var(--red-dark); display: block; }
+.saju-ji { font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 700; color: var(--red); display: block; }
+.saju-sub { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+.jeolgi-info { font-size: 11px; color: var(--text-muted); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--pink-mid); line-height: 1.8; }
 
-/* 버튼 */
+/* ── 버튼 ── */
 .btn-main {
-  width:100%; margin-top:24px; padding:16px;
-  background:linear-gradient(135deg, var(--purple), var(--purple-dark));
-  border:none; border-radius:14px;
-  font-size:16px; font-family:'Noto Serif KR',serif;
-  font-weight:700; color:white; cursor:pointer;
-  letter-spacing:.03em;
-  box-shadow:0 4px 20px rgba(124,92,191,0.3);
-  transition:all .2s;
+  width: 100%; margin-top: 24px; padding: 16px;
+  background: linear-gradient(135deg, var(--red), var(--red-dark));
+  border: none; border-radius: 14px;
+  font-size: 16px; font-family: 'Noto Serif KR', serif;
+  font-weight: 700; color: white; cursor: pointer;
+  letter-spacing: .02em;
+  box-shadow: 0 4px 20px rgba(214,59,59,0.3);
+  transition: all .2s;
 }
-.btn-main:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(124,92,191,0.4); }
+.btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(214,59,59,0.4); }
 
-/* 결과 */
-.result-wrap { max-width:600px; margin:0 auto; padding:0 24px 80px; }
-.result-card {
-  background:var(--white);
-  border:1.5px solid var(--border);
-  border-radius:24px; padding:36px 32px;
-  display:none; box-shadow:var(--shadow-md);
+/* ══════════════════════════════
+   로딩 오버레이
+══════════════════════════════ */
+.loading-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(255,253,245,0.97);
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
 }
-.result-card.show { display:block; }
+.loading-overlay.show { display: flex; }
+.loading-icon { font-size: 52px; margin-bottom: 24px; animation: spin 3s linear infinite; }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.loading-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--text-main); margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.loading-sub { font-size: 14px; color: var(--text-muted); line-height: 1.8; }
+.loading-progress {
+  width: 200px; height: 3px;
+  background: var(--pink-mid);
+  border-radius: 2px; margin: 24px auto 0;
+  overflow: hidden;
+}
+.loading-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--pink), var(--red));
+  border-radius: 2px;
+  animation: progress 25s ease forwards;
+}
+@keyframes progress { 0%{width:0%} 80%{width:88%} 100%{width:95%} }
+
+/* ══════════════════════════════
+   페이지형 결과
+══════════════════════════════ */
+.result-container {
+  display: none;
+  position: fixed; inset: 0; z-index: 150;
+  background: var(--cream);
+  overflow: hidden;
+}
+.result-container.show { display: block; }
+
+/* 결과 헤더 */
 .result-header {
-  display:flex; align-items:center; gap:10px;
-  margin-bottom:24px; padding-bottom:20px;
-  border-bottom:1px solid var(--border);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 160;
+  background: rgba(255,253,245,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-yellow);
+  height: 62px; padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.result-icon {
-  width:44px; height:44px;
-  background:var(--lilac-light);
-  border-radius:12px; display:flex;
-  align-items:center; justify-content:center; font-size:20px;
-  flex-shrink:0;
+.result-header-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--text-main); letter-spacing: -0.01em;
 }
-.result-title { font-family:'Noto Serif KR',serif; font-size:17px; font-weight:700; color:var(--text-main); }
-.result-subtitle { font-size:12px; color:var(--text-muted); margin-top:2px; }
-.result-text { font-size:14px; line-height:2.2; color:var(--text-sub); white-space:pre-wrap; word-break:keep-all; }
+.result-close {
+  background: var(--red-soft); border: none; cursor: pointer;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--red); transition: all .2s;
+}
+.result-close:hover { background: var(--red); color: white; }
 
-/* 로딩 */
-.dots { display:inline-flex; gap:5px; align-items:center; }
-.dots span { width:8px; height:8px; background:var(--purple); border-radius:50%; animation:bounce 1.2s ease-in-out infinite; }
-.dots span:nth-child(2) { animation-delay:.2s; }
-.dots span:nth-child(3) { animation-delay:.4s; }
+/* 페이지 네비게이터 */
+.page-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 160;
+  background: rgba(255,253,245,0.97);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-yellow);
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.page-dots {
+  display: flex; gap: 6px; align-items: center; flex: 1; justify-content: center;
+}
+.page-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--pink-mid); transition: all .3s; cursor: pointer;
+}
+.page-dot.active { background: var(--red); width: 20px; border-radius: 4px; }
+.page-btn {
+  background: var(--white); border: 1.5px solid var(--border-yellow);
+  border-radius: 100px; padding: 8px 18px;
+  font-size: 13px; font-family: 'Pretendard', sans-serif;
+  font-weight: 600; color: var(--text-sub); cursor: pointer;
+  transition: all .2s; white-space: nowrap;
+}
+.page-btn:hover { border-color: var(--red); color: var(--red); }
+.page-btn.primary {
+  background: var(--red); border-color: var(--red);
+  color: white;
+}
+.page-btn.primary:hover { background: var(--red-dark); }
+.page-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+/* 페이지 슬라이드 */
+.pages-wrapper {
+  position: absolute; inset: 62px 0 82px 0;
+  overflow: hidden;
+}
+.pages-track {
+  display: flex; height: 100%;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.result-page {
+  min-width: 100%; height: 100%;
+  overflow-y: auto;
+  padding: 32px 24px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+.result-page::-webkit-scrollbar { width: 4px; }
+.result-page::-webkit-scrollbar-track { background: transparent; }
+.result-page::-webkit-scrollbar-thumb { background: var(--pink-mid); border-radius: 2px; }
+
+/* 페이지 내용 */
+.page-inner { max-width: 640px; margin: 0 auto; }
+.page-num-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--yellow-light); border: 1px solid var(--yellow-mid);
+  color: #8A6000; font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 100px;
+  margin-bottom: 16px; letter-spacing: 0.05em;
+}
+.page-section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(18px, 4vw, 24px);
+  font-weight: 700; color: var(--text-main);
+  margin-bottom: 20px; line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+.page-section-title em { font-style: normal; color: var(--red); }
+.page-divider {
+  height: 2px;
+  background: linear-gradient(90deg, var(--pink-mid), var(--yellow-mid), transparent);
+  border-radius: 2px; margin-bottom: 24px;
+}
+.page-text {
+  font-size: 15px; line-height: 2.1;
+  color: var(--text-sub);
+  white-space: pre-wrap; word-break: keep-all;
+}
+
+/* 마지막 페이지 - 다른 운세 보러가기 */
+.other-fortune-section {
+  margin-top: 32px; padding-top: 32px;
+  border-top: 1px solid var(--border-yellow);
+}
+.other-fortune-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--text-main); margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.other-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 32px;
+}
+.other-card {
+  background: var(--white);
+  border: 1.5px solid var(--border-yellow);
+  border-radius: 14px; padding: 16px;
+  cursor: pointer; text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+  transition: all .2s;
+}
+.other-card:hover { border-color: var(--pink-mid); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+.other-icon { font-size: 20px; flex-shrink: 0; }
+.other-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+
+/* 리뷰 작성 (결과 내) */
+.inline-review-section {
+  margin-top: 0;
+  background: linear-gradient(135deg, var(--pink-light), var(--yellow-light));
+  border-radius: 20px; padding: 24px;
+  border: 1px solid var(--pink-mid);
+}
+.inline-review-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--text-main); margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.inline-review-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+.review-inp-sm {
+  width: 100%;
+  background: var(--white);
+  border: 1.5px solid var(--pink-mid);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 14px; font-family: 'Pretendard', sans-serif;
+  color: var(--text-main); outline: none;
+  transition: border-color .2s; margin-bottom: 10px; display: block;
+}
+.review-inp-sm:focus { border-color: var(--red); }
+.review-textarea-sm {
+  width: 100%; min-height: 80px; resize: vertical;
+  background: var(--white);
+  border: 1.5px solid var(--pink-mid);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 14px; font-family: 'Pretendard', sans-serif;
+  color: var(--text-main); outline: none;
+  margin-bottom: 10px; display: block;
+}
+.review-textarea-sm:focus { border-color: var(--red); }
+.star-row { display: flex; gap: 4px; margin-bottom: 10px; }
+.star-sm { font-size: 20px; cursor: pointer; color: #DDD; transition: color .15s; background: none; border: none; padding: 0; }
+.star-sm.on { color: #E8A000; }
+.btn-review-sm {
+  width: 100%; padding: 12px;
+  background: var(--red); border: none; border-radius: 10px;
+  font-size: 14px; font-family: 'Pretendard', sans-serif;
+  font-weight: 700; color: white; cursor: pointer;
+  transition: all .2s;
+}
+.btn-review-sm:hover { background: var(--red-dark); }
+.review-done { text-align: center; padding: 20px 0; display: none; font-size: 14px; color: var(--text-sub); line-height: 1.8; }
+.review-notice-sm { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 8px; }
+
+/* 로딩 dots */
+.dots { display: inline-flex; gap: 5px; align-items: center; }
+.dots span { width: 8px; height: 8px; background: var(--red); border-radius: 50%; animation: bounce 1.2s ease-in-out infinite; }
+.dots span:nth-child(2) { animation-delay: .2s; }
+.dots span:nth-child(3) { animation-delay: .4s; }
 @keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:.3} 40%{transform:translateY(-7px);opacity:1} }
 
-/* 반응형 */
+/* ── 반응형 ── */
 @media(max-width:640px){
-  .form-row { grid-template-columns:1fr; }
-  .form-card { padding:24px 20px; }
-  .result-card { padding:24px 20px; }
-  .intro-body { padding:20px; }
-  .intro-section { padding-top:80px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-card { padding: 22px 18px; }
+  .result-page { padding: 24px 16px 16px; }
+  .other-grid { grid-template-columns: 1fr; }
+  .intro-body { padding: 18px; }
+  .saju-grid { grid-template-columns: repeat(4,1fr); gap: 5px; }
+  .saju-gan, .saju-ji { font-size: 13px; }
 }
 </style>
 </head>
@@ -225,19 +442,18 @@ select.inp option { background:white; color:var(--text-main); }
   <div style="width:80px"></div>
 </nav>
 
-<!-- 인트로 섹션 (JS로 교체) -->
+<!-- 인트로 -->
 <section class="intro-section" id="introSection">
   <div class="intro-bg"></div>
-  <div class="intro-inner" id="introInner">
-    <!-- JS로 채워짐 -->
-  </div>
+  <div class="intro-inner" id="introInner"></div>
 </section>
 
 <!-- 입력 폼 -->
 <section class="form-section">
+  <div class="saved-notice" id="savedNotice">💾 이전에 입력하신 정보를 불러왔어요!</div>
   <div class="form-card">
     <div class="form-title" id="formTitle">사주 정보 입력</div>
-    <div class="form-sub">생년월일과 태어난 시각을 입력하시면 만세력을 계산해드려요.<br>진태양시 보정이 자동 적용됩니다.</div>
+    <div class="form-sub">생년월일과 태어난 시각을 직접 입력해 주세요. 진태양시 보정이 자동 적용됩니다.</div>
 
     <div class="form-row">
       <div>
@@ -253,15 +469,15 @@ select.inp option { background:white; color:var(--text-main); }
       </div>
     </div>
 
-    <div class="form-full">
-      <label class="lbl">생년월일</label>
-      <input type="date" id="birth" class="inp" min="1900-01-01" max="2026-12-31" onchange="showSaju()">
-    </div>
-
-    <div class="form-full">
-      <label class="lbl">태어난 시각 (KST 정확한 시각)</label>
-      <input type="time" id="btime" class="inp" onchange="showSaju()">
-      <div class="note-text">정확한 시각을 모를 경우 아래에서 시(時)를 선택하세요.</div>
+    <div class="form-row">
+      <div>
+        <label class="lbl">생년월일 (예: 19950315)</label>
+        <input type="text" id="birthText" class="inp" placeholder="19950315" maxlength="8" inputmode="numeric" oninput="onBirthInput()">
+      </div>
+      <div>
+        <label class="lbl">태어난 시각 (예: 1430)</label>
+        <input type="text" id="btimeText" class="inp" placeholder="1430 (모르면 비워두세요)" maxlength="4" inputmode="numeric" oninput="onTimeInput()">
+      </div>
     </div>
 
     <div class="form-full">
@@ -289,7 +505,7 @@ select.inp option { background:white; color:var(--text-main); }
       <div class="jeolgi-info" id="jeolgiInfo"></div>
     </div>
 
-    <!-- 궁합 전용 상대방 입력 -->
+    <!-- 상대방 섹션 (궁합·재회운) -->
     <div class="partner-section" id="partnerSection">
       <div class="partner-title">상대방 정보</div>
       <div class="form-row">
@@ -305,12 +521,18 @@ select.inp option { background:white; color:var(--text-main); }
           </div>
         </div>
       </div>
-      <div class="form-full">
-        <label class="lbl">상대방 생년월일</label>
-        <input type="date" id="birth2" class="inp" min="1900-01-01" max="2026-12-31" onchange="showSaju2()">
+      <div class="form-row">
+        <div>
+          <label class="lbl">상대방 생년월일</label>
+          <input type="text" id="birthText2" class="inp" placeholder="19950315" maxlength="8" inputmode="numeric" oninput="onBirthInput2()">
+        </div>
+        <div>
+          <label class="lbl">상대방 시각</label>
+          <input type="text" id="btimeText2" class="inp" placeholder="1430 (모르면 비워두세요)" maxlength="4" inputmode="numeric" oninput="onTimeInput2()">
+        </div>
       </div>
       <div class="form-full">
-        <label class="lbl">상대방 시각 선택</label>
+        <label class="lbl">시각을 모를 때 — 시(時) 선택</label>
         <select id="bsi2" class="inp" onchange="showSaju2()">
           <option value="">시간을 모름</option>
           <option value="0">자시(子時) — 23:00 ~ 01:00</option>
@@ -338,23 +560,33 @@ select.inp option { background:white; color:var(--text-main); }
   </div>
 </section>
 
-<!-- 결과 -->
-<div class="result-wrap">
-  <div class="result-card" id="resultCard">
-    <div class="result-header">
-      <div class="result-icon" id="resultIcon">✨</div>
-      <div>
-        <div class="result-title" id="resultTitle">AI 분석 결과</div>
-        <div class="result-subtitle">사주팔자 + 자미두수 통합 분석</div>
-      </div>
-    </div>
-    <div class="result-text" id="resultText"></div>
+<!-- 로딩 오버레이 -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-icon" id="loadingIcon">🔮</div>
+  <div class="loading-title" id="loadingTitle">AI가 사주를 분석하고 있어요</div>
+  <div class="loading-sub">생년월일과 사주팔자를 기반으로<br>깊이 있는 풀이를 준비하고 있습니다</div>
+  <div class="loading-progress"><div class="loading-bar" id="loadingBar"></div></div>
+</div>
+
+<!-- 페이지형 결과 -->
+<div class="result-container" id="resultContainer">
+  <div class="result-header">
+    <div class="result-header-title" id="resultHeaderTitle">AI 풀이 결과</div>
+    <button class="result-close" onclick="closeResult()">✕</button>
+  </div>
+  <div class="pages-wrapper">
+    <div class="pages-track" id="pagesTrack"></div>
+  </div>
+  <div class="page-nav">
+    <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled>← 이전</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="page-btn primary" id="nextBtn" onclick="changePage(1)">다음 →</button>
   </div>
 </div>
 
 <script>
 // ══════════════════════════════════════════════
-// 만세력 계산 엔진 (천문학적 절기, 진태양시 자동)
+// 만세력 계산 엔진
 // ══════════════════════════════════════════════
 var 천간=['갑','을','병','정','무','기','경','신','임','계'];
 var 지지=['자','축','인','묘','진','사','오','미','신','유','술','해'];
@@ -379,7 +611,6 @@ function getDayPillar(y,m,d){var jdn=Math.round(toJD(y,m,d,12)),idx=((jdn-245154
 function getHourPillar(hi,dp){var sg=[0,2,4,6,8],gi=(sg[(dp.idx%10)%5]+hi)%10;return{gan:천간[gi],ji:지지[hi],ganH:천간H[gi],jiH:지지H[hi],ohaeng:오행[gi]};}
 function calcSaju(y,m,d,hi){var hasTime=(hi!==null&&hi>=0),bd=birthToJD(y,m,d,hasTime?hi:null);var yp=getYearPillar(bd.jd,y),mp=getMonthPillar(bd.jd,y,yp),dp=getDayPillar(y,m,bd.bday),hp=hasTime?getHourPillar(hi,dp):null;return{year:yp,month:mp,day:dp,hour:hp};}
 function timeToHourIdx(h){h=h%24;if(h>=23||h<1)return 0;if(h<3)return 1;if(h<5)return 2;if(h<7)return 3;if(h<9)return 4;if(h<11)return 5;if(h<13)return 6;if(h<15)return 7;if(h<17)return 8;if(h<19)return 9;if(h<21)return 10;return 11;}
-function getHI(timeId,siId){var tv=document.getElementById(timeId).value;if(tv){var p=tv.split(':'),kstH=parseInt(p[0])+parseInt(p[1]||0)/60;return timeToHourIdx(kstH-0.5);}var sv=document.getElementById(siId).value;return sv===''?null:parseInt(sv,10);}
 
 function renderGrid(gridId,infoId,s,y){
   var cols=[{label:'년주(年柱)',p:s.year},{label:'월주(月柱)',p:s.month},{label:'일주(日柱)',p:s.day},{label:'시주(時柱)',p:s.hour}];
@@ -394,147 +625,133 @@ function renderGrid(gridId,infoId,s,y){
   document.getElementById(infoId).textContent=info;
 }
 
-function showSaju(){
-  var bv=document.getElementById('birth').value;if(!bv)return;
-  var p=bv.split('-'),y=+p[0],m=+p[1],d=+p[2],hi=getHI('btime','bsi');
-  try{var s=calcSaju(y,m,d,hi);renderGrid('sajuGrid','jeolgiInfo',s,y);document.getElementById('sajuBox').className='saju-box show';}
-  catch(e){document.getElementById('sajuGrid').innerHTML='<div style="color:red;font-size:12px">오류: '+e.message+'</div>';}
+// ── 텍스트 입력 처리 ──
+function parseBirthText(txt) {
+  var t = txt.replace(/\D/g,'');
+  if (t.length === 8) {
+    return { y: +t.slice(0,4), m: +t.slice(4,6), d: +t.slice(6,8) };
+  }
+  return null;
 }
-function showSaju2(){
-  var bv=document.getElementById('birth2').value;if(!bv)return;
-  var p=bv.split('-'),y=+p[0],m=+p[1],d=+p[2],hi=getHI('','bsi2');
-  try{var s=calcSaju(y,m,d,hi);renderGrid('sajuGrid2','jeolgiInfo2',s,y);document.getElementById('sajuBox2').className='saju-box show';}
-  catch(e){}
+function parseTimeText(txt) {
+  var t = txt.replace(/\D/g,'');
+  if (t.length >= 3) {
+    var h = +t.slice(0,2), m = +t.slice(2,4)||0;
+    if (h >= 0 && h <= 23) return h + m/60;
+  }
+  return null;
+}
+function getHI_from_inputs(btimeId, bsiId) {
+  var tv = document.getElementById(btimeId).value;
+  if (tv) {
+    var h = parseTimeText(tv);
+    if (h !== null) return timeToHourIdx(h - 0.5);
+  }
+  var sv = document.getElementById(bsiId).value;
+  return sv === '' ? null : parseInt(sv, 10);
 }
 
-function makeSajuText(birthId,timeId,siId,nm,gd){
-  var bv=document.getElementById(birthId).value;if(!bv)return null;
-  var p=bv.split('-'),y=+p[0],m=+p[1],d=+p[2],hi=getHI(timeId,siId);
-  var s=calcSaju(y,m,d,hi);
-  var t='이름: '+nm+'\n생년월일: '+y+'년 '+m+'월 '+d+'일\n성별: '+gd+'\n';
-  t+='년주: '+s.year.gan+s.year.ji+'('+s.year.ganH+s.year.jiH+') '+s.year.ohaeng+'오행\n';
-  t+='월주: '+s.month.gan+s.month.ji+'('+s.month.ganH+s.month.jiH+') '+s.month.ohaeng+'오행 ['+s.month.termName+']\n';
-  t+='일주: '+s.day.gan+s.day.ji+'('+s.day.ganH+s.day.jiH+') '+s.day.ohaeng+'오행\n';
-  t+='시주: '+(s.hour?s.hour.gan+s.hour.ji+'('+s.hour.ganH+s.hour.jiH+') '+s.hour.ohaeng+'오행':'모름')+'\n';
+function onBirthInput() { showSaju(); saveToStorage(); }
+function onTimeInput() { showSaju(); saveToStorage(); }
+function onBirthInput2() { showSaju2(); }
+function onTimeInput2() { showSaju2(); }
+
+function showSaju() {
+  var bd = parseBirthText(document.getElementById('birthText').value);
+  if (!bd) return;
+  var hi = getHI_from_inputs('btimeText', 'bsi');
+  try {
+    var s = calcSaju(bd.y, bd.m, bd.d, hi);
+    renderGrid('sajuGrid','jeolgiInfo',s,bd.y);
+    document.getElementById('sajuBox').className='saju-box show';
+  } catch(e) {}
+}
+function showSaju2() {
+  var bd = parseBirthText(document.getElementById('birthText2').value);
+  if (!bd) return;
+  var hi = getHI_from_inputs('btimeText2', 'bsi2');
+  try {
+    var s = calcSaju(bd.y, bd.m, bd.d, hi);
+    renderGrid('sajuGrid2','jeolgiInfo2',s,bd.y);
+    document.getElementById('sajuBox2').className='saju-box show';
+  } catch(e) {}
+}
+
+function makeSajuText(birthTextId, btimeId, bsiId, nm, gd) {
+  var bd = parseBirthText(document.getElementById(birthTextId).value);
+  if (!bd) return null;
+  var hi = getHI_from_inputs(btimeId, bsiId);
+  var s = calcSaju(bd.y, bd.m, bd.d, hi);
+  var t = '이름: '+nm+'\n생년월일: '+bd.y+'년 '+bd.m+'월 '+bd.d+'일\n성별: '+gd+'\n';
+  t += '년주: '+s.year.gan+s.year.ji+'('+s.year.ganH+s.year.jiH+') '+s.year.ohaeng+'오행\n';
+  t += '월주: '+s.month.gan+s.month.ji+'('+s.month.ganH+s.month.jiH+') '+s.month.ohaeng+'오행 ['+s.month.termName+']\n';
+  t += '일주: '+s.day.gan+s.day.ji+'('+s.day.ganH+s.day.jiH+') '+s.day.ohaeng+'오행\n';
+  t += '시주: '+(s.hour?s.hour.gan+s.hour.ji+'('+s.hour.ganH+s.hour.jiH+') '+s.hour.ohaeng+'오행':'모름')+'\n';
   return t;
+}
+
+// ── localStorage 저장 ──
+function saveToStorage() {
+  try {
+    localStorage.setItem('saju_name', document.getElementById('name').value);
+    localStorage.setItem('saju_gender', gender);
+    localStorage.setItem('saju_birth', document.getElementById('birthText').value);
+    localStorage.setItem('saju_time', document.getElementById('btimeText').value);
+  } catch(e) {}
+}
+function loadFromStorage() {
+  try {
+    var n = localStorage.getItem('saju_name');
+    var g = localStorage.getItem('saju_gender');
+    var b = localStorage.getItem('saju_birth');
+    var t = localStorage.getItem('saju_time');
+    if (b && b.length === 8) {
+      document.getElementById('name').value = n || '';
+      document.getElementById('birthText').value = b;
+      document.getElementById('btimeText').value = t || '';
+      if (g) { gender = g; setGender(g); }
+      document.getElementById('savedNotice').className = 'saved-notice show';
+      setTimeout(function(){ document.getElementById('savedNotice').className = 'saved-notice'; }, 3000);
+      showSaju();
+      return true;
+    }
+  } catch(e) {}
+  return false;
 }
 
 // ══════════════════════════════════════════════
 // 카테고리 설정
 // ══════════════════════════════════════════════
 var MODES = {
-  today: {
-    badge:'☀️ 오늘의 운세',
-    title:'오늘 하루,\n<em>어떤 기운</em>이 흐르고 있을까요?',
-    icon:'☀️',
-    body:`<p>오늘 아침 왠지 모르게 가슴이 두근거리는데, 그게 좋은 신호인지 나쁜 신호인지 아직 모르시죠?</p>
-<p>지금 이 순간에도 하늘의 기운은 당신의 일주(日柱)와 복잡하게 얽히며 오늘 하루의 흐름을 만들어내고 있어요. 오늘 내 편인 사람이 누구인지, 피해야 할 상황이 무엇인지, 돈을 써도 되는 날인지 아닌지 — 사주는 이 모든 것을 이미 알고 있습니다.</p>
-<p>무심코 지나친 오늘의 기운을 <span class="intro-highlight">사주와 자미두수로 정확하게</span> 짚어드릴게요. 오늘 중요한 결정이 있다면 더더욱, 반드시 읽어보세요.</p>
-<p>오늘 하루가 끝나기 전에 지금 당장 확인하세요. 이미 흘러간 기회는 다시 오지 않으니까요.</p>
-<p>생년월일만 입력하면 <span class="intro-highlight">30초 안에 오늘의 운세</span>를 정확히 풀이해드립니다.</p>`,
-    formTitle:'오늘의 운세 — 내 정보 입력',
-    btnLabel:'✦ 오늘의 운세 풀이 시작'
-  },
-  love: {
-    badge:'🌸 연애운',
-    title:'내 운명의 상대는\n<em>언제, 어디서</em> 나타날까요?',
-    icon:'🌸',
-    body:`<p>살랑살랑 봄꽃처럼 마음속에 서서히 피어드는 그 설렘, 지금 당신 곁에 있어야 할 사람은 과연 어디에 있을까요?</p>
-<p>연애가 잘 안 풀린다는 느낌, 좋은 사람을 만나도 뭔가 어긋나는 느낌, 혹은 지금 이 사람이 내 사람인지 아닌지 모르는 그 불안함 — 모두 사주에 답이 있어요.</p>
-<p>당신의 일주(日柱)는 이미 어떤 유형의 이성과 끌리고, 어떤 사람과 오래 가는지를 담고 있어요. <span class="intro-highlight">자미두수의 부처궁(夫妻宮)은 당신 배우자의 외모, 직업, 성격까지</span> 구체적으로 읽어낼 수 있어요.</p>
-<p>내가 왜 이 사람한테 끌리는지, 이 관계가 진짜 인연인지 아니면 지나가는 인연인지 — 더 이상 혼자 고민하지 마세요.</p>
-<p>지금 바로 입력하면 <span class="intro-highlight">상대방의 유형과 인연이 찾아오는 시기</span>까지 정확하게 알려드릴게요.</p>`,
-    formTitle:'연애운 — 내 정보 입력',
-    btnLabel:'✦ 연애운 풀이 시작'
-  },
-  reunion: {
-    badge:'🌙 재회운',
-    title:'그 사람, 다시 돌아올\n<em>가능성</em>이 있을까요?',
-    icon:'🌙',
-    body:`<p>아직도 그 사람 생각이 나서 잠 못 드는 밤이 있으신가요? 연락하고 싶은데 먼저 하면 안 될 것 같고, 기다리자니 시간만 흘러가는 그 답답함.</p>
-<p>재회는 단순한 감정의 문제가 아니에요. 두 사람의 사주가 다시 만날 수 있는 기운을 형성하느냐, 아니냐의 문제예요. 어떤 인연은 헤어짐이 더 강한 연결로 돌아오는 기운을 가지고 있고, 어떤 인연은 이별이 마무리예요.</p>
-<p><span class="intro-highlight">자미두수는 이 두 가지를 명확하게 구분해낼 수 있어요.</span> 재회 가능성이 열리는 시기, 그 사람이 당신을 생각하고 있는지, 지금 먼저 연락을 해도 되는 타이밍인지까지 풀이해드릴게요.</p>
-<p>더 이상 카카오톡 읽씹을 보며 혼자 해석하지 마세요. 당신의 사주가 이미 이 인연의 결말을 알고 있으니까요.</p>
-<p>지금 바로 확인하세요. <span class="intro-highlight">기다려야 하는지, 이제 보내줘야 하는지</span> 정확한 방향을 알려드릴게요.</p>`,
-    formTitle:'재회운 — 내 정보 입력',
-    btnLabel:'✦ 재회운 풀이 시작'
-  },
-  couple: {
-    badge:'💫 궁합',
-    title:'이 사람, 진짜 나와\n<em>잘 맞는 사람</em>일까요?',
-    icon:'💫',
-    body:`<p>처음엔 너무 좋았는데 시간이 지날수록 자꾸 같은 이유로 싸우는 우리. 이게 성격 차이인지, 아니면 사주가 맞지 않아서인지 궁금하지 않으신가요?</p>
-<p>두 사람의 오행이 어떻게 만나느냐에 따라 서로를 살리는 관계가 되기도 하고, 서로를 갉아먹는 관계가 되기도 해요. 사랑만으로는 설명이 안 되는 그 묘한 끌림과 반복되는 갈등, 모두 사주에 이유가 있어요.</p>
-<p><span class="intro-highlight">두 사람의 일주를 비교 분석하고, 자미두수의 부처궁과 형제궁으로</span> 이 인연이 오래 갈 관계인지, 어떤 부분에서 조화롭고 어떤 부분에서 충돌하는지 정확히 풀이해드릴게요.</p>
-<p>상대방이 나를 어떻게 보는지, 이 관계가 결혼으로 이어질 수 있는지, 지금 이 사람과 미래를 함께해도 되는지 — 더 이상 불안하게 기다리지 마세요.</p>
-<p>두 사람의 생년월일을 입력하면 <span class="intro-highlight">궁합의 깊은 흐름과 이 인연의 미래</span>를 솔직하게 알려드릴게요.</p>`,
-    formTitle:'궁합 — 두 사람 정보 입력',
-    btnLabel:'✦ 궁합 분석 시작',
-    isCouple: true
-  },
-  marriage: {
-    badge:'💍 결혼운',
-    title:'나의 결혼 시기와\n<em>배우자</em>는 어떤 사람일까요?',
-    icon:'💍',
-    body:`<p>주변에서 결혼 소식이 들릴 때마다 왠지 초조해지는 그 마음, 혹시 나는 결혼이 늦는 사주인 건 아닐까 걱정된 적 있으신가요?</p>
-<p>결혼은 단순히 좋은 사람을 만나는 것이 아니에요. 두 사람의 기운이 맞는 시기에 맞는 사람이 들어오는 것이에요. 사주를 보면 <span class="intro-highlight">결혼 인연이 들어오는 시기, 배우자의 외모, 직업, 성격</span>이 놀랍도록 구체적으로 보여요.</p>
-<p>자미두수의 부처궁은 배우자에 대한 정보를 담는 공간이에요. 어떤 별이 놓이느냐에 따라 배우자의 외모적 특징과 직업까지 짚어낼 수 있어요.</p>
-<p>지금 만나고 있는 사람이 배우자 인연인지, 아직 인연을 못 만났다면 언제 들어오는지 — 더 이상 불안해하지 마세요.</p>
-<p>생년월일을 입력하면 <span class="intro-highlight">당신의 결혼 시기와 배우자의 특징</span>을 정확히 알려드릴게요.</p>`,
-    formTitle:'결혼운 — 내 정보 입력',
-    btnLabel:'✦ 결혼운 풀이 시작'
-  },
-  money: {
-    badge:'🌿 재물운',
-    title:'내가 돈을 잘 못 버는 건\n<em>사주 때문</em>일까요?',
-    icon:'🌿',
-    body:`<p>열심히 하는데 왜 돈이 모이질 않을까요? 주변에는 별로 노력 안 하는 것 같은데 잘 사는 사람도 있는데, 나는 왜 이렇게 돈이 안 풀릴까요?</p>
-<p>사주에는 재물이 들어오는 통로가 있어요. 어떤 사람은 사업이 맞고, 어떤 사람은 직장이 맞아요. 어떤 사람은 투자로 돈을 불리고, 어떤 사람은 투자할수록 잃어요. 이게 노력의 차이가 아니라 <span class="intro-highlight">사주의 재물 구조 차이</span>예요.</p>
-<p>자미두수의 재백궁(財帛宮)은 당신의 재물 흐름을 정확하게 보여줘요. 올해 재물 기운이 강한지 약한지, 언제 지출을 조심해야 하는지, 어떤 방식으로 돈이 들어오는지까지 풀이해드릴게요.</p>
-<p>지금 투자를 고민하고 있거나, 사업을 시작하려는 분이라면 더더욱 지금 확인하셔야 해요.</p>
-<p>생년월일을 입력하면 <span class="intro-highlight">당신만의 재물 패턴과 2026년 금전 흐름</span>을 정확하게 알려드릴게요.</p>`,
-    formTitle:'재물운 — 내 정보 입력',
-    btnLabel:'✦ 재물운 풀이 시작'
-  },
-  career: {
-    badge:'⭐ 직업·적성운',
-    title:'지금 이 일이 정말\n<em>나에게 맞는 일</em>일까요?',
-    icon:'⭐',
-    body:`<p>매일 출근하면서도 "이 일이 나한테 맞는 건지" 의문이 드는 날이 있으신가요? 아니면 이직을 고민하고 있는데 지금이 맞는 타이밍인지 모르겠는 분도 계시죠?</p>
-<p>사주는 당신이 어떤 환경에서 가장 빛나는지를 알고 있어요. 어떤 직종이 재물과 연결되는지, 독립 창업이 맞는 사주인지 직장이 맞는지, 대인 관계 중심의 일이 맞는지 혼자 하는 일이 맞는지 — 이 모든 것이 오행과 자미두수에 담겨있어요.</p>
-<p><span class="intro-highlight">자미두수의 관록궁(官祿宮)은 당신의 직업 운명을 담는 공간이에요.</span> 어떤 별이 놓이느냐에 따라 적성과 커리어의 흐름이 보여요.</p>
-<p>2026년이 이직 타이밍인지, 지금 있는 곳에서 더 버텨야 하는지, 사업 시작을 해도 되는지 — 이제 더 이상 감이 아닌 근거를 가지고 결정하세요.</p>
-<p>생년월일을 입력하면 <span class="intro-highlight">당신에게 맞는 직업 방향과 2026년 커리어 흐름</span>을 정확히 알려드릴게요.</p>`,
-    formTitle:'직업·적성운 — 내 정보 입력',
-    btnLabel:'✦ 직업운 풀이 시작'
-  },
-  new: {
-    badge:'🔮 신년운세',
-    title:'2026년, 당신에게\n<em>어떤 해</em>가 될까요?',
-    icon:'🔮',
-    body:`<p>2026년이 시작됐어요. 올해는 작년과 다를 거라는 막연한 기대, 혹시 올해도 작년처럼 흘러가는 건 아닐까 하는 불안이 공존하고 있지 않으신가요?</p>
-<p>병오년(丙午年)의 기운은 강한 화(火)의 기운이에요. 누군가에게는 새로운 도약의 해가 되고, 누군가에게는 과감한 결단이 필요한 해가 돼요. 그 방향이 본인의 사주와 어떻게 맞닿느냐에 따라 올 한 해가 완전히 달라져요.</p>
-<p><span class="intro-highlight">사주의 세운(歲運)과 자미두수의 연도별 흐름</span>을 결합하면 올해 어떤 달에 기회가 오고, 어떤 달에 조심해야 하는지 월별로 정확하게 읽어낼 수 있어요.</p>
-<p>올해 직장에서 변화가 생기는지, 좋은 인연을 만나는 시기가 언제인지, 재물 기운이 언제 가장 강한지 — 이미 2026년의 흐름은 정해져 있어요.</p>
-<p>생년월일을 입력하면 <span class="intro-highlight">2026년 월별 흐름과 핵심 조언</span>을 지금 바로 확인할 수 있어요.</p>`,
-    formTitle:'2026 신년운세 — 내 정보 입력',
-    btnLabel:'✦ 신년운세 풀이 시작'
-  }
+  today:{badge:'☀️ 오늘의 운세',title:'오늘 하루,\n<em>어떤 기운</em>이 흐르고 있을까요?',icon:'☀️',body:`<p>오늘 아침 왠지 모르게 가슴이 두근거리는데, 그게 좋은 신호인지 나쁜 신호인지 아직 모르시죠?</p><p>지금 이 순간에도 하늘의 기운은 당신의 일주(日柱)와 복잡하게 얽히며 오늘 하루의 흐름을 만들어내고 있어요. 오늘 내 편인 사람이 누구인지, 피해야 할 상황이 무엇인지 — 사주는 이미 알고 있습니다.</p><p>생년월일만 입력하면 <span class="intro-highlight">30초 안에 오늘의 운세</span>를 정확히 풀이해드립니다.</p>`,formTitle:'오늘의 운세 — 내 정보 입력',btnLabel:'✦ 오늘의 운세 풀이 시작'},
+  love:{badge:'🌸 연애운',title:'내 운명의 상대는\n<em>언제, 어디서</em> 나타날까요?',icon:'🌸',body:`<p>연애가 잘 안 풀린다는 느낌, 좋은 사람을 만나도 뭔가 어긋나는 느낌 — 모두 사주에 답이 있어요.</p><p>당신의 일주(日柱)는 이미 어떤 유형의 이성과 끌리고, 어떤 사람과 오래 가는지를 담고 있어요. <span class="intro-highlight">자미두수의 부처궁은 인연의 외모, 직업, 성격까지</span> 구체적으로 읽어낼 수 있어요.</p>`,formTitle:'연애운 — 내 정보 입력',btnLabel:'✦ 연애운 풀이 시작'},
+  reunion:{badge:'🌙 재회운',title:'그 사람, 다시 돌아올\n<em>가능성</em>이 있을까요?',icon:'🌙',body:`<p>아직도 그 사람 생각이 나서 잠 못 드는 밤이 있으신가요? 연락하고 싶은데 먼저 하면 안 될 것 같고, 기다리자니 시간만 흘러가는 그 답답함.</p><p><span class="intro-highlight">자미두수는 재회 가능성과 그 시기를 명확하게 구분해낼 수 있어요.</span> 상대방 정보를 함께 입력하면 더 정확한 풀이를 드릴 수 있어요.</p>`,formTitle:'재회운 — 내 정보 입력',btnLabel:'✦ 재회운 풀이 시작',isCouple:true},
+  couple:{badge:'💫 궁합',title:'이 사람, 진짜 나와\n<em>잘 맞는 사람</em>일까요?',icon:'💫',body:`<p>두 사람의 오행이 어떻게 만나느냐에 따라 서로를 살리는 관계가 되기도 하고, 서로를 갉아먹는 관계가 되기도 해요.</p><p><span class="intro-highlight">두 사람의 일주를 비교 분석하고, 자미두수의 부처궁으로</span> 이 인연이 오래 갈 관계인지, 어떤 부분에서 조화롭고 어떤 부분에서 충돌하는지 정확히 풀이해드릴게요.</p>`,formTitle:'궁합 — 두 사람 정보 입력',btnLabel:'✦ 궁합 분석 시작',isCouple:true},
+  marriage:{badge:'💍 결혼운',title:'나의 결혼 시기와\n<em>배우자</em>는 어떤 사람일까요?',icon:'💍',body:`<p>결혼은 단순히 좋은 사람을 만나는 것이 아니에요. 사주를 보면 <span class="intro-highlight">결혼 인연이 들어오는 시기, 배우자의 외모, 직업, 성격</span>이 놀랍도록 구체적으로 보여요.</p>`,formTitle:'결혼운 — 내 정보 입력',btnLabel:'✦ 결혼운 풀이 시작'},
+  money:{badge:'🌿 재물운',title:'내가 돈을 잘 못 버는 건\n<em>사주 때문</em>일까요?',icon:'🌿',body:`<p>사주에는 재물이 들어오는 통로가 있어요. 어떤 사람은 사업이 맞고, 어떤 사람은 직장이 맞아요. 이게 노력의 차이가 아니라 <span class="intro-highlight">사주의 재물 구조 차이</span>예요.</p>`,formTitle:'재물운 — 내 정보 입력',btnLabel:'✦ 재물운 풀이 시작'},
+  career:{badge:'⭐ 직업·적성운',title:'지금 이 일이 정말\n<em>나에게 맞는 일</em>일까요?',icon:'⭐',body:`<p>사주는 당신이 어떤 환경에서 가장 빛나는지를 알고 있어요. <span class="intro-highlight">자미두수의 관록궁(官祿宮)은 당신의 직업 운명을 담는 공간이에요.</span></p>`,formTitle:'직업·적성운 — 내 정보 입력',btnLabel:'✦ 직업운 풀이 시작'},
+  new:{badge:'🔮 신년운세',title:'2026년, 당신에게\n<em>어떤 해</em>가 될까요?',icon:'🔮',body:`<p>병오년(丙午年)의 기운은 강한 화(火)의 기운이에요. <span class="intro-highlight">사주의 세운(歲運)과 자미두수의 연도별 흐름</span>을 결합하면 올해 어떤 달에 기회가 오고, 어떤 달에 조심해야 하는지 월별로 정확하게 읽어낼 수 있어요.</p>`,formTitle:'2026 신년운세 — 내 정보 입력',btnLabel:'✦ 신년운세 풀이 시작'}
 };
 
-// ══════════════════════════════════════════════
-// UI 초기화
-// ══════════════════════════════════════════════
-var mode = 'today';
-var gender = '남', gender2 = '남';
-var apiKey = '';
+var ALL_MODES = [
+  {id:'today',name:'오늘의 운세',icon:'☀️'},
+  {id:'love',name:'연애운',icon:'🌸'},
+  {id:'reunion',name:'재회운',icon:'🌙'},
+  {id:'couple',name:'궁합',icon:'💫'},
+  {id:'marriage',name:'결혼운',icon:'💍'},
+  {id:'money',name:'재물운',icon:'🌿'},
+  {id:'career',name:'직업운',icon:'⭐'},
+  {id:'new',name:'신년운세',icon:'🔮'}
+];
 
-try { apiKey = localStorage.getItem('sajumiri_key') || ''; } catch(e) {}
+var mode = 'today';
+var gender = '남', gender2 = '여';
 
 function setGender(v) {
   gender = v;
   document.getElementById('gm').className = v==='남'?'gbtn on':'gbtn';
   document.getElementById('gf').className = v==='여'?'gbtn on':'gbtn';
+  saveToStorage();
 }
 function setGender2(v) {
   gender2 = v;
@@ -547,172 +764,312 @@ function initPage() {
   var m = params.get('mode');
   if (m && MODES[m]) mode = m;
   else mode = 'today';
-
   var cfg = MODES[mode];
-
-  // 인트로 채우기
-  var titleHtml = cfg.title.replace('\n', '<br>');
+  var titleHtml = cfg.title.replace('\n','<br>');
   document.getElementById('introInner').innerHTML =
     '<div class="intro-badge">'+cfg.badge+'</div>' +
     '<h1 class="intro-title">'+titleHtml+'</h1>' +
     '<div class="intro-body">'+cfg.body+'</div>';
-
-  // 폼 제목
   document.getElementById('formTitle').textContent = cfg.formTitle;
-
-  // 버튼
   document.getElementById('mainBtn').textContent = cfg.btnLabel;
-
-  // 결과 아이콘
-  document.getElementById('resultIcon').textContent = cfg.icon;
-
-  // 궁합이면 상대방 섹션 표시
-  if (cfg.isCouple) {
-    document.getElementById('partnerSection').style.display = 'block';
-  }
-
-  // 제목 업데이트
+  if (cfg.isCouple) document.getElementById('partnerSection').style.display = 'block';
   document.title = '사주미리 — ' + cfg.badge;
+  loadFromStorage();
 }
 
 // ══════════════════════════════════════════════
-// API 호출 + 프롬프트
+// 페이지형 결과 렌더링
+// ══════════════════════════════════════════════
+var currentPage = 0;
+var totalPages = 0;
+
+function splitIntoSections(text) {
+  // [제목] 패턴으로 섹션 분리
+  var sections = [];
+  var parts = text.split(/\[([^\]]+)\]/g);
+  var intro = parts[0].trim();
+  if (intro) sections.push({ title: '풀이 시작', content: intro });
+  for (var i = 1; i < parts.length; i += 2) {
+    var title = parts[i].trim();
+    var content = (parts[i+1] || '').trim();
+    if (title && content) sections.push({ title: title, content: content });
+  }
+  // 최소 5섹션 보장 — 내용이 적으면 단락으로 분리
+  if (sections.length < 5 && sections.length > 0) {
+    var newSections = [];
+    sections.forEach(function(s) {
+      var paras = s.content.split(/\n\n+/).filter(function(p){ return p.trim(); });
+      if (paras.length > 1) {
+        newSections.push({ title: s.title, content: paras[0] });
+        for (var j = 1; j < paras.length; j++) {
+          newSections.push({ title: s.title + ' (계속)', content: paras[j] });
+        }
+      } else {
+        newSections.push(s);
+      }
+    });
+    sections = newSections;
+  }
+  return sections;
+}
+
+function buildResultPages(text, modeIcon, modeLabel) {
+  var sections = splitIntoSections(text);
+  var track = document.getElementById('pagesTrack');
+  var dots = document.getElementById('pageDots');
+  track.innerHTML = '';
+  dots.innerHTML = '';
+
+  var cfg = MODES[mode];
+  var otherModes = ALL_MODES.filter(function(m){ return m.id !== mode; });
+  var otherHtml = '<div class="other-grid">';
+  otherModes.forEach(function(m) {
+    otherHtml += '<a href="saju.html?mode='+m.id+'" class="other-card"><span class="other-icon">'+m.icon+'</span><span class="other-name">'+m.name+'</span></a>';
+  });
+  otherHtml += '</div>';
+
+  // 마지막 페이지: 다른운세 + 리뷰
+  var lastPageContent = `
+    <div class="other-fortune-section">
+      <div class="other-fortune-title">✦ 다른 운세도 보러가기</div>
+      ${otherHtml}
+    </div>
+    <div class="inline-review-section" id="inlineReviewSection">
+      <div class="inline-review-title">📝 후기 남기기</div>
+      <div class="inline-review-sub">풀이가 도움이 됐나요? 짧게라도 후기를 남겨주세요.</div>
+      <div id="inlineReviewForm">
+        <input type="text" id="iRName" class="review-inp-sm" placeholder="이름 (익명 처리됩니다)">
+        <div class="star-row" id="iStarRow">
+          <button class="star-sm on" data-v="1">★</button>
+          <button class="star-sm on" data-v="2">★</button>
+          <button class="star-sm on" data-v="3">★</button>
+          <button class="star-sm on" data-v="4">★</button>
+          <button class="star-sm on" data-v="5">★</button>
+        </div>
+        <textarea id="iRText" class="review-textarea-sm" placeholder="풀이를 받고 느낀 점을 자유롭게 작성해 주세요."></textarea>
+        <button class="btn-review-sm" onclick="submitInlineReview()">후기 등록하기</button>
+        <div class="review-notice-sm">이름은 성(姓)만 표시되고 나머지는 **로 익명 처리됩니다.</div>
+      </div>
+      <div class="review-done" id="inlineReviewDone">🌸 후기를 남겨주셔서 감사해요!<br>소중한 의견이 다른 분들께 도움이 됩니다.</div>
+    </div>
+  `;
+
+  totalPages = sections.length + 1; // +1 for last page
+
+  for (var i = 0; i < sections.length; i++) {
+    var page = document.createElement('div');
+    page.className = 'result-page';
+    page.innerHTML = `
+      <div class="page-inner">
+        <div class="page-num-badge">${modeIcon} ${i+1} / ${totalPages}</div>
+        <div class="page-section-title">${sections[i].title}</div>
+        <div class="page-divider"></div>
+        <div class="page-text">${sections[i].content}</div>
+      </div>
+    `;
+    track.appendChild(page);
+
+    var dot = document.createElement('div');
+    dot.className = 'page-dot' + (i===0?' active':'');
+    dot.onclick = (function(idx){ return function(){ goToPage(idx); }; })(i);
+    dots.appendChild(dot);
+  }
+
+  // 마지막 페이지
+  var lastPage = document.createElement('div');
+  lastPage.className = 'result-page';
+  lastPage.innerHTML = `<div class="page-inner"><div class="page-num-badge">${modeIcon} ${totalPages} / ${totalPages}</div><div class="page-section-title">✦ 풀이가 완료됐어요</div><div class="page-divider"></div>${lastPageContent}</div>`;
+  track.appendChild(lastPage);
+
+  var lastDot = document.createElement('div');
+  lastDot.className = 'page-dot';
+  lastDot.onclick = function(){ goToPage(totalPages-1); };
+  dots.appendChild(lastDot);
+
+  // 별점 이벤트 (마지막 페이지 렌더 후)
+  setTimeout(initInlineStars, 100);
+
+  currentPage = 0;
+  updatePageNav();
+}
+
+function goToPage(idx) {
+  if (idx < 0 || idx >= totalPages) return;
+  currentPage = idx;
+  document.getElementById('pagesTrack').style.transform = 'translateX(-'+( idx*100 )+'%)';
+  document.querySelectorAll('.page-dot').forEach(function(d,i){ d.className = 'page-dot'+(i===idx?' active':''); });
+  updatePageNav();
+  // 페이지 맨 위로
+  var pages = document.querySelectorAll('.result-page');
+  if (pages[idx]) pages[idx].scrollTop = 0;
+}
+
+function changePage(dir) {
+  goToPage(currentPage + dir);
+}
+
+function updatePageNav() {
+  document.getElementById('prevBtn').disabled = currentPage === 0;
+  var nextBtn = document.getElementById('nextBtn');
+  if (currentPage === totalPages - 1) {
+    nextBtn.textContent = '처음으로';
+    nextBtn.onclick = function(){ goToPage(0); };
+  } else {
+    nextBtn.textContent = '다음 →';
+    nextBtn.onclick = function(){ changePage(1); };
+  }
+}
+
+function closeResult() {
+  document.getElementById('resultContainer').className = 'result-container';
+  document.body.style.overflow = '';
+}
+
+// ── 인라인 별점 ──
+var iSelectedStars = 5;
+function initInlineStars() {
+  var btns = document.querySelectorAll('#iStarRow .star-sm');
+  btns.forEach(function(btn) {
+    btn.addEventListener('mouseover', function() {
+      var v = +this.dataset.v;
+      btns.forEach(function(b){ b.classList.toggle('on', +b.dataset.v <= v); });
+    });
+    btn.addEventListener('click', function() {
+      iSelectedStars = +this.dataset.v;
+    });
+  });
+  document.getElementById('iStarRow').addEventListener('mouseleave', function() {
+    btns.forEach(function(b){ b.classList.toggle('on', +b.dataset.v <= iSelectedStars); });
+  });
+}
+
+function maskName(name) {
+  if (!name || name.length === 0) return '익명';
+  if (name.length === 1) return name + '**';
+  return name[0] + '**';
+}
+
+function submitInlineReview() {
+  var name = (document.getElementById('iRName') && document.getElementById('iRName').value) || '';
+  var text = (document.getElementById('iRText') && document.getElementById('iRText').value.trim()) || '';
+  if (!text) { alert('후기 내용을 입력해주세요.'); return; }
+  document.getElementById('inlineReviewForm').style.display = 'none';
+  document.getElementById('inlineReviewDone').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════
+// API 호출
 // ══════════════════════════════════════════════
 async function analyze() {
-  var bv = document.getElementById('birth').value;
-  if (!bv) { alert('생년월일을 입력해주세요!'); return; }
-  if (mode === 'couple' && !document.getElementById('birth2').value) { alert('상대방 생년월일을 입력해주세요!'); return; }
+  var bd = parseBirthText(document.getElementById('birthText').value);
+  if (!bd) { alert('생년월일을 8자리로 입력해주세요. (예: 19950315)'); return; }
+  if (MODES[mode].isCouple && !parseBirthText(document.getElementById('birthText2').value)) {
+    alert('상대방 생년월일을 입력해주세요!'); return;
+  }
+
+  saveToStorage();
 
   var nm = document.getElementById('name').value || '의뢰인';
-  var my = makeSajuText('birth','btime','bsi',nm,gender);
+  var my = makeSajuText('birthText','btimeText','bsi',nm,gender);
   if (!my) return;
 
-  var rc = document.getElementById('resultCard');
-  var rt = document.getElementById('resultText');
-  rc.className = 'result-card show';
-  rc.scrollIntoView({ behavior:'smooth', block:'start' });
-  rt.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
-  document.getElementById('resultTitle').textContent = MODES[mode].badge + ' 풀이';
+  // 로딩 표시
+  var cfg = MODES[mode];
+  document.getElementById('loadingIcon').textContent = cfg.icon;
+  document.getElementById('loadingTitle').textContent = cfg.badge + ' 분석 중...';
+  document.getElementById('loadingOverlay').className = 'loading-overlay show';
+  document.getElementById('loadingBar').style.animation = 'none';
+  void document.getElementById('loadingBar').offsetWidth;
+  document.getElementById('loadingBar').style.animation = '';
+  document.body.style.overflow = 'hidden';
 
+  // 시스템 프롬프트
   var sys = '당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.\n\n'
     + '[반드시 지켜야 할 원칙]\n'
     + '1. 이모지, 특수기호(*, #, →, ●, ■, ▶ 등)는 절대 사용하지 마세요.\n'
     + '2. 소제목은 [제목] 형식으로만 표기하세요.\n'
     + '3. 정중하지만 따뜻하고 친근한 말투를 사용하세요.\n'
-    + '4. 사주팔자와 자미두수를 함께 활용해 분석하세요. 사주의 오행·간지 분석과 자미두수의 각 궁(宮) 분석을 병행하세요.\n'
-    + '5. 배우자나 인연의 외모, 직업, 성격에 대한 내용을 구체적으로 포함하세요.\n'
-    + '6. 각 항목은 400~500자 내외로 충실하게 서술하세요.\n'
-    + '7. 분량보다 완성이 중요합니다. 마지막 문장은 반드시 마침표로 끝내세요. 문장 중간에 절대 멈추지 마세요.\n'
-    + '8. 모든 항목을 순서대로 완성한 뒤 따뜻한 마무리 문단으로 끝내세요.';
+    + '4. 사주팔자와 자미두수를 함께 활용해 분석하세요.\n'
+    + '5. 입력된 실제 생년월일, 이름, 성별, 사주팔자 정보를 반드시 구체적으로 언급하며 풀이하세요. 예: "1995년 을해년(乙亥年)에 태어나신 분으로..." 처럼 시작하세요.\n'
+    + '6. 같은 주제라도 사주팔자(년월일시주)가 다르면 완전히 다른 풀이를 해야 합니다. 일반적인 설명이 아닌, 이 사람만의 구체적인 특징을 짚어주세요.\n'
+    + '7. 배우자나 인연의 외모, 직업, 성격에 대한 내용을 구체적으로 포함하세요.\n'
+    + '8. 각 [항목]은 400~500자 내외로 충실하게 서술하세요.\n'
+    + '9. 마지막 문장은 반드시 마침표로 끝내세요. 문장 중간에 절대 멈추지 마세요.\n'
+    + '10. 모든 항목을 순서대로 완성한 뒤 따뜻한 마무리 문단으로 끝내세요.';
 
-  var p_today = '[사주 정보]\n' + my
-    + '\n오늘: 2026년 4월 7일 (병오년 병진월 경자일)\n\n'
-    + '사주팔자와 자미두수를 결합해 오늘의 운세를 아래 다섯 항목으로 풀이해 주세요.\n\n'
-    + '[오늘의 기운과 일진 분석]\n일진 경자일(庚子日)과 이 사람의 사주가 만나는 방식, 오늘 전체를 흐르는 에너지의 성격을 사주 오행과 자미두수 명반의 관점에서 설명해 주세요. 오전과 오후의 흐름 변화도 짚어주세요.\n\n'
-    + '[일과 판단력]\n오늘 업무, 학업, 중요한 결정에서 어떤 기운이 작용하는지, 집중하기 좋은 시간대와 피해야 할 상황을 구체적으로 알려주세요.\n\n'
-    + '[대인관계와 감정]\n오늘 만나는 사람들과의 관계에서 주의할 점, 도움이 되는 사람의 유형, 감정 소모를 줄이는 방법을 설명해 주세요.\n\n'
-    + '[금전과 소비]\n오늘 돈의 흐름, 불필요한 지출 주의 시점, 큰 결정이 있다면 어떻게 접근하면 좋은지 알려주세요.\n\n'
-    + '[건강과 오늘을 잘 보내는 법]\n오늘 몸 상태와 에너지 레벨, 컨디션 관리 방법, 오늘 하루를 가장 현명하게 보내기 위한 마음가짐으로 마무리해 주세요.';
+  // 프롬프트 생성
+  var p_today = '[사주 정보]\n'+my+'\n오늘: 2026년 4월 11일 (병오년 병진월 임진일)\n\n'
+    +'이 사람의 구체적인 사주팔자를 바탕으로 오늘의 운세를 풀이해 주세요.\n\n'
+    +'[오늘의 기운과 일진 분석]\n[일과 판단력]\n[대인관계와 감정]\n[금전과 소비]\n[건강과 오늘을 잘 보내는 법]';
 
-  var p_love = '[사주 정보]\n' + my
-    + '\n사주팔자와 자미두수를 결합해 연애운을 아래 여섯 항목으로 깊이 풀이해 주세요. 인연의 외모와 직업에 대한 구체적인 내용도 포함해 주세요.\n\n'
-    + '[타고난 연애 성향과 매력]\n일주를 중심으로 이 사람이 연애에서 보이는 패턴, 감정 표현 방식, 이성에게 어떻게 비춰지는지, 연애할 때 강점과 약점을 자미두수 명반의 부처궁과 함께 분석해 주세요.\n\n'
-    + '[인연의 외모와 직업]\n자미두수 부처궁에 놓인 별의 기운을 바탕으로 이 사람과 인연이 될 상대의 외모적 특징(키, 체형, 인상 등)과 직업 분야를 구체적으로 설명해 주세요.\n\n'
-    + '[잘 맞는 상대 유형과 피해야 할 상대]\n오행 상생·상극 관계와 자미두수 분석을 결합해 어떤 성격과 띠의 이성과 잘 맞는지, 반대로 끌리지만 오래가지 못하는 유형은 무엇인지 설명해 주세요.\n\n'
-    + '[인연이 찾아오는 시기와 방식]\n올해 2026년 연애운의 흐름, 새 인연이 들어오기 좋은 시기와 만남의 방식, 어떤 장소나 상황에서 인연이 연결될 가능성이 높은지 설명해 주세요.\n\n'
-    + '[연애의 걸림돌과 반복 패턴]\n이 사주가 연애에서 반복적으로 겪는 문제, 스스로 인연을 멀리하게 되는 패턴, 고쳐야 할 습관을 솔직하게 짚어주세요.\n\n'
-    + '[연애운 핵심 조언]\n더 깊고 오래가는 인연을 만들기 위해 지금 이 사람이 가져야 할 마음가짐과 행동 방향을 진심을 담아 마무리해 주세요.';
+  var p_love = '[사주 정보]\n'+my+'\n\n이 사람의 구체적인 사주팔자와 오행 구성을 바탕으로 연애운을 풀이해 주세요.\n\n'
+    +'[타고난 연애 성향과 매력]\n[인연의 외모와 직업]\n[잘 맞는 상대 유형과 피해야 할 상대]\n[인연이 찾아오는 시기와 방식]\n[연애의 걸림돌과 반복 패턴]\n[연애운 핵심 조언]';
 
-  var p_reunion = '[사주 정보]\n' + my
-    + '\n사주팔자와 자미두수를 결합해 재회운을 아래 여섯 항목으로 깊이 풀이해 주세요.\n\n'
-    + '[이 사주가 이별을 경험하는 방식]\n일주와 자미두수 부처궁을 중심으로 이 사람이 이별 후 감정을 다루는 방식, 미련이 남는 유형인지 쉽게 놓아주는 유형인지, 이별에서 반복되는 패턴을 설명해 주세요.\n\n'
-    + '[그 인연의 사주적 의미]\n헤어진 상대와의 관계가 이 사람의 사주에서 어떤 의미를 갖는지, 그 인연이 단순한 인연인지 업연(業緣)적 관계인지 분석해 주세요.\n\n'
-    + '[재회 가능성과 열리는 시기]\n2026년 사주와 자미두수 흐름에서 재회 인연이 다시 연결될 수 있는 기운이 존재하는지, 그 가능성이 열리는 시기와 조건을 구체적으로 설명해 주세요.\n\n'
-    + '[지금 해야 할 것과 하지 말아야 할 것]\n재회를 원한다면 지금 어떤 행동을 해야 하고 어떤 행동이 오히려 멀어지게 만드는지, 사주의 기운 흐름에 맞는 현실적인 조언을 해 주세요.\n\n'
-    + '[재회가 어려운 경우 — 마음을 정리하는 법]\n만약 재회의 기운이 강하지 않다면, 어떻게 이 감정을 정리하고 새로운 인연을 향해 나아가면 좋은지 따뜻하게 조언해 주세요.\n\n'
-    + '[재회운 핵심 조언]\n지금 이 사람에게 가장 필요한 한 가지 메시지를 진심을 담아 마무리해 주세요.';
+  var p_reunion = '[사주 정보]\n'+my;
+  var bd2 = parseBirthText(document.getElementById('birthText2').value);
+  if (bd2) {
+    var nm2 = document.getElementById('name2').value || '상대방';
+    var my2 = makeSajuText('birthText2','btimeText2','bsi2',nm2,gender2) || '';
+    p_reunion += '\n\n[상대방 사주 정보]\n'+my2;
+  }
+  p_reunion += '\n\n두 사람의 사주를 모두 분석해 재회운을 풀이해 주세요.\n\n'
+    +'[이 사주가 이별을 경험하는 방식]\n[그 인연의 사주적 의미]\n[재회 가능성과 열리는 시기]\n[지금 해야 할 것과 하지 말아야 할 것]\n[재회가 어려운 경우 — 마음을 정리하는 법]\n[재회운 핵심 조언]';
 
   var p_couple = (function(){
     var nm2 = document.getElementById('name2').value || '상대방';
-    var my2 = makeSajuText('birth2','','bsi2',nm2,gender2) || '사주 정보 없음\n';
-    return '[첫 번째 사람]\n' + my + '\n[두 번째 사람]\n' + my2
-      + '\n두 사람의 사주팔자와 자미두수를 결합해 궁합을 아래 여섯 항목으로 깊이 풀이해 주세요.\n\n'
-      + '[첫 만남의 끌림과 그 이유]\n두 사람의 일주가 처음 만났을 때 서로에게 어떤 인상을 주는지, 어떤 오행의 조합이 끌림을 만드는지, 자미두수 관점에서 이 인연의 강도를 설명해 주세요.\n\n'
-      + '[성격과 오행 비교 분석]\n두 사람의 오행 구성을 비교해 닮은 점과 다른 점, 상생하는 부분과 상극하는 부분을 구체적으로 설명하고 대화 방식의 차이와 오해가 생기기 쉬운 상황도 짚어주세요.\n\n'
-      + '[갈등이 반복되는 패턴]\n두 사람 사이에서 충돌이 잦은 주제와 패턴, 서로가 상처받기 쉬운 지점, 자미두수 관점에서 이 갈등의 구조적 원인을 설명해 주세요.\n\n'
-      + '[함께할 때 빛나는 시너지]\n두 사람이 함께할 때 생기는 강점, 서로에게 긍정적인 영향을 주는 방식, 함께하면 특히 잘될 분야나 상황을 설명해 주세요.\n\n'
-      + '[이 인연의 미래 — 결혼 가능성]\n두 사람의 사주와 자미두수를 종합해 이 인연이 장기적으로 어떻게 발전하는지, 결혼으로 이어질 수 있는 기운이 있는지 솔직하게 풀이해 주세요.\n\n'
-      + '[궁합 총평과 진심 어린 조언]\n두 사람의 궁합을 전체적으로 평가하고, 각자에게 이 관계를 위해 필요한 핵심 메시지를 따뜻하게 마무리해 주세요.';
+    var my2 = makeSajuText('birthText2','btimeText2','bsi2',nm2,gender2) || '사주 정보 없음\n';
+    return '[첫 번째 사람]\n'+my+'\n[두 번째 사람]\n'+my2
+      +'\n두 사람의 사주팔자를 모두 구체적으로 분석해 궁합을 풀이해 주세요.\n\n'
+      +'[첫 만남의 끌림과 그 이유]\n[성격과 오행 비교 분석]\n[갈등이 반복되는 패턴]\n[함께할 때 빛나는 시너지]\n[이 인연의 미래 — 결혼 가능성]\n[궁합 총평과 진심 어린 조언]';
   })();
 
-  var p_marriage = '[사주 정보]\n' + my
-    + '\n사주팔자와 자미두수를 결합해 결혼운을 아래 여섯 항목으로 깊이 풀이해 주세요. 배우자의 외모와 직업에 대한 구체적인 내용도 포함해 주세요.\n\n'
-    + '[이 사주의 결혼 성향]\n일주와 자미두수 부처궁을 중심으로 결혼에 대한 이 사람의 태도, 배우자에게 바라는 것, 결혼 생활에서 보이는 성향을 분석해 주세요.\n\n'
-    + '[배우자의 외모와 직업]\n자미두수 부처궁에 놓인 별의 기운을 바탕으로 인연이 될 배우자의 외모적 특징과 직업 분야를 최대한 구체적으로 설명해 주세요.\n\n'
-    + '[결혼 시기]\n이 사주에서 결혼 인연이 들어오기 좋은 시기와 2026년의 결혼운 흐름을 구체적으로 설명하고, 지금 만나는 사람이 있다면 이 관계가 결혼으로 이어질 기운인지도 분석해 주세요.\n\n'
-    + '[결혼을 방해하는 요소]\n이 사주에서 결혼 인연을 늦추거나 어렵게 만드는 오행적 요인이 있다면 솔직하게 짚어주고, 이를 어떻게 극복할 수 있는지 조언해 주세요.\n\n'
-    + '[결혼 후 가정운]\n결혼 이후 가정 생활이 어떤 모습으로 펼쳐지는지, 부부 관계의 특징과 자녀운에 대해 자미두수 자녀궁과 함께 분석해 주세요.\n\n'
-    + '[결혼운 핵심 조언]\n좋은 배우자 인연을 만들기 위해 지금 이 사람이 가져야 할 마음가짐을 진심을 담아 마무리해 주세요.';
+  var p_marriage = '[사주 정보]\n'+my+'\n\n이 사람의 사주팔자를 바탕으로 결혼운을 풀이해 주세요.\n\n'
+    +'[이 사주의 결혼 성향]\n[배우자의 외모와 직업]\n[결혼 시기]\n[결혼을 방해하는 요소]\n[결혼 후 가정운]\n[결혼운 핵심 조언]';
 
-  var p_money = '[사주 정보]\n' + my
-    + '\n사주팔자와 자미두수를 결합해 재물운을 아래 여섯 항목으로 깊이 풀이해 주세요.\n\n'
-    + '[타고난 재물 구조]\n오행의 재성(財星) 분석과 자미두수 재백궁(財帛宮)을 중심으로 이 사람이 재물을 대하는 방식, 돈을 버는 통로, 소비 패턴을 설명해 주세요.\n\n'
-    + '[재물이 들어오는 방식]\n직장, 사업, 투자 중 어떤 방식으로 재물이 잘 들어오는지, 어떤 분야나 업종에서 재물 기운이 가장 강한지 구체적으로 설명해 주세요.\n\n'
-    + '[2026년 상반기 재물 흐름]\n1월부터 6월까지 월별 재물 기운의 흐름, 특히 강한 달과 지출이 큰 달, 투자하기 좋은 시기를 설명해 주세요.\n\n'
-    + '[2026년 하반기 재물 흐름]\n7월부터 12월까지의 흐름, 연말로 갈수록 재물 기운이 어떻게 변화하는지, 올해 전체 재물운의 총평을 설명해 주세요.\n\n'
-    + '[재물을 잃게 되는 패턴]\n이 사주가 재물을 잃기 쉬운 상황과 반복되는 소비 패턴, 투자 시 조심해야 할 유형과 피해야 할 행동을 솔직하게 짚어주세요.\n\n'
-    + '[재물운 핵심 조언]\n올해 재물을 지키고 늘려나가기 위한 핵심 전략과 마음가짐을 진심을 담아 마무리해 주세요.';
+  var p_money = '[사주 정보]\n'+my+'\n\n이 사람의 사주팔자와 오행 재성을 바탕으로 재물운을 풀이해 주세요.\n\n'
+    +'[타고난 재물 구조]\n[재물이 들어오는 방식]\n[2026년 상반기 재물 흐름]\n[2026년 하반기 재물 흐름]\n[재물을 잃게 되는 패턴]\n[재물운 핵심 조언]';
 
-  var p_career = '[사주 정보]\n' + my
-    + '\n사주팔자와 자미두수를 결합해 직업·적성운을 아래 여섯 항목으로 깊이 풀이해 주세요.\n\n'
-    + '[타고난 재능과 적성]\n오행 구성과 자미두수 관록궁(官祿宮)을 중심으로 이 사람이 어떤 분야에서 타고난 재능을 발휘하는지, 무엇을 할 때 가장 몰입하고 빛나는지 설명해 주세요.\n\n'
-    + '[잘 맞는 직종과 환경]\n구체적으로 어떤 직종, 업종, 업무 환경이 이 사주와 잘 맞는지, 대인 관계 중심의 일이 맞는지 전문 기술직이 맞는지, 반대로 피해야 할 환경도 설명해 주세요.\n\n'
-    + '[직장 vs 독립 창업]\n이 사주가 직장 생활과 독립 창업 중 어느 쪽에 더 맞는 기운인지, 사업을 한다면 어떤 분야가 맞는지 자미두수 관록궁과 함께 분석해 주세요.\n\n'
-    + '[2026년 커리어 흐름과 이직 타이밍]\n올해 직장에서 어떤 변화가 오는지, 이직이나 전환을 고민한다면 언제가 맞는 타이밍인지, 조심해야 할 시기는 언제인지 구체적으로 설명해 주세요.\n\n'
-    + '[직장 내 인간관계와 상사·동료 운]\n자미두수 형제궁과 관록궁을 통해 직장 내 인간관계의 특징, 상사와의 관계, 협업에서 주의해야 할 점을 설명해 주세요.\n\n'
-    + '[직업운 핵심 조언]\n커리어에서 성공하기 위해 지금 이 사람이 가져야 할 방향과 마음가짐을 진심을 담아 마무리해 주세요.';
+  var p_career = '[사주 정보]\n'+my+'\n\n이 사람의 사주팔자와 관록궁을 바탕으로 직업·적성운을 풀이해 주세요.\n\n'
+    +'[타고난 재능과 적성]\n[잘 맞는 직종과 환경]\n[직장 vs 독립 창업]\n[2026년 커리어 흐름과 이직 타이밍]\n[직장 내 인간관계와 상사·동료 운]\n[직업운 핵심 조언]';
 
-  var p_new = '[사주 정보]\n' + my
-    + '\n2026년 병오년(丙午年) 신년운세를 사주팔자와 자미두수를 결합해 아래 일곱 항목으로 풀이해 주세요.\n\n'
-    + '[2026년 전반적인 기운]\n병오년의 천간 병(丙)과 지지 오(午)가 이 사주와 만나는 방식, 올해를 관통하는 핵심 키워드와 자미두수 연도별 흐름을 함께 설명해 주세요.\n\n'
-    + '[직업과 커리어]\n올해 직장과 커리어에서 어떤 변화가 오는지, 기회와 위기의 시기는 언제인지 구체적으로 설명해 주세요.\n\n'
-    + '[재물과 금전]\n올해 재물 흐름의 전체적인 방향, 수입과 지출의 균형, 투자 시 주의사항을 설명해 주세요.\n\n'
-    + '[연애와 인연]\n올해 인연운의 흐름, 현재 관계 중이라면 그 관계의 변화, 미혼이라면 새 인연의 가능성을 설명해 주세요.\n\n'
-    + '[상반기 월별 흐름 (1~6월)]\n1월부터 6월까지 기운이 강한 달, 주의가 필요한 달, 중요한 결정을 내리기 좋은 시기를 월별로 짚어주세요.\n\n'
-    + '[하반기 월별 흐름 (7~12월)]\n7월부터 12월까지 에너지 변화와 주목해야 할 시기, 연말을 마무리하고 새해를 준비하는 방향을 설명해 주세요.\n\n'
-    + '[2026년 핵심 조언]\n올 한 해를 가장 현명하게 살아가기 위한 메시지를 진심을 담아 따뜻하게 마무리해 주세요.';
+  var p_new = '[사주 정보]\n'+my+'\n\n2026년 병오년 신년운세를 이 사람의 사주팔자와 결합해 풀이해 주세요.\n\n'
+    +'[2026년 전반적인 기운]\n[직업과 커리어]\n[재물과 금전]\n[연애와 인연]\n[상반기 월별 흐름 (1~6월)]\n[하반기 월별 흐름 (7~12월)]\n[2026년 핵심 조언]';
 
-  var prompts = {today:p_today, love:p_love, reunion:p_reunion, couple:p_couple, marriage:p_marriage, money:p_money, career:p_career, new:p_new};
+  var prompts = {today:p_today,love:p_love,reunion:p_reunion,couple:p_couple,marriage:p_marriage,money:p_money,career:p_career,new:p_new};
   var prompt = prompts[mode] || p_today;
 
   try {
-    var ctrl = new AbortController();
-    var timer = setTimeout(function(){ ctrl.abort(); }, 300000);
     var res = await fetch('/api/chat', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:8000,
-        system:sys,
-        messages:[{role:'user',content:prompt}]
-      }),
-      signal:ctrl.signal
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 8000,
+        system: sys,
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
-    clearTimeout(timer);
+
     if (!res.ok) {
-      var err = await res.json().catch(function(){return{};});
-      var msg = (err.error&&err.error.message)||'알 수 없는 오류';
-      rt.textContent = '오류 '+res.status+': '+msg
-        +(res.status===401?'\nAPI 키를 확인해주세요.':res.status===429?'\n잠시 후 다시 시도해주세요.':'');
+      var err = await res.json().catch(function(){ return {}; });
+      document.getElementById('loadingOverlay').className = 'loading-overlay';
+      document.body.style.overflow = '';
+      alert('오류 '+res.status+': '+(err.error&&err.error.message||'다시 시도해주세요.'));
       return;
     }
+
     var data = await res.json();
-    rt.textContent = data.content.map(function(c){return c.text||'';}).join('')||'결과를 가져오지 못했습니다.';
+    var text = data.content.map(function(c){ return c.text||''; }).join('') || '결과를 가져오지 못했습니다.';
+
+    document.getElementById('loadingOverlay').className = 'loading-overlay';
+    document.getElementById('resultHeaderTitle').textContent = MODES[mode].badge + ' 풀이';
+    buildResultPages(text, MODES[mode].icon, MODES[mode].badge);
+    document.getElementById('resultContainer').className = 'result-container show';
+
   } catch(e) {
-    rt.textContent = e.name==='AbortError'
-      ? '분석에 시간이 걸리고 있어요. 잠시 후 다시 시도해 주세요.'
-      : '오류: '+e.message;
+    document.getElementById('loadingOverlay').className = 'loading-overlay';
+    document.body.style.overflow = '';
+    alert(e.name==='AbortError' ? '분석에 시간이 걸리고 있어요. 잠시 후 다시 시도해 주세요.' : '오류: '+e.message);
   }
 }
 
