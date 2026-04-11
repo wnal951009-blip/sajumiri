@@ -449,6 +449,36 @@ function buildManseCard(s,y,m,d,timeStr,nm,gd){
   };
 }
 
+
+// 상대방 만세력 카드 (재회운/궁합용)
+function buildManseCard2(s,y,m,d,timeStr,nm,gd){
+  var il=s.day.ganIdx;
+  var pillars=[{label:'시주(時柱)',p:s.hour},{label:'일주(日柱)',p:s.day,isIl:true},{label:'월주(月柱)',p:s.month},{label:'년주(年柱)',p:s.year}];
+  var ohC={목:0,화:0,토:0,금:0,수:0};
+  [s.year,s.month,s.day,s.hour].forEach(function(p){if(!p)return;ohC[p.ohaeng]++;ohC[지지오행[p.jiIdx]]++;});
+  var bStr=y+'.'+(m<10?'0'+m:m)+'.'+(d<10?'0'+d:d);
+  var gL=gd==='여'?'여성':'남성';
+  var pH=pillars.map(function(col){
+    if(!col.p)return '<div class="manse-pillar"><div class="manse-pillar-label">'+col.label+'</div><div class="oh-char metal">?</div><span class="manse-hanja">??</span><div class="manse-hangul">시간모름</div><span class="manse-sipsung ss-bi">-</span></div>';
+    var ss=col.isIl?'일주':getSipsung(il,col.p.ganIdx);
+    return '<div class="manse-pillar"><div class="manse-pillar-label">'+col.label+'</div><div class="oh-char '+(오행클래스[col.p.ohaeng]||'metal')+'">'+오행이모지[col.p.ohaeng]+'</div><span class="manse-hanja">'+col.p.ganH+col.p.jiH+'</span><div class="manse-hangul">'+col.p.gan+col.p.ji+'</div><span class="manse-sipsung '+getSipsungClass(ss)+'">'+ss+'</span></div>';
+  }).join('');
+  var jH='<div class="jijanggan-row">'+pillars.map(function(col){if(!col.p)return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">-</div></div>';return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">'+(지장간표[col.p.ji]||[]).join(' ')+'</div></div>';}).join('')+'</div>';
+  var ohOrder=['목','화','토','금','수'],ohColors={목:'#4CAF50',화:'#F44336',토:'#FF9800',금:'#9E9E9E',수:'#2196F3'},ohLabel={목:'🌿 木',화:'🔥 火',토:'🏔️ 土',금:'⚙️ 金',수:'💧 水'};
+  var dId2='dc2_'+Date.now();
+  var dData2=ohOrder.map(function(o){return{val:ohC[o]||0,color:ohColors[o]};});
+  var tOh=dData2.reduce(function(a,b){return a+b.val;},0);
+  var lH=ohOrder.map(function(o){return '<div class="donut-legend-item"><div class="donut-legend-dot" style="background:'+ohColors[o]+'"></div><div class="donut-legend-label">'+ohLabel[o]+'</div><div class="donut-legend-count">'+(ohC[o]||0)+'</div></div>';}).join('');
+  var hExtra=timeStr?'<span class="manse-info-dot">·</span><span class="manse-info-item">'+timeStr+'</span>':'';
+  var nExtra=nm&&nm!=='상대방'?'<span class="manse-info-dot">·</span><span class="manse-info-item">'+nm+'</span>':'';
+  var daeuns=calcDaeun(y,gd,s.year,s.month);
+  var dH='<div class="daeun-section"><div class="daeun-title">대운(大運) 흐름</div><table class="daeun-table"><thead><tr>'+daeuns.map(function(du){return '<th'+(du.isCurrent?' style="background:var(--red-soft);color:var(--red);"':'')+'>'+du.age+'세'+(du.isCurrent?'<span class="daeun-current-badge">현재</span>':'')+' <span style="font-size:9px;display:block;font-weight:400;color:var(--text-muted)">'+du.startY+'~'+(du.startY+9)+'</span></th>';}).join('')+'</tr></thead><tbody><tr>'+daeuns.map(function(du){return '<td class="daeun-gj-cell"'+(du.isCurrent?' style="background:var(--red-soft);color:var(--red);"':'')+'>'+du.ganH+du.jiH+'</td>';}).join('')+'</tr></tbody></table></div>';
+  return {
+    html:'<div style="margin-bottom:10px;padding:10px 16px;background:linear-gradient(135deg,var(--pink-light),var(--yellow-light));border-radius:12px;font-family:var(--f-serif);font-weight:700;font-size:14px;color:var(--text-main);">상대방 사주팔자</div><div class="manse-card"><div class="manse-header"><div class="manse-info-row"><span class="manse-info-item">'+bStr+'</span>'+hExtra+'<span class="manse-info-dot">·</span><span class="manse-info-item">'+gL+'</span>'+nExtra+'</div></div><div class="manse-pillars">'+pH+'</div>'+jH+'</div><div class="donut-section" style="background:var(--white);border:1px solid var(--border-yellow);border-radius:0 0 16px 16px;"><div class="donut-title">오행 분포</div><div class="donut-wrap"><div class="donut-chart-area"><canvas id="'+dId2+'" class="donut-canvas" width="160" height="160"></canvas><div class="donut-center"><div class="donut-center-label">총</div><div class="donut-center-val">'+tOh+'</div></div></div><div class="donut-legend">'+lH+'</div></div></div>'+dH,
+    donutId:dId2, donutData:dData2
+  };
+}
+
 function parseBirthText(txt){var t=(txt||'').replace(/\D/g,'');if(t.length===8)return{y:+t.slice(0,4),m:+t.slice(4,6),d:+t.slice(6,8)};return null;}
 function parseTimeText(txt){var t=(txt||'').replace(/\D/g,'');if(t.length>=3){var h=+t.slice(0,2),mn=+(t.slice(2,4)||0);if(h>=0&&h<=23)return h+mn/60;}return null;}
 function getHI(btId,bsId){var tv=document.getElementById(btId).value;if(tv){var h=parseTimeText(tv);if(h!==null)return timeToHourIdx(h-.5);}var sv=document.getElementById(bsId).value;return sv===''?null:parseInt(sv,10);}
@@ -549,7 +579,7 @@ function buildCalendar(good,caution){
   return '<div class="calendar-section"><div class="calendar-title">2026년 월별 기운 흐름</div><div class="cal-grid">'+cells+'</div><div class="cal-legend"><div class="cal-legend-item"><div class="cal-dot" style="background:#4CAF50"></div>기회</div><div class="cal-legend-item"><div class="cal-dot" style="background:#F44336"></div>주의</div><div class="cal-legend-item"><div class="cal-dot" style="background:#DDD"></div>보통</div></div></div>';
 }
 
-function buildResultPages(text,manseResult,modeIcon,keywords){
+function buildResultPages(text,manseResult,modeIcon,keywords,manseResult2){
   var sections=splitIntoSections(text);
   var track=document.getElementById('pagesTrack');
   var dots=document.getElementById('pageDots');
@@ -577,14 +607,19 @@ function buildResultPages(text,manseResult,modeIcon,keywords){
     dots.appendChild(d);
   }
 
-  // 1페이지: 만세력 (독립)
-  addPage(
-    '<div class="page-num-badge">'+modeIcon+' 1 / '+totalPages+' · 사주팔자</div>'+
-    '<div class="page-section-title">나의 사주팔자</div>'+
+  // 1페이지: 만세력 (독립) - 커플 모드면 두 사람 모두 표시
+  var p1Title=manseResult2?'두 사람의 사주팔자':'나의 사주팔자';
+  var p1Label=manseResult2?'사주팔자 비교':'사주팔자';
+  var myLabel=manseResult2?'<div style="margin-bottom:10px;padding:10px 16px;background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));border-radius:12px;font-family:var(--f-serif);font-weight:700;font-size:14px;color:var(--text-main);">나의 사주팔자</div>':'';
+  var partnerSection=manseResult2?'<div style="height:20px"></div>'+manseResult2.html:'';
+  var p1Content=
+    '<div class="page-num-badge">'+modeIcon+' 1 / '+totalPages+' · '+p1Label+'</div>'+
+    '<div class="page-section-title">'+p1Title+'</div>'+
     '<div class="page-divider"></div>'+
-    manseResult.html,
-    0
-  );
+    myLabel+
+    manseResult.html+
+    partnerSection;
+  addPage(p1Content, 0);
 
   // 섹션 페이지들
   for(var i=0;i<sections.length;i++){
@@ -621,6 +656,7 @@ function buildResultPages(text,manseResult,modeIcon,keywords){
 
   setTimeout(function(){
     if(manseResult.donutId&&manseResult.donutData)drawDonut(manseResult.donutId,manseResult.donutData);
+    if(manseResult2&&manseResult2.donutId&&manseResult2.donutData)drawDonut(manseResult2.donutId,manseResult2.donutData);
   },150);
 
   // 마지막 페이지 도달 시 자동 후기 팝업
@@ -716,6 +752,15 @@ async function analyze(){
   var s=calcSaju(bd.y,bd.m,bd.d,hi);
   var manseResult=buildManseCard(s,bd.y,bd.m,bd.d,document.getElementById('btimeText').value,nm,gender);
 
+  // 재회운/궁합: 상대방 만세력 카드 생성
+  var manseResult2=null;
+  if(MODES[mode].isCouple&&my2Data){
+    var bd2=my2Data.bd,hi2=my2Data.hi;
+    var s2=calcSaju(bd2.y,bd2.m,bd2.d,hi2);
+    var nm2=document.getElementById('name2').value||'상대방';
+    manseResult2=buildManseCard2(s2,bd2.y,bd2.m,bd2.d,document.getElementById('btimeText2').value,nm2,gender2);
+  }
+
   var sys='당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.\n\n'
     +'[절대 원칙]\n'
     +'1. 소제목은 반드시 [제목] 형식으로만 작성. ##, *, #, →, ● 등 마크다운 특수기호 절대 사용 금지. 본문에도 # 기호 절대 쓰지 마세요.\n'
@@ -778,7 +823,7 @@ async function analyze(){
 
     document.getElementById('loadingOverlay').className='loading-overlay';
     document.getElementById('resultHeaderTitle').textContent=cfg.badge+' 풀이';
-    buildResultPages(text,manseResult,cfg.icon,cfg.keywords);
+    buildResultPages(text,manseResult,cfg.icon,cfg.keywords,manseResult2);
     document.getElementById('resultContainer').className='result-container show';
 
   }catch(e){
