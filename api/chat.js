@@ -47,42 +47,16 @@ export default async function handler(req) {
       });
     }
 
-    // Edge에서 스트리밍 수집 후 완성된 JSON 반환
-    const reader = anthropicRes.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    let fullText = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed === 'data: [DONE]') continue;
-        if (trimmed.startsWith('data: ')) {
-          try {
-            const json = JSON.parse(trimmed.slice(6));
-            if (json.type === 'content_block_delta' && json.delta?.text) {
-              fullText += json.delta.text;
-            }
-          } catch (e) {}
-        }
-      }
-    }
-
-    return new Response(
-      JSON.stringify({ content: [{ type: 'text', text: fullText }] }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    // Anthropic SSE를 그대로 클라이언트에 전달 (25초 제한 해결)
+    return new Response(anthropicRes.body, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'X-Accel-Buffering': 'no',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
 
   } catch (e) {
     return new Response(
