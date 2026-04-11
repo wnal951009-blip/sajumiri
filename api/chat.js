@@ -30,7 +30,7 @@ export default async function handler(req) {
       body: JSON.stringify({
         model: model || 'claude-haiku-4-5-20251001',
         max_tokens: max_tokens || 8000,
-        stream: false,
+        stream: true,
         system: system || '',
         messages: messages || [],
       }),
@@ -47,23 +47,54 @@ export default async function handler(req) {
       });
     }
 
-    const data = await anthropicRes.json();
+    // 스트리밍으로 전체 텍스트 수집 후 JSON 반환
+    const reader = anthropicRes.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullText = '';
 
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed === 'data: [DONE]') continue;
+        if (trimmed.startsWith('data: ')) {
+          try {
+            const json = JSON.parse(trimmed.slice(6));
+            if (json.type === 'content_block_delta' && json.delta?.text) {
+              fullText += json.delta.text;
+            }
+          } catch (e) {}
+        }
+      }
+    }
+
+    // 완성된 텍스트를 JSON으로 반환
+    return new Response(
+      JSON.stringify({ content: [{ type: 'text', text: fullText }] }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
 
   } catch (e) {
-    return new Response(JSON.stringify({ error: { message: e.message } }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    return new Response(
+      JSON.stringify({ error: { message: e.message } }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
   }
 }
