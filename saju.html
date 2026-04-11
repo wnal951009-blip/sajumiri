@@ -75,6 +75,9 @@ select.inp{-webkit-appearance:none;appearance:none;background-image:url("data:im
 .streaming-badge{display:none;align-items:center;gap:6px;font-size:12px;font-family:var(--f-sans);color:var(--red);font-weight:600;}
 .streaming-badge.show{display:flex;}
 .streaming-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s ease-in-out infinite;}
+.next-ready-badge{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--red);color:white;font-size:13px;font-family:var(--f-sans);font-weight:700;padding:10px 20px;border-radius:100px;box-shadow:0 4px 20px rgba(214,59,59,0.4);cursor:pointer;z-index:170;animation:bounceUp .4s ease;white-space:nowrap;}
+.next-ready-badge.show{display:block;}
+@keyframes bounceUp{from{transform:translateX(-50%) translateY(10px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
 
 .result-close{background:var(--red-soft);border:none;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--red);transition:all .2s;}
@@ -291,6 +294,9 @@ select.inp{-webkit-appearance:none;appearance:none;background-image:url("data:im
     <button type="button" class="btn-main" id="mainBtn" onclick="analyze()">✦ 풀이 시작하기</button>
   </div>
 </section>
+
+<!-- 다음 페이지 준비됨 배지 -->
+<div class="next-ready-badge" id="nextReadyBadge" onclick="goNextReady()">다음 내용이 준비됐어요 →</div>
 
 <!-- 결과 컨테이너 -->
 <div class="result-container" id="resultContainer">
@@ -583,28 +589,68 @@ function addStreamingPage(title,modeIcon,pageNum){
 
   pages.push({title:title,textEl:textEl,dotEl:d,pageEl:p,cursor:cursor,content:''});
 
-  // 새 페이지로 자동 전환
-  goToPage(pages.length-1);
+  // 자동 전환 안함 - 배지만 표시
+  showNextReadyBadge();
   updatePageNav();
   return pages.length-1;
 }
 
+function showNextReadyBadge(){
+  var badge=document.getElementById('nextReadyBadge');
+  if(badge){badge.className='next-ready-badge show';}
+}
+function hideNextReadyBadge(){
+  var badge=document.getElementById('nextReadyBadge');
+  if(badge){badge.className='next-ready-badge';}
+}
+function goNextReady(){
+  hideNextReadyBadge();
+  goToPage(pages.length-1);
+}
+
+// 텍스트 버퍼 - 부드러운 타이핑 효과
+var _textBuffer='';
+var _flushTimer=null;
+var _flushInterval=40; // ms마다 버퍼 flush (낮을수록 빠름)
+var _charsPerFlush=4;  // 한번에 표시할 최대 글자수
+
 function appendToCurrentPage(text){
   if(pages.length<2)return;
+  _textBuffer+=text;
+  if(!_flushTimer){
+    _flushTimer=setInterval(flushTextBuffer,_flushInterval);
+  }
+}
+
+function flushTextBuffer(){
+  if(!_textBuffer){
+    if(!isStreaming){
+      clearInterval(_flushTimer);_flushTimer=null;
+    }
+    return;
+  }
   var pg=pages[pages.length-1];
-  if(!pg||!pg.textEl)return;
-  pg.content+=text;
-  // 커서 앞에 텍스트 삽입
+  if(!pg||!pg.textEl){_textBuffer='';return;}
+
+  // 한번에 _charsPerFlush 글자씩 표시
+  var chunk=_textBuffer.slice(0,_charsPerFlush);
+  _textBuffer=_textBuffer.slice(_charsPerFlush);
+
+  pg.content+=chunk;
   if(pg.cursor&&pg.cursor.parentNode){
-    var tn=document.createTextNode(text);
+    var tn=document.createTextNode(chunk);
     pg.textEl.insertBefore(tn,pg.cursor);
   } else {
-    pg.textEl.insertAdjacentText('beforeend',text);
+    pg.textEl.insertAdjacentText('beforeend',chunk);
   }
-  // 현재 페이지면 스크롤
   if(currentPage===pages.length-1){
     pg.pageEl.scrollTop=pg.pageEl.scrollHeight;
   }
+}
+
+function clearTextBuffer(){
+  _textBuffer='';
+  if(_flushTimer){clearInterval(_flushTimer);_flushTimer=null;}
 }
 
 function finalizePage(pageIdx){
@@ -628,6 +674,8 @@ function addFinalPage(modeIcon,goodMonths,cautionMonths){
   d.onclick=(function(idx){return function(){goToPage(idx);};})(pages.length);
   dots.appendChild(d);
   pages.push({title:'마무리',textEl:null,dotEl:d,pageEl:p});
+  showNextReadyBadge();
+  document.getElementById('nextReadyBadge').textContent='✦ 풀이가 완료됐어요 →';
   updatePageNav();
 }
 
@@ -658,6 +706,7 @@ function parseMonths(text){
 function goToPage(idx){
   if(idx<0||idx>=pages.length)return;
   currentPage=idx;
+  hideNextReadyBadge();
   document.getElementById('pagesTrack').style.transform='translateX(-'+(idx*100)+'%)';
   document.querySelectorAll('.page-dot').forEach(function(d,i){
     if(pages[i]&&pages[i].dotEl===d){
@@ -677,7 +726,7 @@ function updatePageNav(){
   } else if(currentPage===pages.length-1){
     nb.disabled=false;nb.textContent='처음으로';nb.className='page-btn primary';nb.onclick=function(){goToPage(0);};
   } else {
-    nb.disabled=false;nb.textContent='다음 →';nb.className='page-btn primary';nb.onclick=function(){changePage(1);};
+    nb.disabled=false;nb.textContent='다음 →';nb.className='page-btn primary';nb.onclick=function(){hideNextReadyBadge();changePage(1);};
   }
 }
 function closeResult(){document.getElementById('resultContainer').className='result-container';document.body.style.overflow='';}
@@ -838,6 +887,14 @@ async function analyze(){
       }
     }
 
+    // 남은 버퍼 모두 flush 후 완료
+    await new Promise(function(resolve){
+      var waitFlush=setInterval(function(){
+        if(!_textBuffer){clearInterval(waitFlush);resolve();}
+      },50);
+      setTimeout(function(){clearInterval(waitFlush);resolve();},3000);
+    });
+
     // 마지막 페이지 커서 제거
     if(currentPageIdx>=1)finalizePage(currentPageIdx);
 
@@ -852,6 +909,7 @@ async function analyze(){
 
   }catch(e){
     isStreaming=false;
+    clearTextBuffer();
     document.getElementById('streamingBadge').className='streaming-badge';
     // 스트리밍 정상 종료 시 JSON 파싱 오류는 무시
     if(fullText&&fullText.length>100){
