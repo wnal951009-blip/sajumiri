@@ -4,685 +4,182 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사주미리 — AI 사주 풀이</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+/* ── 폰트 시스템 ──
+   대제목(hero, 섹션제목): Noto Serif KR 700
+   카드제목/버튼: Pretendard 700~800
+   본문/설명: Pretendard 400~500
+   뱃지/태그: Pretendard 600
+*/
 :root {
-  --cream: #FFFDF5;
-  --cream-2: #FFF8E8;
-  --yellow-light: #FFF5CC;
-  --yellow-mid: #FFE680;
-  --yellow: #FFD700;
-  --pink-light: #FFF0F5;
-  --pink-mid: #FFD6E7;
-  --pink: #FFB3D1;
-  --red: #D63B3B;
-  --red-dark: #B52E2E;
-  --red-soft: #F5E8E8;
-  --text-main: #2A1A1A;
-  --text-sub: #5A3A3A;
-  --text-muted: #9A7A7A;
-  --white: #FFFFFF;
-  --border: rgba(214,59,59,0.12);
-  --border-yellow: rgba(255,215,0,0.3);
-  --shadow-sm: 0 2px 12px rgba(214,59,59,0.07);
-  --shadow-md: 0 8px 32px rgba(214,59,59,0.1);
-  --shadow-lg: 0 20px 60px rgba(214,59,59,0.13);
+  --cream:#FFFDF5; --cream-2:#FFF8E8;
+  --yellow-light:#FFF5CC; --yellow-mid:#FFE680;
+  --pink-light:#FFF0F5; --pink-mid:#FFD6E7; --pink:#FFB3D1;
+  --red:#D63B3B; --red-dark:#B52E2E; --red-soft:#F5E8E8;
+  --text-main:#2A1A1A; --text-sub:#5A3A3A; --text-muted:#9A7A7A;
+  --white:#FFFFFF; --border-yellow:rgba(255,215,0,0.3);
+  --shadow-sm:0 2px 12px rgba(214,59,59,0.07);
+  --shadow-md:0 8px 32px rgba(214,59,59,0.1);
+  --f-serif:'Noto Serif KR',serif;
+  --f-sans:'Pretendard',sans-serif;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background: var(--cream);
-  color: var(--text-main);
-  font-family: 'Pretendard', sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--text-main);font-family:var(--f-sans);font-size:15px;line-height:1.6;overflow-x:hidden;}
 
-/* ── 네비 ── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: rgba(255,253,245,0.93);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-yellow);
-  padding: 0 24px;
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-logo {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--text-main);
-  text-decoration: none;
-  letter-spacing: -0.02em;
-}
-.nav-logo em { font-style: normal; color: var(--red); }
-.nav-cta {
-  background: var(--red);
-  color: white;
-  border: none;
-  padding: 9px 22px;
-  border-radius: 100px;
-  font-size: 13px;
-  font-family: 'Pretendard', sans-serif;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.2s, transform 0.2s;
-  letter-spacing: -0.01em;
-}
-.nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); }
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,245,0.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-yellow);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:var(--f-serif);font-size:19px;font-weight:700;color:var(--text-main);text-decoration:none;}
+.nav-logo em{font-style:normal;color:var(--red);}
+.nav-cta{background:var(--red);color:white;border:none;padding:9px 22px;border-radius:100px;font-size:13px;font-family:var(--f-sans);font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+.nav-cta:hover{background:var(--red-dark);transform:translateY(-1px);}
 
-/* ── 히어로 ── */
-.hero-section {
-  padding-top: 130px;
-  padding-bottom: 70px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.hero-bg {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 20% 80%, rgba(255,179,209,0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(255,230,128,0.28) 0%, transparent 60%);
-  pointer-events: none;
-}
-.hero-inner {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 0 24px;
-  position: relative;
-}
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--yellow-light);
-  border: 1px solid var(--yellow-mid);
-  color: #8A6000;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  padding: 6px 18px;
-  border-radius: 100px;
-  margin-bottom: 28px;
-  animation: fadeUp 0.6s ease both;
-}
-.hero-title {
-  font-family: 'Noto Serif KR', serif;
-  font-size: clamp(30px, 6.5vw, 52px);
-  font-weight: 700;
-  line-height: 1.28;
-  color: var(--text-main);
-  margin-bottom: 22px;
-  animation: fadeUp 0.6s 0.1s ease both;
-  letter-spacing: -0.02em;
-}
-.hero-title em {
-  font-style: normal;
-  color: var(--red);
-  position: relative;
-}
-.hero-title em::after {
-  content: '';
-  position: absolute;
-  bottom: 2px; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--pink), var(--red));
-  border-radius: 2px;
-  opacity: 0.5;
-}
-.hero-desc {
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--text-sub);
-  margin-bottom: 38px;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-  animation: fadeUp 0.6s 0.3s ease both;
-}
-.btn-primary {
-  background: var(--red);
-  color: white;
-  border: none;
-  padding: 14px 34px;
-  border-radius: 100px;
-  font-size: 15px;
-  font-family: 'Pretendard', sans-serif;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 20px rgba(214,59,59,0.3);
-  transition: all 0.2s;
-  letter-spacing: -0.01em;
-}
-.btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(214,59,59,0.4); }
+.hero-section{padding-top:130px;padding-bottom:70px;text-align:center;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 80%,rgba(255,179,209,0.22) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 20%,rgba(255,230,128,0.28) 0%,transparent 60%);pointer-events:none;}
+.hero-inner{max-width:700px;margin:0 auto;padding:0 24px;position:relative;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--yellow-light);border:1px solid var(--yellow-mid);color:#8A6000;font-size:12px;font-family:var(--f-sans);font-weight:600;letter-spacing:.06em;padding:6px 18px;border-radius:100px;margin-bottom:28px;animation:fadeUp .6s ease both;}
+/* 대제목: Noto Serif KR */
+.hero-title{font-family:var(--f-serif);font-size:clamp(30px,6.5vw,52px);font-weight:700;line-height:1.28;color:var(--text-main);margin-bottom:22px;animation:fadeUp .6s .1s ease both;}
+.hero-title em{font-style:normal;color:var(--red);position:relative;}
+.hero-title em::after{content:'';position:absolute;bottom:2px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pink),var(--red));border-radius:2px;opacity:.5;}
+/* 본문: Pretendard */
+.hero-desc{font-size:15px;font-family:var(--f-sans);line-height:1.9;color:var(--text-sub);margin-bottom:38px;animation:fadeUp .6s .2s ease both;}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .3s ease both;}
+.btn-primary{background:var(--red);color:white;border:none;padding:14px 34px;border-radius:100px;font-size:15px;font-family:var(--f-sans);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(214,59,59,0.3);transition:all .2s;}
+.btn-primary:hover{background:var(--red-dark);transform:translateY(-2px);}
+.hero-stats{display:flex;justify-content:center;gap:44px;margin-top:56px;padding-top:40px;border-top:1px solid var(--border-yellow);animation:fadeUp .6s .4s ease both;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+/* 숫자: Noto Serif KR */
+.stat-num{font-family:var(--f-serif);font-size:28px;font-weight:700;color:var(--red);display:block;}
+.stat-label{font-size:12px;font-family:var(--f-sans);color:var(--text-muted);margin-top:4px;}
 
-/* 히어로 스탯 */
-.hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 44px;
-  margin-top: 56px;
-  padding-top: 40px;
-  border-top: 1px solid var(--border-yellow);
-  animation: fadeUp 0.6s 0.4s ease both;
-  flex-wrap: wrap;
-}
-.stat-item { text-align: center; }
-.stat-num {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--red);
-  display: block;
-}
-.stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.trust-bar{background:linear-gradient(90deg,var(--yellow-light),var(--pink-light));border-top:1px solid var(--yellow-mid);border-bottom:1px solid var(--pink-mid);padding:16px 24px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:13px;font-family:var(--f-sans);color:var(--text-sub);font-weight:500;}
 
-/* ── 신뢰 배지 ── */
-.trust-bar {
-  background: linear-gradient(90deg, var(--yellow-light), var(--pink-light));
-  border-top: 1px solid var(--yellow-mid);
-  border-bottom: 1px solid var(--pink-mid);
-  padding: 16px 24px;
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-.trust-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text-sub);
-  font-weight: 500;
-}
-.trust-icon { font-size: 15px; }
+.section{padding:80px 24px;max-width:1080px;margin:0 auto;}
+.section-header{text-align:center;margin-bottom:48px;}
+/* 섹션 태그: Pretendard */
+.section-tag{display:inline-block;background:var(--yellow-light);color:#8A6000;font-size:11px;font-family:var(--f-sans);font-weight:700;letter-spacing:.14em;padding:5px 14px;border-radius:100px;margin-bottom:16px;border:1px solid var(--yellow-mid);}
+/* 섹션 제목: Noto Serif KR */
+.section-title{font-family:var(--f-serif);font-size:clamp(22px,4vw,30px);font-weight:700;color:var(--text-main);margin-bottom:12px;line-height:1.4;}
+/* 섹션 설명: Pretendard */
+.section-desc{font-size:14px;font-family:var(--f-sans);color:var(--text-sub);line-height:1.85;max-width:480px;margin:0 auto;}
 
-/* ── 섹션 공통 ── */
-.section { padding: 80px 24px; max-width: 1080px; margin: 0 auto; }
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.menu-card{background:var(--white);border:1.5px solid var(--border-yellow);border-radius:20px;padding:28px 24px;cursor:pointer;text-decoration:none;display:block;transition:all .25s;position:relative;overflow:hidden;}
+.menu-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));opacity:0;transition:opacity .25s;}
+.menu-card:hover{border-color:var(--pink-mid);box-shadow:var(--shadow-md);transform:translateY(-4px);}
+.menu-card:hover::before{opacity:1;}
+.menu-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;position:relative;transition:transform .25s;}
+.menu-card:hover .menu-icon{transform:scale(1.1);}
+/* 카드 제목: Noto Serif KR */
+.menu-name{font-family:var(--f-serif);font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:6px;position:relative;}
+/* 카드 설명: Pretendard */
+.menu-desc{font-size:13px;font-family:var(--f-sans);color:var(--text-muted);line-height:1.65;position:relative;}
+.menu-arrow{position:absolute;top:28px;right:24px;width:28px;height:28px;background:var(--red-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--red);opacity:0;transform:translateX(-4px);transition:all .25s;}
+.menu-card:hover .menu-arrow{opacity:1;transform:translateX(0);}
 
-/* ── 섹션 헤더 ── */
-.section-header { text-align: center; margin-bottom: 48px; }
-.section-tag {
-  display: inline-block;
-  background: var(--yellow-light);
-  color: #8A6000;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  padding: 5px 14px;
-  border-radius: 100px;
-  margin-bottom: 16px;
-  border: 1px solid var(--yellow-mid);
-}
-.section-title {
-  font-family: 'Noto Serif KR', serif;
-  font-size: clamp(22px, 4vw, 30px);
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 12px;
-  line-height: 1.4;
-  letter-spacing: -0.02em;
-}
-.section-desc {
-  font-size: 14px;
-  color: var(--text-sub);
-  line-height: 1.85;
-  max-width: 480px;
-  margin: 0 auto;
-}
+.method-section{background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));}
+.method-inner{max-width:1080px;margin:0 auto;padding:80px 24px;}
+.method-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+.method-card{background:var(--white);border-radius:24px;padding:36px 28px;border:1px solid rgba(214,59,59,0.1);box-shadow:var(--shadow-sm);transition:all .25s;}
+.method-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+.method-num{font-family:var(--f-sans);font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--red);margin-bottom:16px;display:block;}
+.method-name{font-family:var(--f-serif);font-size:22px;font-weight:700;color:var(--text-main);margin-bottom:6px;}
+.method-name-en{font-size:12px;font-family:var(--f-sans);color:var(--text-muted);margin-bottom:16px;display:block;}
+.method-desc{font-size:14px;font-family:var(--f-sans);color:var(--text-sub);line-height:1.8;margin-bottom:20px;}
+.method-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.method-tag{background:var(--yellow-light);color:#8A6000;font-size:11px;font-family:var(--f-sans);font-weight:500;padding:4px 10px;border-radius:100px;border:1px solid var(--yellow-mid);}
 
-/* ── 서비스 메뉴 그리드 ── */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-}
-.menu-card {
-  background: var(--white);
-  border: 1.5px solid var(--border-yellow);
-  border-radius: 20px;
-  padding: 28px 24px;
-  cursor: pointer;
-  text-decoration: none;
-  display: block;
-  transition: all 0.25s;
-  position: relative;
-  overflow: hidden;
-}
-.menu-card::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, var(--yellow-light) 0%, var(--pink-light) 100%);
-  opacity: 0;
-  transition: opacity 0.25s;
-}
-.menu-card:hover {
-  border-color: var(--pink-mid);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-4px);
-}
-.menu-card:hover::before { opacity: 1; }
-.menu-icon {
-  width: 48px; height: 48px;
-  background: linear-gradient(135deg, var(--yellow-light), var(--pink-light));
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  margin-bottom: 16px;
-  position: relative;
-  transition: transform 0.25s;
-}
-.menu-card:hover .menu-icon { transform: scale(1.1); }
-.menu-name {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 6px;
-  position: relative;
-  letter-spacing: -0.01em;
-}
-.menu-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.65;
-  position: relative;
-}
-.menu-arrow {
-  position: absolute;
-  top: 28px; right: 24px;
-  width: 28px; height: 28px;
-  background: var(--red-soft);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--red);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: all 0.25s;
-}
-.menu-card:hover .menu-arrow { opacity: 1; transform: translateX(0); }
+.process-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0;position:relative;}
+.process-grid::before{content:'';position:absolute;top:36px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--pink-mid),transparent);}
+.process-step{text-align:center;padding:20px 16px;position:relative;}
+.process-num{width:52px;height:52px;background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));border:2px solid var(--pink-mid);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:var(--f-serif);font-size:18px;font-weight:700;color:var(--red);position:relative;z-index:1;}
+.process-title{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--text-main);margin-bottom:8px;}
+.process-desc{font-size:13px;font-family:var(--f-sans);color:var(--text-muted);line-height:1.7;}
 
-/* ── 분석 방식 ── */
-.method-section {
-  background: linear-gradient(135deg, var(--yellow-light) 0%, var(--pink-light) 100%);
-}
-.method-inner { max-width: 1080px; margin: 0 auto; padding: 80px 24px; }
-.method-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-}
-.method-card {
-  background: var(--white);
-  border-radius: 24px;
-  padding: 36px 28px;
-  border: 1px solid rgba(214,59,59,0.1);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.25s;
-}
-.method-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-.method-num {
-  font-family: 'Pretendard', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  color: var(--red);
-  margin-bottom: 16px;
-  display: block;
-}
-.method-name {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 6px;
-  letter-spacing: -0.02em;
-}
-.method-name-en { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; display: block; }
-.method-desc { font-size: 14px; color: var(--text-sub); line-height: 1.8; margin-bottom: 20px; }
-.method-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.method-tag {
-  background: var(--yellow-light);
-  color: #8A6000;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 100px;
-  border: 1px solid var(--yellow-mid);
-}
+.review-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
+.review-card{background:var(--white);border:1px solid var(--border-yellow);border-radius:20px;padding:28px;transition:all .25s;}
+.review-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px);}
+.review-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.review-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.review-name{font-family:var(--f-sans);font-weight:700;font-size:14px;color:var(--text-main);}
+.review-meta{font-size:12px;font-family:var(--f-sans);color:var(--text-muted);margin-top:2px;}
+.review-stars{color:#E8A000;font-size:13px;letter-spacing:1px;}
+.review-tag{background:var(--pink-light);color:var(--red);font-size:11px;font-family:var(--f-sans);font-weight:600;padding:3px 10px;border-radius:100px;border:1px solid var(--pink-mid);white-space:nowrap;}
+.review-text{font-size:14px;font-family:var(--f-sans);color:var(--text-sub);line-height:1.85;}
 
-/* ── 프로세스 ── */
-.process-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0;
-  position: relative;
-}
-.process-grid::before {
-  content: '';
-  position: absolute;
-  top: 36px; left: 10%; right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--pink-mid), transparent);
-}
-.process-step { text-align: center; padding: 20px 16px; position: relative; }
-.process-num {
-  width: 52px; height: 52px;
-  background: linear-gradient(135deg, var(--yellow-light), var(--pink-light));
-  border: 2px solid var(--pink-mid);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-  font-family: 'Noto Serif KR', serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--red);
-  position: relative;
-  z-index: 1;
-}
-.process-title {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 15px; font-weight: 700;
-  color: var(--text-main); margin-bottom: 8px;
-  letter-spacing: -0.01em;
-}
-.process-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+/* 리뷰 작성 */
+.write-review-section{background:linear-gradient(135deg,var(--pink-light),var(--yellow-light));border-top:1px solid var(--pink-mid);border-bottom:1px solid var(--yellow-mid);padding:48px 24px;}
+.write-review-inner{max-width:600px;margin:0 auto;}
+.write-review-title{font-family:var(--f-serif);font-size:20px;font-weight:700;color:var(--text-main);margin-bottom:6px;text-align:center;}
+.write-review-sub{font-size:13px;font-family:var(--f-sans);color:var(--text-muted);text-align:center;margin-bottom:28px;line-height:1.7;}
+.review-form-card{background:var(--white);border-radius:20px;padding:28px;border:1px solid var(--pink-mid);box-shadow:var(--shadow-sm);}
+.review-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.review-lbl{font-size:12px;font-family:var(--f-sans);font-weight:600;color:var(--text-sub);margin-bottom:6px;display:block;}
+.review-inp{width:100%;background:var(--cream);border:1.5px solid var(--pink-mid);border-radius:10px;padding:10px 14px;font-size:14px;font-family:var(--f-sans);color:var(--text-main);outline:none;transition:border-color .2s;}
+.review-inp:focus{border-color:var(--red);}
+.review-textarea{width:100%;min-height:90px;resize:vertical;background:var(--cream);border:1.5px solid var(--pink-mid);border-radius:10px;padding:12px 14px;font-size:14px;font-family:var(--f-sans);color:var(--text-main);outline:none;margin-bottom:14px;}
+.review-textarea:focus{border-color:var(--red);}
+.star-select{display:flex;gap:6px;margin-bottom:14px;}
+.star-btn{font-size:22px;cursor:pointer;color:#DDD;transition:color .15s;background:none;border:none;padding:0;}
+.star-btn.on{color:#E8A000;}
+.btn-review-submit{width:100%;padding:14px;background:var(--red);border:none;border-radius:12px;font-size:15px;font-family:var(--f-sans);font-weight:700;color:white;cursor:pointer;transition:all .2s;}
+.btn-review-submit:hover{background:var(--red-dark);transform:translateY(-1px);}
+.review-notice{font-size:11px;font-family:var(--f-sans);color:var(--text-muted);margin-top:10px;text-align:center;line-height:1.6;}
+.review-success{text-align:center;padding:24px;display:none;}
+.review-success-icon{font-size:40px;margin-bottom:12px;}
+.review-success-text{font-size:15px;font-family:var(--f-sans);color:var(--text-sub);line-height:1.8;}
 
-/* ── 리뷰 ── */
-.review-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-.review-card {
-  background: var(--white);
-  border: 1px solid var(--border-yellow);
-  border-radius: 20px;
-  padding: 28px;
-  transition: all 0.25s;
-}
-.review-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-.review-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.review-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--yellow-light), var(--pink-light));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-.review-info { flex: 1; }
-.review-name { font-weight: 700; font-size: 14px; color: var(--text-main); }
-.review-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.review-stars { color: #E8A000; font-size: 13px; letter-spacing: 1px; }
-.review-tag {
-  background: var(--pink-light);
-  color: var(--red);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 100px;
-  border: 1px solid var(--pink-mid);
-  white-space: nowrap;
-}
-.review-text { font-size: 14px; color: var(--text-sub); line-height: 1.85; }
+.cta-section{background:linear-gradient(135deg,var(--red),var(--red-dark));padding:80px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta-section::before{content:'';position:absolute;top:-40%;left:-10%;width:50%;height:200%;background:rgba(255,255,255,0.05);border-radius:50%;}
+.cta-inner{max-width:560px;margin:0 auto;position:relative;}
+.cta-title{font-family:var(--f-serif);font-size:clamp(22px,4vw,34px);font-weight:700;color:white;margin-bottom:16px;line-height:1.4;}
+.cta-desc{font-size:15px;font-family:var(--f-sans);color:rgba(255,255,255,.78);margin-bottom:36px;line-height:1.8;}
+.btn-white{background:white;color:var(--red);border:none;padding:15px 40px;border-radius:100px;font-size:15px;font-family:var(--f-sans);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(0,0,0,.2);transition:all .2s;}
+.btn-white:hover{transform:translateY(-2px);}
 
-/* ── 리뷰 작성 ── */
-.write-review-section {
-  background: linear-gradient(135deg, var(--pink-light), var(--yellow-light));
-  border-top: 1px solid var(--pink-mid);
-  border-bottom: 1px solid var(--yellow-mid);
-  padding: 48px 24px;
-}
-.write-review-inner { max-width: 600px; margin: 0 auto; }
-.write-review-title {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 20px; font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 6px;
-  text-align: center;
-  letter-spacing: -0.02em;
-}
-.write-review-sub {
-  font-size: 13px; color: var(--text-muted);
-  text-align: center; margin-bottom: 28px; line-height: 1.7;
-}
-.review-form-card {
-  background: var(--white);
-  border-radius: 20px;
-  padding: 28px;
-  border: 1px solid var(--pink-mid);
-  box-shadow: var(--shadow-sm);
-}
-.review-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-.review-lbl { font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 6px; display: block; letter-spacing: 0.01em; }
-.review-inp {
-  width: 100%;
-  background: var(--cream);
-  border: 1.5px solid var(--pink-mid);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 14px;
-  font-family: 'Pretendard', sans-serif;
-  color: var(--text-main);
-  outline: none;
-  transition: border-color 0.2s;
-}
-.review-inp:focus { border-color: var(--red); background: var(--white); }
-.review-select { -webkit-appearance: none; appearance: none; cursor: pointer; }
-.review-textarea {
-  width: 100%; min-height: 90px; resize: vertical;
-  background: var(--cream);
-  border: 1.5px solid var(--pink-mid);
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 14px;
-  font-family: 'Pretendard', sans-serif;
-  color: var(--text-main);
-  outline: none;
-  transition: border-color 0.2s;
-  margin-bottom: 14px;
-}
-.review-textarea:focus { border-color: var(--red); background: var(--white); }
-.star-select { display: flex; gap: 6px; margin-bottom: 14px; }
-.star-btn {
-  font-size: 22px; cursor: pointer; color: #DDD;
-  transition: color 0.15s; background: none; border: none; padding: 0;
-}
-.star-btn.on { color: #E8A000; }
-.btn-review-submit {
-  width: 100%; padding: 14px;
-  background: var(--red);
-  border: none; border-radius: 12px;
-  font-size: 15px; font-family: 'Pretendard', sans-serif;
-  font-weight: 700; color: white; cursor: pointer;
-  letter-spacing: -0.01em;
-  transition: all 0.2s;
-}
-.btn-review-submit:hover { background: var(--red-dark); transform: translateY(-1px); }
-.review-notice { font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: center; line-height: 1.6; }
-.review-success {
-  text-align: center; padding: 24px;
-  display: none;
-}
-.review-success-icon { font-size: 40px; margin-bottom: 12px; }
-.review-success-text { font-size: 15px; color: var(--text-sub); line-height: 1.8; }
+footer{background:var(--text-main);color:rgba(255,255,255,.5);padding:48px 24px;text-align:center;}
+.footer-logo{font-family:var(--f-serif);font-size:20px;font-weight:700;color:white;margin-bottom:16px;display:block;}
+.footer-logo em{font-style:normal;color:var(--pink);}
+.footer-desc{font-size:13px;font-family:var(--f-sans);line-height:1.8;margin-bottom:24px;}
+.footer-copy{font-size:12px;font-family:var(--f-sans);}
 
-/* ── CTA ── */
-.cta-section {
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
-  padding: 80px 24px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.cta-section::before {
-  content: '';
-  position: absolute;
-  top: -40%; left: -10%;
-  width: 50%; height: 200%;
-  background: rgba(255,255,255,0.05);
-  border-radius: 50%;
-}
-.cta-inner { max-width: 560px; margin: 0 auto; position: relative; }
-.cta-title {
-  font-family: 'Noto Serif KR', serif;
-  font-size: clamp(22px, 4vw, 34px);
-  font-weight: 700;
-  color: white;
-  margin-bottom: 16px;
-  line-height: 1.4;
-  letter-spacing: -0.02em;
-}
-.cta-desc { font-size: 15px; color: rgba(255,255,255,0.78); margin-bottom: 36px; line-height: 1.8; }
-.btn-white {
-  background: white;
-  color: var(--red);
-  border: none;
-  padding: 15px 40px;
-  border-radius: 100px;
-  font-size: 15px;
-  font-family: 'Pretendard', sans-serif;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
-  transition: all 0.2s;
-}
-.btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
-
-/* ── 푸터 ── */
-footer {
-  background: var(--text-main);
-  color: rgba(255,255,255,0.5);
-  padding: 48px 24px;
-  text-align: center;
-}
-.footer-logo {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 20px; font-weight: 700;
-  color: white; margin-bottom: 16px;
-  display: block; letter-spacing: -0.02em;
-}
-.footer-logo em { font-style: normal; color: var(--pink); }
-.footer-desc { font-size: 13px; line-height: 1.8; margin-bottom: 24px; }
-.footer-copy { font-size: 12px; }
-
-/* ── 애니메이션 ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.fade-in {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.fade-in.visible { opacity: 1; transform: translateY(0); }
-
-/* ── 반응형 ── */
-@media (max-width: 640px) {
-  .hero-stats { gap: 24px; }
-  .process-grid::before { display: none; }
-  .trust-bar { gap: 16px; }
-  nav { padding: 0 16px; }
-  .section { padding: 60px 16px; }
-  .method-inner { padding: 60px 16px; }
-  .review-form-row { grid-template-columns: 1fr; }
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+@media(max-width:640px){.hero-stats{gap:24px;}.process-grid::before{display:none;}.trust-bar{gap:16px;}.section{padding:60px 16px;}.method-inner{padding:60px 16px;}.review-form-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-
-<!-- 네비게이션 -->
 <nav>
   <a href="index.html" class="nav-logo">사주<em>미리</em></a>
   <a href="saju.html" class="nav-cta">무료로 시작하기 →</a>
 </nav>
 
-<!-- 히어로 -->
 <section class="hero-section">
   <div class="hero-bg"></div>
   <div class="hero-inner">
     <div class="hero-badge">✦ AI 사주 · 자미두수 분석 플랫폼</div>
-    <h1 class="hero-title">
-      당신의 운명을<br><em>미리</em> 알아보세요
-    </h1>
-    <p class="hero-desc">
-      사주팔자와 자미두수, 두 가지 동양 철학을 결합한<br>
-      AI 분석으로 당신의 삶의 흐름을 깊이 있게 풀이해드립니다.
-    </p>
-    <div class="hero-actions">
-      <a href="#services" class="btn-primary">서비스 둘러보기 →</a>
-    </div>
+    <h1 class="hero-title">당신의 운명을<br><em>미리</em> 알아보세요</h1>
+    <p class="hero-desc">사주팔자와 자미두수, 두 가지 동양 철학을 결합한<br>AI 분석으로 당신의 삶의 흐름을 깊이 있게 풀이해드립니다.</p>
+    <div class="hero-actions"><a href="#services" class="btn-primary">서비스 둘러보기 →</a></div>
     <div class="hero-stats">
-      <div class="stat-item">
-        <span class="stat-num">18,427+</span>
-        <div class="stat-label">누적 이용자</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">4.9</span>
-        <div class="stat-label">평균 만족도</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">2가지</span>
-        <div class="stat-label">분석 방법론</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">8종</span>
-        <div class="stat-label">맞춤 풀이</div>
-      </div>
+      <div class="stat-item"><span class="stat-num">18,427+</span><div class="stat-label">누적 이용자</div></div>
+      <div class="stat-item"><span class="stat-num">4.9</span><div class="stat-label">평균 만족도</div></div>
+      <div class="stat-item"><span class="stat-num">2가지</span><div class="stat-label">분석 방법론</div></div>
+      <div class="stat-item"><span class="stat-num">8종</span><div class="stat-label">맞춤 풀이</div></div>
     </div>
   </div>
 </section>
 
-<!-- 신뢰 배지 -->
 <div class="trust-bar">
-  <div class="trust-item"><span class="trust-icon">🔒</span> 개인정보 안전 보호</div>
-  <div class="trust-item"><span class="trust-icon">⚡</span> 30초 내 결과 제공</div>
-  <div class="trust-item"><span class="trust-icon">🌙</span> 천문학적 절기 계산</div>
-  <div class="trust-item"><span class="trust-icon">✨</span> 완전 무료 이용</div>
+  <div class="trust-item"><span>🔒</span> 개인정보 안전 보호</div>
+  <div class="trust-item"><span>⚡</span> 30초 내 결과 제공</div>
+  <div class="trust-item"><span>🌙</span> 천문학적 절기 계산</div>
+  <div class="trust-item"><span>✨</span> 완전 무료 이용</div>
 </div>
 
-<!-- 서비스 메뉴 -->
 <section class="section" id="services">
   <div class="section-header fade-in">
     <div class="section-tag">SERVICES</div>
@@ -690,58 +187,17 @@ footer {
     <p class="section-desc">8가지 주제별 풀이로 삶의 모든 순간을 짚어드립니다</p>
   </div>
   <div class="menu-grid">
-    <a href="saju.html?mode=today" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">☀️</div>
-      <div class="menu-name">오늘의 운세</div>
-      <div class="menu-desc">오늘 하루 일진과 에너지 흐름, 주의사항을 알아보세요</div>
-    </a>
-    <a href="saju.html?mode=love" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">🌸</div>
-      <div class="menu-name">연애운</div>
-      <div class="menu-desc">새로운 인연의 시기와 연애 패턴, 잘 맞는 상대를 알아보세요</div>
-    </a>
-    <a href="saju.html?mode=reunion" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">🌙</div>
-      <div class="menu-name">재회운</div>
-      <div class="menu-desc">헤어진 그 사람과 다시 이어질 가능성을 알아보세요</div>
-    </a>
-    <a href="saju.html?mode=couple" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">💫</div>
-      <div class="menu-name">궁합</div>
-      <div class="menu-desc">두 사람의 사주를 비교해 인연의 깊이와 흐름을 봅니다</div>
-    </a>
-    <a href="saju.html?mode=marriage" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">💍</div>
-      <div class="menu-name">결혼운</div>
-      <div class="menu-desc">결혼 시기와 배우자의 특성, 가정운을 풀이해드립니다</div>
-    </a>
-    <a href="saju.html?mode=money" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">🌿</div>
-      <div class="menu-name">재물운</div>
-      <div class="menu-desc">재물이 들어오는 방식과 올해 금전 흐름을 알아보세요</div>
-    </a>
-    <a href="saju.html?mode=career" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">⭐</div>
-      <div class="menu-name">직업·적성운</div>
-      <div class="menu-desc">잘 맞는 직종과 커리어 방향, 이직 타이밍을 알아보세요</div>
-    </a>
-    <a href="saju.html?mode=new" class="menu-card fade-in">
-      <div class="menu-arrow">→</div>
-      <div class="menu-icon">🔮</div>
-      <div class="menu-name">신년운세</div>
-      <div class="menu-desc">2026년 한 해의 큰 흐름과 월별 운세를 풀이해드립니다</div>
-    </a>
+    <a href="saju.html?mode=today" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">☀️</div><div class="menu-name">오늘의 운세</div><div class="menu-desc">오늘 하루 일진과 에너지 흐름, 주의사항을 알아보세요</div></a>
+    <a href="saju.html?mode=love" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">🌸</div><div class="menu-name">연애운</div><div class="menu-desc">새로운 인연의 시기와 연애 패턴, 잘 맞는 상대를 알아보세요</div></a>
+    <a href="saju.html?mode=reunion" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">🌙</div><div class="menu-name">재회운</div><div class="menu-desc">헤어진 그 사람과 다시 이어질 가능성을 알아보세요</div></a>
+    <a href="saju.html?mode=couple" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">💫</div><div class="menu-name">궁합</div><div class="menu-desc">두 사람의 사주를 비교해 인연의 깊이와 흐름을 봅니다</div></a>
+    <a href="saju.html?mode=marriage" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">💍</div><div class="menu-name">결혼운</div><div class="menu-desc">결혼 시기와 배우자의 특성, 가정운을 풀이해드립니다</div></a>
+    <a href="saju.html?mode=money" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">🌿</div><div class="menu-name">재물운</div><div class="menu-desc">재물이 들어오는 방식과 올해 금전 흐름을 알아보세요</div></a>
+    <a href="saju.html?mode=career" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">⭐</div><div class="menu-name">직업·적성운</div><div class="menu-desc">잘 맞는 직종과 커리어 방향, 이직 타이밍을 알아보세요</div></a>
+    <a href="saju.html?mode=new" class="menu-card fade-in"><div class="menu-arrow">→</div><div class="menu-icon">🔮</div><div class="menu-name">신년운세</div><div class="menu-desc">2026년 한 해의 큰 흐름과 월별 운세를 풀이해드립니다</div></a>
   </div>
 </section>
 
-<!-- 분석 방식 -->
 <section class="method-section">
   <div class="method-inner">
     <div class="section-header fade-in">
@@ -755,28 +211,19 @@ footer {
         <div class="method-name">사주팔자</div>
         <span class="method-name-en">Four Pillars of Destiny</span>
         <p class="method-desc">태어난 연·월·일·시의 간지(干支)로 구성된 여덟 글자를 분석합니다. 오행의 균형과 상생·상극 관계를 통해 타고난 기질과 운의 흐름을 읽어냅니다.</p>
-        <div class="method-tags">
-          <span class="method-tag">오행 분석</span>
-          <span class="method-tag">천문학적 절기 계산</span>
-          <span class="method-tag">진태양시 보정</span>
-        </div>
+        <div class="method-tags"><span class="method-tag">오행 분석</span><span class="method-tag">천문학적 절기 계산</span><span class="method-tag">진태양시 보정</span></div>
       </div>
       <div class="method-card fade-in">
         <span class="method-num">METHOD 02</span>
         <div class="method-name">자미두수</div>
         <span class="method-name-en">Zi Wei Dou Shu</span>
         <p class="method-desc">중국 황실에서 사용하던 별자리 기반 운명 분석법입니다. 14개 주요 별의 배치로 인생 12개 궁을 분석해 사주보다 세밀한 풀이를 제공합니다.</p>
-        <div class="method-tags">
-          <span class="method-tag">별자리 배치 분석</span>
-          <span class="method-tag">12궁 풀이</span>
-          <span class="method-tag">10년 대운 흐름</span>
-        </div>
+        <div class="method-tags"><span class="method-tag">별자리 배치 분석</span><span class="method-tag">12궁 풀이</span><span class="method-tag">10년 대운 흐름</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 이용 방법 -->
 <section class="section" id="how">
   <div class="section-header fade-in">
     <div class="section-tag">HOW IT WORKS</div>
@@ -784,116 +231,31 @@ footer {
     <p class="section-desc">4단계로 30초 안에 풀이가 완성됩니다</p>
   </div>
   <div class="process-grid fade-in">
-    <div class="process-step">
-      <div class="process-num">1</div>
-      <div class="process-title">메뉴 선택</div>
-      <p class="process-desc">궁금한 운세 주제를<br>선택하세요</p>
-    </div>
-    <div class="process-step">
-      <div class="process-num">2</div>
-      <div class="process-title">정보 입력</div>
-      <p class="process-desc">생년월일과<br>태어난 시각을 입력하세요</p>
-    </div>
-    <div class="process-step">
-      <div class="process-num">3</div>
-      <div class="process-title">만세력 계산</div>
-      <p class="process-desc">천문학적 절기 계산으로<br>정확한 사주를 도출합니다</p>
-    </div>
-    <div class="process-step">
-      <div class="process-num">4</div>
-      <div class="process-title">AI 풀이 완성</div>
-      <p class="process-desc">전문가 수준의 풀이를<br>즉시 확인하세요</p>
-    </div>
+    <div class="process-step"><div class="process-num">1</div><div class="process-title">메뉴 선택</div><p class="process-desc">궁금한 운세 주제를<br>선택하세요</p></div>
+    <div class="process-step"><div class="process-num">2</div><div class="process-title">정보 입력</div><p class="process-desc">생년월일과<br>태어난 시각을 입력하세요</p></div>
+    <div class="process-step"><div class="process-num">3</div><div class="process-title">만세력 계산</div><p class="process-desc">천문학적 절기 계산으로<br>정확한 사주를 도출합니다</p></div>
+    <div class="process-step"><div class="process-num">4</div><div class="process-title">AI 풀이 완성</div><p class="process-desc">전문가 수준의 풀이를<br>즉시 확인하세요</p></div>
   </div>
 </section>
 
-<!-- 리뷰 섹션 -->
-<section id="reviews" style="background: var(--cream-2); padding: 80px 0;">
-  <div style="max-width:1080px; margin:0 auto; padding: 0 24px;">
+<section id="reviews" style="background:var(--cream-2);padding:80px 0;">
+  <div style="max-width:1080px;margin:0 auto;padding:0 24px;">
     <div class="section-header fade-in">
       <div class="section-tag">REVIEWS</div>
       <h2 class="section-title">실제 이용자 후기</h2>
       <p class="section-desc">사주미리를 경험한 분들의 솔직한 이야기입니다</p>
     </div>
     <div class="review-grid" id="reviewGrid">
-      <!-- 기본 리뷰 -->
-      <div class="review-card fade-in">
-        <div class="review-header">
-          <div class="review-avatar">🌸</div>
-          <div class="review-info">
-            <div class="review-name">이**님</div>
-            <div class="review-meta">재회운 이용 · 3일 전</div>
-          </div>
-          <span class="review-tag">재회운</span>
-        </div>
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text" style="margin-top:12px;">헤어지고 6개월째 미련을 못 버리고 있었는데, 재회운 풀이를 보고 나서 마음이 정리됐어요. 억지로 연락하지 말고 내 자신을 먼저 채우라는 말이 너무 와닿았습니다. 소름 돋게 지금 상황과 맞아서 놀랐어요.</p>
-      </div>
-      <div class="review-card fade-in">
-        <div class="review-header">
-          <div class="review-avatar">⭐</div>
-          <div class="review-info">
-            <div class="review-name">박**님</div>
-            <div class="review-meta">직업·적성운 이용 · 5일 전</div>
-          </div>
-          <span class="review-tag">직업운</span>
-        </div>
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text" style="margin-top:12px;">이직을 고민하고 있었는데 올해 하반기가 이동수가 있다고 정확히 나왔어요. 지금 다니는 회사에서 뭔가 변화가 생길 것 같다는 느낌이 있었는데 사주에서도 그렇게 나오니까 더 확신이 생겼습니다.</p>
-      </div>
-      <div class="review-card fade-in">
-        <div class="review-header">
-          <div class="review-avatar">💫</div>
-          <div class="review-info">
-            <div class="review-name">김**님</div>
-            <div class="review-meta">궁합 이용 · 1주일 전</div>
-          </div>
-          <span class="review-tag">궁합</span>
-        </div>
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text" style="margin-top:12px;">남자친구랑 자꾸 같은 주제로 싸우는 이유가 있었는데, 궁합 풀이에서 정확히 짚어줘서 깜짝 놀랐어요. 서로의 오행 차이에서 오는 거라고 설명해줘서 이해가 됐고 관계가 오히려 더 좋아졌어요.</p>
-      </div>
-      <div class="review-card fade-in">
-        <div class="review-header">
-          <div class="review-avatar">🌿</div>
-          <div class="review-info">
-            <div class="review-name">최**님</div>
-            <div class="review-meta">재물운 이용 · 1주일 전</div>
-          </div>
-          <span class="review-tag">재물운</span>
-        </div>
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text" style="margin-top:12px;">작년에 투자로 손해를 많이 봤는데 올해 재물운을 보니까 상반기는 안정 위주로 가고 하반기부터 서서히 회복된다고 나왔어요. 구체적인 조언이 있어서 실제로 생활에 적용하고 있습니다.</p>
-      </div>
-      <div class="review-card fade-in">
-        <div class="review-header">
-          <div class="review-avatar">💍</div>
-          <div class="review-info">
-            <div class="review-name">윤**님</div>
-            <div class="review-meta">결혼운 이용 · 2주일 전</div>
-          </div>
-          <span class="review-tag">결혼운</span>
-        </div>
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text" style="margin-top:12px;">30대 중반에 결혼을 못 하고 있어서 불안했는데, 풀이를 보니 내 사주가 늦은 인연 사주라서 조급할 필요가 없다고 나왔어요. 이유를 알고 나니까 마음이 훨씬 편해졌습니다.</p>
-      </div>
-      <div class="review-card fade-in">
-        <div class="review-header">
-          <div class="review-avatar">🔮</div>
-          <div class="review-info">
-            <div class="review-name">정**님</div>
-            <div class="review-meta">신년운세 이용 · 2주일 전</div>
-          </div>
-          <span class="review-tag">신년운세</span>
-        </div>
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text" style="margin-top:12px;">연초에 신년운세 봤는데 3월에 중요한 결정이 생긴다고 나왔어요. 실제로 3월에 이직 제안이 들어왔고 그때 결정한 게 지금까지 잘 풀리고 있어요. 다음 해도 꼭 봐야겠다고 생각했어요.</p>
-      </div>
+      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">🌸</div><div class="review-info"><div class="review-name">이**님</div><div class="review-meta">재회운 이용 · 3일 전</div></div><span class="review-tag">재회운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">헤어지고 6개월째 미련을 못 버리고 있었는데, 재회운 풀이를 보고 나서 마음이 정리됐어요. 억지로 연락하지 말고 내 자신을 먼저 채우라는 말이 너무 와닿았습니다.</p></div>
+      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">⭐</div><div class="review-info"><div class="review-name">박**님</div><div class="review-meta">직업·적성운 이용 · 5일 전</div></div><span class="review-tag">직업운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">이직을 고민하고 있었는데 올해 하반기가 이동수가 있다고 정확히 나왔어요. 사주에서도 그렇게 나오니까 더 확신이 생겼습니다.</p></div>
+      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">💫</div><div class="review-info"><div class="review-name">김**님</div><div class="review-meta">궁합 이용 · 1주일 전</div></div><span class="review-tag">궁합</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">남자친구랑 자꾸 같은 주제로 싸우는 이유가 있었는데, 궁합 풀이에서 정확히 짚어줘서 깜짝 놀랐어요. 관계가 오히려 더 좋아졌어요.</p></div>
+      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">🌿</div><div class="review-info"><div class="review-name">최**님</div><div class="review-meta">재물운 이용 · 1주일 전</div></div><span class="review-tag">재물운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">올해 재물운을 보니까 상반기는 안정 위주로 가고 하반기부터 서서히 회복된다고 나왔어요. 구체적인 조언이 있어서 실제로 생활에 적용하고 있습니다.</p></div>
+      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">💍</div><div class="review-info"><div class="review-name">윤**님</div><div class="review-meta">결혼운 이용 · 2주일 전</div></div><span class="review-tag">결혼운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">30대 중반에 결혼을 못 하고 있어서 불안했는데, 풀이를 보니 내 사주가 늦은 인연 사주라서 조급할 필요가 없다고 나왔어요.</p></div>
+      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">🔮</div><div class="review-info"><div class="review-name">정**님</div><div class="review-meta">신년운세 이용 · 2주일 전</div></div><span class="review-tag">신년운세</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">연초에 신년운세 봤는데 3월에 중요한 결정이 생긴다고 나왔어요. 실제로 3월에 이직 제안이 들어왔고 그때 결정한 게 지금까지 잘 풀리고 있어요.</p></div>
     </div>
   </div>
 </section>
 
-<!-- 리뷰 작성 -->
 <div class="write-review-section">
   <div class="write-review-inner">
     <div class="write-review-title">✍️ 후기 남기기</div>
@@ -901,46 +263,23 @@ footer {
     <div class="review-form-card">
       <div id="reviewFormArea">
         <div class="review-form-row">
-          <div>
-            <label class="review-lbl">이름</label>
-            <input type="text" id="rName" class="review-inp" placeholder="홍길동">
-          </div>
-          <div>
-            <label class="review-lbl">이용한 운세</label>
-            <select id="rMode" class="review-inp review-select">
-              <option value="오늘의 운세">☀️ 오늘의 운세</option>
-              <option value="연애운">🌸 연애운</option>
-              <option value="재회운">🌙 재회운</option>
-              <option value="궁합">💫 궁합</option>
-              <option value="결혼운">💍 결혼운</option>
-              <option value="재물운">🌿 재물운</option>
-              <option value="직업운">⭐ 직업운</option>
-              <option value="신년운세">🔮 신년운세</option>
-            </select>
-          </div>
+          <div><label class="review-lbl">이름</label><input type="text" id="rName" class="review-inp" placeholder="홍길동"></div>
+          <div><label class="review-lbl">이용한 운세</label><select id="rMode" class="review-inp" style="-webkit-appearance:none;cursor:pointer;"><option value="오늘의 운세">☀️ 오늘의 운세</option><option value="연애운">🌸 연애운</option><option value="재회운">🌙 재회운</option><option value="궁합">💫 궁합</option><option value="결혼운">💍 결혼운</option><option value="재물운">🌿 재물운</option><option value="직업운">⭐ 직업운</option><option value="신년운세">🔮 신년운세</option></select></div>
         </div>
         <label class="review-lbl">별점</label>
         <div class="star-select" id="starSelect">
-          <button class="star-btn" data-v="1">★</button>
-          <button class="star-btn" data-v="2">★</button>
-          <button class="star-btn" data-v="3">★</button>
-          <button class="star-btn" data-v="4">★</button>
-          <button class="star-btn" data-v="5">★</button>
+          <button class="star-btn on" data-v="1">★</button><button class="star-btn on" data-v="2">★</button><button class="star-btn on" data-v="3">★</button><button class="star-btn on" data-v="4">★</button><button class="star-btn on" data-v="5">★</button>
         </div>
         <label class="review-lbl">후기 내용</label>
         <textarea id="rText" class="review-textarea" placeholder="풀이를 받고 느낀 점을 자유롭게 작성해 주세요."></textarea>
         <button class="btn-review-submit" onclick="submitReview()">후기 등록하기</button>
         <div class="review-notice">이름은 성(姓)만 표시되고 나머지는 **로 익명 처리됩니다.</div>
       </div>
-      <div class="review-success" id="reviewSuccess">
-        <div class="review-success-icon">🌸</div>
-        <div class="review-success-text">후기를 남겨주셔서 감사해요!<br>소중한 의견이 다른 분들께 도움이 됩니다.</div>
-      </div>
+      <div class="review-success" id="reviewSuccess"><div class="review-success-icon">🌸</div><div class="review-success-text">후기를 남겨주셔서 감사해요!<br>소중한 의견이 다른 분들께 도움이 됩니다.</div></div>
     </div>
   </div>
 </div>
 
-<!-- CTA -->
 <section class="cta-section">
   <div class="cta-inner">
     <h2 class="cta-title">지금 바로 나의 운명을<br>확인해보세요</h2>
@@ -949,7 +288,6 @@ footer {
   </div>
 </section>
 
-<!-- 푸터 -->
 <footer>
   <span class="footer-logo">사주<em>미리</em></span>
   <p class="footer-desc">사주팔자와 자미두수를 결합한 AI 운세 풀이 서비스<br>모든 풀이는 참고용이며 최종 판단은 본인의 주체적인 선택에 있습니다</p>
@@ -957,101 +295,33 @@ footer {
 </footer>
 
 <script>
-// 스크롤 애니메이션
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => { entry.target.classList.add('visible'); }, i * 80);
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// 스무스 스크롤
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+const observer=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);observer.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+var selStars=5;
+document.querySelectorAll('.star-btn').forEach(btn=>{
+  btn.addEventListener('mouseover',function(){var v=+this.dataset.v;document.querySelectorAll('.star-btn').forEach(b=>b.classList.toggle('on',+b.dataset.v<=v));});
+  btn.addEventListener('click',function(){selStars=+this.dataset.v;});
 });
-
-// 별점 선택
-var selectedStars = 5;
-document.querySelectorAll('.star-btn').forEach(btn => {
-  btn.addEventListener('mouseover', function() {
-    var v = +this.dataset.v;
-    document.querySelectorAll('.star-btn').forEach(b => {
-      b.classList.toggle('on', +b.dataset.v <= v);
-    });
-  });
-  btn.addEventListener('click', function() {
-    selectedStars = +this.dataset.v;
-  });
-});
-document.getElementById('starSelect').addEventListener('mouseleave', function() {
-  document.querySelectorAll('.star-btn').forEach(b => {
-    b.classList.toggle('on', +b.dataset.v <= selectedStars);
-  });
-});
-// 기본 별점 5개
-document.querySelectorAll('.star-btn').forEach(b => b.classList.add('on'));
-
-// 이름 익명 처리
-function maskName(name) {
-  if (!name || name.length === 0) return '익명';
-  if (name.length === 1) return name + '**';
-  return name[0] + '**';
-}
-
-// 리뷰 등록
-var modeIcons = {
-  '오늘의 운세':'☀️','연애운':'🌸','재회운':'🌙','궁합':'💫',
-  '결혼운':'💍','재물운':'🌿','직업운':'⭐','신년운세':'🔮'
-};
-
-function submitReview() {
-  var name = document.getElementById('rName').value.trim();
-  var mode = document.getElementById('rMode').value;
-  var text = document.getElementById('rText').value.trim();
-  if (!name) { alert('이름을 입력해주세요.'); return; }
-  if (!text) { alert('후기 내용을 입력해주세요.'); return; }
-
-  var masked = maskName(name);
-  var stars = '★'.repeat(selectedStars) + '☆'.repeat(5 - selectedStars);
-  var icon = modeIcons[mode] || '✨';
-
-  var card = document.createElement('div');
-  card.className = 'review-card';
-  card.style.animation = 'fadeUp 0.5s ease both';
-  card.innerHTML = `
-    <div class="review-header">
-      <div class="review-avatar">${icon}</div>
-      <div class="review-info">
-        <div class="review-name">${masked}님</div>
-        <div class="review-meta">${mode} 이용 · 방금 전</div>
-      </div>
-      <span class="review-tag">${mode}</span>
-    </div>
-    <div class="review-stars">${stars}</div>
-    <p class="review-text" style="margin-top:12px;">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
-  `;
-
-  var grid = document.getElementById('reviewGrid');
-  grid.insertBefore(card, grid.firstChild);
-
-  document.getElementById('reviewFormArea').style.display = 'none';
-  document.getElementById('reviewSuccess').style.display = 'block';
-
-  setTimeout(() => {
-    document.getElementById('reviewFormArea').style.display = 'block';
-    document.getElementById('reviewSuccess').style.display = 'none';
-    document.getElementById('rName').value = '';
-    document.getElementById('rText').value = '';
-    selectedStars = 5;
-    document.querySelectorAll('.star-btn').forEach(b => b.classList.add('on'));
-  }, 3000);
+document.getElementById('starSelect').addEventListener('mouseleave',()=>{document.querySelectorAll('.star-btn').forEach(b=>b.classList.toggle('on',+b.dataset.v<=selStars));});
+var modeIcons={오늘의운세:'☀️',연애운:'🌸',재회운:'🌙',궁합:'💫',결혼운:'💍',재물운:'🌿',직업운:'⭐',신년운세:'🔮'};
+function maskName(n){if(!n||n.length===0)return'익명';return n[0]+'**';}
+function submitReview(){
+  var name=document.getElementById('rName').value.trim();
+  var mode=document.getElementById('rMode').value;
+  var text=document.getElementById('rText').value.trim();
+  if(!name){alert('이름을 입력해주세요.');return;}
+  if(!text){alert('후기 내용을 입력해주세요.');return;}
+  var masked=maskName(name);
+  var stars='★'.repeat(selStars)+'☆'.repeat(5-selStars);
+  var icon=modeIcons[mode.replace(/\s/g,'')]||'✨';
+  var card=document.createElement('div');card.className='review-card';
+  card.style.animation='fadeUp .5s ease both';
+  card.innerHTML=`<div class="review-header"><div class="review-avatar">${icon}</div><div class="review-info"><div class="review-name">${masked}님</div><div class="review-meta">${mode} 이용 · 방금 전</div></div><span class="review-tag">${mode}</span></div><div class="review-stars">${stars}</div><p class="review-text" style="margin-top:12px;">${text.replace(/</g,'&lt;')}</p>`;
+  document.getElementById('reviewGrid').insertBefore(card,document.getElementById('reviewGrid').firstChild);
+  document.getElementById('reviewFormArea').style.display='none';
+  document.getElementById('reviewSuccess').style.display='block';
+  setTimeout(()=>{document.getElementById('reviewFormArea').style.display='block';document.getElementById('reviewSuccess').style.display='none';document.getElementById('rName').value='';document.getElementById('rText').value='';selStars=5;document.querySelectorAll('.star-btn').forEach(b=>b.classList.add('on'));},3000);
 }
 </script>
 </body>
