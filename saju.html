@@ -568,7 +568,7 @@ function makeSajuData(btId,btmId,bsId,nm,gd){
   var hapChung=calcHapChung(s);
   var gongmang=calcGongmang(s);
   var daeuns=calcDaeun(bd.y,bd.m,bd.d,gd,s.year,s.month);
-  var currentDaeun=daeuns.find(function(d){return d.isCurrent;})||daeuns[0];
+  var currentDaeun=null;for(var di=0;di<daeuns.length;di++){if(daeuns[di].isCurrent){currentDaeun=daeuns[di];break;}}if(!currentDaeun)currentDaeun=daeuns[0];
 
   var t='이름: '+nm+'\n생년월일: '+bd.y+'년 '+bd.m+'월 '+bd.d+'일\n성별: '+gd+'\n나이: 만 '+(2026-bd.y)+'세\n\n';
   t+='[사주팔자]\n';
@@ -631,19 +631,14 @@ function parseMonths(text){
   var cPatterns=text.match(/(\d{1,2})월[^.]*?(주의|조심|어렵|약|하락)/g)||[];
   patterns.forEach(function(s){var m=s.match(/(\d{1,2})월/);if(m)good.push(+m[1]);});
   cPatterns.forEach(function(s){var m=s.match(/(\d{1,2})월/);if(m)caution.push(+m[1]);});
-  good=[...new Set(good)].filter(function(n){return n>=1&&n<=12;}).slice(0,4);
-  caution=[...new Set(caution)].filter(function(n){return n>=1&&n<=12&&good.indexOf(n)<0;}).slice(0,4);
+  good=good.filter(function(n,i,a){return a.indexOf(n)===i&&n>=1&&n<=12;}).slice(0,4);
+  caution=caution.filter(function(n,i,a){return a.indexOf(n)===i&&n>=1&&n<=12&&good.indexOf(n)<0;}).slice(0,4);
   if(good.length===0)good=[5,6,9];
   if(caution.length===0)caution=[2,8,11];
   return{good:good,caution:caution};
 }
 function buildCalendar(goodMonths,cautionMonths){
-  var cells=Array.from({length:12},function(_,i){
-    var n=i+1,cls='normal',lbl='보통';
-    if(goodMonths.indexOf(n)>=0){cls='good';lbl='기회';}
-    else if(cautionMonths.indexOf(n)>=0){cls='caution';lbl='주의';}
-    return '<div class="cal-month '+cls+'"><span class="cal-month-num">'+n+'</span><div class="cal-month-label">'+lbl+'</div></div>';
-  }).join('');
+  var cells='';for(var ci=0;ci<12;ci++){var n=ci+1,cls='normal',lbl='보통';if(goodMonths.indexOf(n)>=0){cls='good';lbl='기회';}else if(cautionMonths.indexOf(n)>=0){cls='caution';lbl='주의';}cells+='<div class="cal-month '+cls+'"><span class="cal-month-num">'+n+'</span><div class="cal-month-label">'+lbl+'</div></div>';}
   return '<div class="calendar-section"><div class="calendar-title">2026년 월별 기운 흐름</div><div class="cal-grid">'+cells+'</div><div class="cal-legend"><div class="cal-legend-item"><div class="cal-dot" style="background:#4CAF50"></div>기회</div><div class="cal-legend-item"><div class="cal-dot" style="background:#F44336"></div>주의</div><div class="cal-legend-item"><div class="cal-dot" style="background:#DDD"></div>보통</div></div></div>';
 }
 
@@ -857,7 +852,7 @@ async function analyze(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-5',
         max_tokens:12000,
         system:sys,
         messages:[{role:'user',content:buildPrompt(myData,my2Data,nm,gender)}]
