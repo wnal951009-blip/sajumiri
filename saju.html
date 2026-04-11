@@ -853,7 +853,15 @@ async function analyze(){
   }catch(e){
     isStreaming=false;
     document.getElementById('streamingBadge').className='streaming-badge';
-    alert('오류: '+e.message);
+    // 스트리밍 정상 종료 시 JSON 파싱 오류는 무시
+    if(fullText&&fullText.length>100){
+      if(currentPageIdx>=1)finalizePage(currentPageIdx);
+      var monthData=parseMonths(fullText);
+      addFinalPage(cfg.icon,monthData.good,monthData.caution);
+      updatePageNav();
+    } else {
+      alert('오류: '+e.message);
+    }
   }
 }
 
