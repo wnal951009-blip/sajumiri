@@ -724,8 +724,8 @@ async function analyze(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:8000,
+        model:'claude-sonnet-4-5',
+        max_tokens:12000,
         system:sys,
         messages:[{role:'user',content:buildPrompt(myData,my2Data)}]
       })
