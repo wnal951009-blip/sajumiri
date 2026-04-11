@@ -514,10 +514,12 @@ function initPage(){
 var currentPage=0,totalPages=0;
 
 function splitIntoSections(text){
-  var sections=[],parts=text.split(/\[([^\]]+)\]/g),intro=parts[0].trim();
-  if(intro&&intro.length>20)sections.push({title:'풀이 시작',content:intro});
+  var sections=[],parts=text.split(/\[([^\]]+)\]/g);
+  // intro(풀이 시작) 섹션 제거 - [제목] 형식 섹션만 사용
   for(var i=1;i<parts.length;i+=2){
     var ti=parts[i].trim(),co=(parts[i+1]||'').trim();
+    // ## 등 특수기호 제거
+    co=co.replace(/^#+\s*/gm,'').replace(/\*\*/g,'').replace(/^\*+\s*/gm,'').trim();
     if(ti&&co)sections.push({title:ti,content:co});
   }
   return sections;
@@ -610,8 +612,7 @@ function buildResultPages(text,manseResult,modeIcon,keywords){
     '<div class="other-fortune-section">'+
     '<div class="other-fortune-title">✦ 다른 운세도 보러가기</div>'+
     otherHtml+
-    '</div>'+
-    '<button class="btn-review-open" onclick="openReviewPopup()">📝 풀이 후기 남기기</button>',
+    '</div>',
     totalPages-1
   );
 
@@ -621,17 +622,25 @@ function buildResultPages(text,manseResult,modeIcon,keywords){
   setTimeout(function(){
     if(manseResult.donutId&&manseResult.donutData)drawDonut(manseResult.donutId,manseResult.donutData);
   },150);
+
+  // 마지막 페이지 도달 시 자동 후기 팝업
+  // 페이지 이동 감지해서 마지막 페이지면 팝업
+  window._autoReviewShown=false;
 }
 
 function goToPage(idx){
   if(idx<0||idx>=totalPages)return;
   currentPage=idx;
-  // 이전 페이지 스크롤 초기화
   var pages=document.querySelectorAll('.result-page');
   if(pages[idx])pages[idx].scrollTop=0;
   document.getElementById('pagesTrack').style.transform='translateX(-'+(idx*100)+'%)';
   document.querySelectorAll('.page-dot').forEach(function(d,i){d.className='page-dot'+(i===idx?' active':'');});
   updatePageNav();
+  // 마지막 페이지 도달 시 3초 후 자동 팝업
+  if(idx===totalPages-1&&!window._autoReviewShown){
+    window._autoReviewShown=true;
+    setTimeout(function(){openReviewPopup();},2000);
+  }
 }
 function changePage(dir){goToPage(currentPage+dir);}
 function updatePageNav(){
@@ -667,7 +676,7 @@ function buildPrompt(myData,my2Data){
     +'- 대운과 세운의 상호작용을 구체적으로 설명하세요.\n'
     +'- 이 사람만의 사주 특징을 구체적으로 짚어주세요. 일반론 금지.\n'
     +'- 기회가 되는 월과 주의해야 할 월을 숫자로 명확히 언급하세요.\n'
-    +'- 소제목은 반드시 [제목] 형식으로만. 이모지, *, #, → 등 특수기호 절대 금지.\n'
+    +'- 소제목은 반드시 [제목] 형식으로만. ##, *, #, → 등 마크다운 기호 절대 사용 금지. 본문에 # 기호 절대 쓰지 마세요.\n'
     +'- 마지막에 리스크 1가지, 기회 1가지, 특이한 점 1가지를 제시하세요.\n'
     +'- 마지막 문장은 반드시 마침표로 끝내세요.\n'
     +'- 따뜻하고 친근하지만 전문적인 말투를 유지하세요.\n'
@@ -709,7 +718,7 @@ async function analyze(){
 
   var sys='당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.\n\n'
     +'[절대 원칙]\n'
-    +'1. 소제목은 [제목] 형식으로만. 이모지, *, #, →, ● 등 특수기호 절대 금지.\n'
+    +'1. 소제목은 반드시 [제목] 형식으로만 작성. ##, *, #, →, ● 등 마크다운 특수기호 절대 사용 금지. 본문에도 # 기호 절대 쓰지 마세요.\n'
     +'2. 각 항목은 600~800자 이상으로 깊고 풍부하게 서술하세요.\n'
     +'3. 사주팔자·십성·12운성·지장간·합충형파해·공망·대운·세운을 모두 활용하세요.\n'
     +'4. 이 사람의 실제 사주 데이터를 구체적으로 언급하세요.\n'
