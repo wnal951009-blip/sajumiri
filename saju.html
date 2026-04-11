@@ -408,9 +408,10 @@ function calcHapChung(s){
 // 공망
 function calcGongmang(s){
   var dayIdx=s.day.idx;
-  var순시작=Math.floor(dayIdx/10)*10;
-  var gongmang=[(10-순시작%12+10)%12,(11-순시작%12+12)%12].map(function(i){return 지지H[i%12]+'('+지지[i%12]+')'});
-  return gongmang.join('·');
+  var sunStart=Math.floor(dayIdx/10)*10;
+  var g1=(10-sunStart%12+10)%12;
+  var g2=(11-sunStart%12+12)%12;
+  return 지지H[g1%12]+'('+지지[g1%12]+')·'+지지H[g2%12]+'('+지지[g2%12]+')';
 }
 
 // 대운 계산 (간략)
