@@ -26,12 +26,11 @@ export default async function handler(req) {
         'Content-Type': 'application/json',
         'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'messages-2023-12-15',
       },
       body: JSON.stringify({
-        model: model || 'claude-sonnet-4-5',
-        max_tokens: max_tokens || 12000,
-        stream: true,
+        model: model || 'claude-haiku-4-5-20251001',
+        max_tokens: max_tokens || 8000,
+        stream: false,
         system: system || '',
         messages: messages || [],
       }),
@@ -41,20 +40,23 @@ export default async function handler(req) {
       const errText = await anthropicRes.text();
       return new Response(errText, {
         status: anthropicRes.status,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
       });
     }
 
-    // SSE 스트리밍 그대로 전달
-    return new Response(anthropicRes.body, {
+    const data = await anthropicRes.json();
+
+    return new Response(JSON.stringify(data), {
       status: 200,
       headers: {
-        'Content-Type': 'text/event-stream; charset=utf-8',
-        'Cache-Control': 'no-cache, no-transform',
-        'X-Accel-Buffering': 'no',
+        'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
       },
     });
+
   } catch (e) {
     return new Response(JSON.stringify({ error: { message: e.message } }), {
       status: 500,
