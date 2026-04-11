@@ -28,8 +28,8 @@ export default async function handler(req) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: model || 'claude-haiku-4-5-20251001',
-        max_tokens: max_tokens || 8000,
+        model: model || 'claude-sonnet-4-5',
+        max_tokens: max_tokens || 12000,
         stream: true,
         system: system || '',
         messages: messages || [],
@@ -47,7 +47,7 @@ export default async function handler(req) {
       });
     }
 
-    // 스트리밍으로 전체 텍스트 수집 후 JSON 반환
+    // Edge에서 스트리밍 수집 후 완성된 JSON 반환
     const reader = anthropicRes.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
@@ -73,7 +73,6 @@ export default async function handler(req) {
       }
     }
 
-    // 완성된 텍스트를 JSON으로 반환
     return new Response(
       JSON.stringify({ content: [{ type: 'text', text: fullText }] }),
       {
