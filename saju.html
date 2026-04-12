@@ -542,11 +542,14 @@ function saveToStorage(){
     localStorage.setItem('saju_gender',gender);
     localStorage.setItem('saju_birth',document.getElementById('birthText').value);
     localStorage.setItem('saju_time',document.getElementById('btimeText').value);
-    // 상대방 정보도 저장
-    if(document.getElementById('name2'))localStorage.setItem('saju_name2',document.getElementById('name2').value);
-    localStorage.setItem('saju_gender2',gender2);
-    if(document.getElementById('birthText2'))localStorage.setItem('saju_birth2',document.getElementById('birthText2').value);
-    if(document.getElementById('btimeText2'))localStorage.setItem('saju_time2',document.getElementById('btimeText2').value);
+    // 상대방 정보도 저장 (isCouple 모드일 때만)
+    try{
+      var n2v=document.getElementById('name2'),b2v=document.getElementById('birthText2'),t2v=document.getElementById('btimeText2');
+      if(n2v)localStorage.setItem('saju_name2',n2v.value||'');
+      localStorage.setItem('saju_gender2',gender2);
+      if(b2v&&b2v.value.length===8)localStorage.setItem('saju_birth2',b2v.value);
+      if(t2v)localStorage.setItem('saju_time2',t2v.value||'');
+    }catch(e2){}
   }catch(e){}
 }
 function loadFromStorage(){
@@ -564,13 +567,18 @@ function loadFromStorage(){
       showSavedBanner(n,b,g);
       showSaju();
     }
-    // 상대방 정보 불러오기
-    if(b2&&b2.length===8&&document.getElementById('birthText2')){
-      document.getElementById('name2').value=n2||'';
-      document.getElementById('birthText2').value=b2;
-      document.getElementById('btimeText2').value=t2||'';
-      if(g2){gender2=g2;setGender2(g2);}
-      showSaju2();
+    // 상대방 정보 불러오기 (partnerSection hidden 여부 무관하게 값 설정)
+    if(b2&&b2.length===8){
+      try{
+        var n2el=document.getElementById('name2');
+        var b2el=document.getElementById('birthText2');
+        var t2el=document.getElementById('btimeText2');
+        if(n2el)n2el.value=n2||'';
+        if(b2el)b2el.value=b2;
+        if(t2el)t2el.value=t2||'';
+        if(g2){gender2=g2;setGender2(g2);}
+        showSaju2();
+      }catch(e2){}
     }
     return !!(b&&b.length===8);
   }catch(e){}return false;
@@ -829,10 +837,11 @@ function buildResultPages(text,manseResult,modeIcon,keywords,manseResult2){
   }
 
   // 1페이지: 만세력 (독립) - 커플 모드면 두 사람 모두 표시
-  var p1Title=manseResult2?'두 사람의 사주팔자':'나의 사주팔자';
-  var p1Label=manseResult2?'사주팔자 비교':'사주팔자';
-  var myLabel=manseResult2?'<div style="margin-bottom:10px;padding:10px 16px;background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));border-radius:12px;font-family:var(--f-serif);font-weight:700;font-size:14px;color:var(--text-main);">나의 사주팔자</div>':'';
-  var partnerSection=manseResult2?'<div style="height:20px"></div>'+manseResult2.html:'';
+  var hasParter=(manseResult2&&manseResult2.html)?true:false;
+  var p1Title=hasParter?'두 사람의 사주팔자':'나의 사주팔자';
+  var p1Label=hasParter?'사주팔자 비교':'사주팔자';
+  var myLabel=hasParter?'<div style="margin-bottom:10px;padding:10px 16px;background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));border-radius:12px;font-family:var(--f-serif);font-weight:700;font-size:14px;color:var(--text-main);">나의 사주팔자</div>':'';
+  var partnerSection=hasParter?'<div style="height:20px"></div>'+manseResult2.html:'';
   var p1Content=
     '<div class="page-num-badge">'+modeIcon+' 1 / '+totalPages+' · '+p1Label+'</div>'+
     '<div class="page-section-title">'+p1Title+'</div>'+
@@ -902,7 +911,7 @@ function buildResultPages(text,manseResult,modeIcon,keywords,manseResult2){
 
   setTimeout(function(){
     if(manseResult.donutId&&manseResult.donutData)drawDonut(manseResult.donutId,manseResult.donutData);
-    if(manseResult2&&manseResult2.donutId&&manseResult2.donutData)drawDonut(manseResult2.donutId,manseResult2.donutData);
+    if(hasParter&&manseResult2.donutId&&manseResult2.donutData)drawDonut(manseResult2.donutId,manseResult2.donutData);
   },150);
 
   // 마지막 페이지 도달 시 자동 후기 팝업
