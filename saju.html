@@ -350,6 +350,11 @@ var 오행맵=['목','목','화','화','토','토','금','금','수','수'];
 var 지지오행=['수','토','목','목','토','화','화','토','금','금','토','수'];
 var 시_KST=[0,2,4,6,8,10,12,14,16,18,20,22];
 var 지장간표={자:['壬','癸'],축:['癸','辛','己'],인:['甲','丙','戊'],묘:['甲','乙'],진:['乙','癸','戊'],사:['丙','庚','戊'],오:['丙','己','丁'],미:['丁','乙','己'],신:['庚','壬','戊'],유:['庚','辛'],술:['辛','丁','戊'],해:['甲','壬']};
+// 천간 한자→한글 독음
+var 천간독음={'甲':'갑(甲)','乙':'을(乙)','丙':'병(丙)','丁':'정(丁)','戊':'무(戊)','己':'기(己)','庚':'경(庚)','辛':'신(辛)','壬':'임(壬)','癸':'계(癸)'};
+// 지지 한자→한글 독음  
+var 지지독음={'子':'자(子)','丑':'축(丑)','寅':'인(寅)','卯':'묘(卯)','辰':'진(辰)','巳':'사(巳)','午':'오(午)','未':'미(未)','申':'신(申)','酉':'유(酉)','戌':'술(戌)','亥':'해(亥)'};
+function jjgToKorean(hanja){return 천간독음[hanja]||hanja;}
 var 십이운성표={갑:['절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘'],을:['제왕','쇠','병','사','묘','절','태','양','장생','목욕','관대','건록'],병:['태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘','절'],정:['묘','절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사'],무:['태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘','절'],기:['묘','절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사'],경:['사','묘','절','태','양','장생','목욕','관대','건록','제왕','쇠','병'],신:['장생','목욕','관대','건록','제왕','쇠','병','사','묘','절','태','양'],임:['절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘'],계:['제왕','쇠','병','사','묘','절','태','양','장생','목욕','관대','건록']};
 function get12Unsung(g,j){var t=십이운성표[g];return t?t[j]||'?':'?';}
 function calcHapChung(s){
@@ -442,7 +447,12 @@ function buildManseCard(s,y,m,d,timeStr,nm,gd){
     var ss=col.isIl?'일주':getSipsung(il,col.p.ganIdx);
     return '<div class="manse-pillar"><div class="manse-pillar-label">'+col.label+'</div><div class="oh-char '+(오행클래스[col.p.ohaeng]||'metal')+'">'+오행이모지[col.p.ohaeng]+'</div><span class="manse-hanja">'+col.p.ganH+col.p.jiH+'</span><div class="manse-hangul">'+col.p.gan+col.p.ji+'</div><span class="manse-sipsung '+getSipsungClass(ss)+'">'+ss+'</span></div>';
   }).join('');
-  var jH='<div class="jijanggan-row">'+pillars.map(function(col){if(!col.p)return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">-</div></div>';return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">'+(지장간표[col.p.ji]||[]).join(' ')+'</div></div>';}).join('')+'</div>';
+  var jH='<div class="jijanggan-row">'+pillars.map(function(col){
+    if(!col.p)return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">-</div></div>';
+    var jjg=(지장간표[col.p.ji]||[]);
+    var jjgStr=jjg.map(function(h){return jjgToKorean(h);}).join('<br>');
+    return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">'+jjgStr+'</div></div>';
+  }).join('')+'</div>';
   var uH='<div class="jijanggan-row">'+pillars.map(function(col){if(!col.p)return '<div class="jjg-cell"><div class="jjg-label">12운성</div><div class="jjg-chars">-</div></div>';return '<div class="jjg-cell"><div class="jjg-label">12운성</div><div class="jjg-chars">'+get12Unsung(col.p.gan,col.p.jiIdx)+'</div></div>';}).join('')+'</div>';
   var hc=calcHapChung(s),gm=calcGongmang(s);
   var daeuns=calcDaeun(y,gd,s.year,s.month);
@@ -481,7 +491,13 @@ function buildManseCard2(s,y,m,d,timeStr,nm,gd){
     var ss=col.isIl?'일주':getSipsung(il,col.p.ganIdx);
     return '<div class="manse-pillar"><div class="manse-pillar-label">'+col.label+'</div><div class="oh-char '+(오행클래스[col.p.ohaeng]||'metal')+'">'+오행이모지[col.p.ohaeng]+'</div><span class="manse-hanja">'+col.p.ganH+col.p.jiH+'</span><div class="manse-hangul">'+col.p.gan+col.p.ji+'</div><span class="manse-sipsung '+getSipsungClass(ss)+'">'+ss+'</span></div>';
   }).join('');
-  var jH='<div class="jijanggan-row">'+pillars.map(function(col){if(!col.p)return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">-</div></div>';return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">'+(지장간표[col.p.ji]||[]).join(' ')+'</div></div>';}).join('')+'</div>';
+  var jH='<div class="jijanggan-row">'+pillars.map(function(col){
+    if(!col.p)return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">-</div></div>';
+    var jjg=(지장간표[col.p.ji]||[]);
+    var jjgStr=jjg.map(function(h){return jjgToKorean(h);}).join('<br>');
+    return '<div class="jjg-cell"><div class="jjg-label">지장간</div><div class="jjg-chars">'+jjgStr+'</div></div>';
+  }).join('')+'</div>';
+  var uH='<div class="jijanggan-row">'+pillars.map(function(col){if(!col.p)return '<div class="jjg-cell"><div class="jjg-label">12운성</div><div class="jjg-chars">-</div></div>';return '<div class="jjg-cell"><div class="jjg-label">12운성</div><div class="jjg-chars">'+get12Unsung(col.p.gan,col.p.jiIdx)+'</div></div>';}).join('')+'</div>';
   var ohOrder=['목','화','토','금','수'],ohColors={목:'#4CAF50',화:'#F44336',토:'#FF9800',금:'#9E9E9E',수:'#2196F3'},ohLabel={목:'🌿 木',화:'🔥 火',토:'🏔️ 土',금:'⚙️ 金',수:'💧 水'};
   var dId2='dc2_'+Date.now();
   var dData2=ohOrder.map(function(o){return{val:ohC[o]||0,color:ohColors[o]};});
@@ -499,7 +515,7 @@ function buildManseCard2(s,y,m,d,timeStr,nm,gd){
   }
   var dH='<div class="daeun-section"><div class="daeun-title">대운(大運) 흐름</div>'+duRow(first)+duRow(second)+'</div>';
   return {
-    html:'<div style="margin-bottom:10px;padding:10px 16px;background:linear-gradient(135deg,var(--pink-light),var(--yellow-light));border-radius:12px;font-family:var(--f-serif);font-weight:700;font-size:14px;color:var(--text-main);">상대방 사주팔자</div><div class="manse-card"><div class="manse-header"><div class="manse-info-row"><span class="manse-info-item">'+bStr+'</span>'+hExtra+'<span class="manse-info-dot">·</span><span class="manse-info-item">'+gL+'</span>'+nExtra+'</div></div><div class="manse-pillars">'+pH+'</div>'+jH+'</div><div class="donut-section" style="background:var(--white);border:1px solid var(--border-yellow);border-radius:0 0 16px 16px;"><div class="donut-title">오행 분포</div><div class="donut-wrap"><div class="donut-chart-area"><canvas id="'+dId2+'" class="donut-canvas" width="160" height="160"></canvas><div class="donut-center"><div class="donut-center-label">총</div><div class="donut-center-val">'+tOh+'</div></div></div><div class="donut-legend">'+lH+'</div></div></div>'+dH,
+    html:'<div style="margin-bottom:10px;padding:10px 16px;background:linear-gradient(135deg,var(--pink-light),var(--yellow-light));border-radius:12px;font-family:var(--f-serif);font-weight:700;font-size:14px;color:var(--text-main);">상대방 사주팔자</div><div class="manse-card"><div class="manse-header"><div class="manse-info-row"><span class="manse-info-item">'+bStr+'</span>'+hExtra+'<span class="manse-info-dot">·</span><span class="manse-info-item">'+gL+'</span>'+nExtra+'</div></div><div class="manse-pillars">'+pH+'</div>'+jH+uH+'</div><div class="donut-section" style="background:var(--white);border:1px solid var(--border-yellow);border-radius:0 0 16px 16px;"><div class="donut-title">오행 분포</div><div class="donut-wrap"><div class="donut-chart-area"><canvas id="'+dId2+'" class="donut-canvas" width="160" height="160"></canvas><div class="donut-center"><div class="donut-center-label">총</div><div class="donut-center-val">'+tOh+'</div></div></div><div class="donut-legend">'+lH+'</div></div></div>'+dH,
     donutId:dId2, donutData:dData2
   };
 }
@@ -527,7 +543,7 @@ function makeSajuData(btId,btmId,bsId,nm,gd){
   [{label:'년주',p:s.year},{label:'월주',p:s.month},{label:'일주',p:s.day},{label:'시주',p:s.hour}].forEach(function(col){
     if(!col.p){t+=col.label+': 모름\n';return;}
     var ss=col.label==='일주'?'일주':getSipsung(il,col.p.ganIdx);
-    t+=col.label+': '+col.p.ganH+col.p.jiH+'('+col.p.gan+col.p.ji+') 오행:'+col.p.ohaeng+' 십성:'+ss+' 12운성:'+get12Unsung(col.p.gan,col.p.jiIdx)+' 지장간:'+(지장간표[col.p.ji]||[]).join('·')+'\n';
+    t+=col.label+': '+col.p.ganH+col.p.jiH+'('+col.p.gan+col.p.ji+') 오행:'+col.p.ohaeng+' 십성:'+ss+' 12운성:'+get12Unsung(col.p.gan,col.p.jiIdx)+' 지장간:'+(지장간표[col.p.ji]||[]).map(function(h){return jjgToKorean(h);}).join('·')+'\n';
   });
   t+='\n오행분포: 목'+ohC['목']+' 화'+ohC['화']+' 토'+ohC['토']+' 금'+ohC['금']+' 수'+ohC['수']+'\n';
   t+='합충형파해: '+calcHapChung(s)+'\n공망: '+calcGongmang(s)+'\n';
@@ -802,6 +818,138 @@ function buildCalendar(good,caution){
   return '<div class="calendar-section"><div class="calendar-title">2026년 월별 기운 흐름</div><div class="cal-grid">'+cells+'</div><div class="cal-legend"><div class="cal-legend-item"><div class="cal-dot" style="background:#4CAF50"></div>기회</div><div class="cal-legend-item"><div class="cal-dot" style="background:#F44336"></div>주의</div><div class="cal-legend-item"><div class="cal-dot" style="background:#DDD"></div>보통</div></div></div>';
 }
 
+
+// ── 재회 좋은 날 계산 ──
+function calcReunionGoodDays(mySaju, partnerSaju){
+  var now=new Date();
+  var 오행맵=['목','목','화','화','토','토','금','금','수','수'];
+  var 지지오행=['수','토','목','목','토','화','화','토','금','금','토','수'];
+  var 지지합맵={0:11,11:0,1:10,10:1,2:9,9:2,3:8,8:3,4:7,7:4,5:6,6:5};
+  var 지지충맵={0:6,6:0,1:7,7:1,2:8,8:2,3:9,9:3,4:10,10:4,5:11,11:5};
+
+  // 내 오행 분포 → 가장 약한 오행 = 용신
+  var ohCount={목:0,화:0,토:0,금:0,수:0};
+  [mySaju.year,mySaju.month,mySaju.day,mySaju.hour].forEach(function(p){
+    if(!p)return;
+    ohCount[오행맵[p.ganIdx]]++;
+    ohCount[지지오행[p.jiIdx]]++;
+  });
+  var minOh='목',minVal=999;
+  Object.keys(ohCount).forEach(function(oh){if(ohCount[oh]<minVal){minVal=ohCount[oh];minOh=oh;}});
+
+  // 용신 오행 → 좋은 천간 인덱스
+  var 용신천간={목:[0,1],화:[2,3],토:[4,5],금:[6,7],수:[8,9]};
+  var goodGanArr=용신천간[minOh]||[0,1];
+
+  // 상대방 일지와 합이 되는 지지
+  var partnerJiIdx=partnerSaju?partnerSaju.day.jiIdx:-1;
+  var goodJi=partnerJiIdx>=0?지지합맵[partnerJiIdx]:-1;
+  var badJi=partnerJiIdx>=0?지지충맵[partnerJiIdx]:-1;
+
+  var results=[];
+  for(var mi=0;mi<5;mi++){
+    var d=new Date(now.getFullYear(),now.getMonth()+mi+1,1);
+    var yr=d.getFullYear(),month=d.getMonth()+1;
+    var daysInMonth=new Date(yr,d.getMonth()+1,0).getDate();
+    var goodDays=[];
+
+    for(var day=1;day<=daysInMonth;day++){
+      var jdn=Math.round(toJD(yr,month,day,12));
+      var idx=((jdn-2451545+54)%60+60)%60;
+      var ganIdx=idx%10,jiIdx=idx%12;
+      var isGoodGan=goodGanArr.indexOf(ganIdx)>=0;
+      var isGoodJi=(goodJi>=0&&jiIdx===goodJi);
+      var isBadJi=(badJi>=0&&jiIdx===badJi);
+      if((isGoodGan||isGoodJi)&&!isBadJi){
+        goodDays.push(day);
+      }
+    }
+
+    // 연속된 날짜를 범위로 묶기
+    if(goodDays.length>0){
+      var ranges=[];
+      var start=goodDays[0],end=goodDays[0];
+      for(var i=1;i<goodDays.length;i++){
+        if(goodDays[i]===end+1){end=goodDays[i];}
+        else{
+          if(end-start>=2)ranges.push({start:start,end:end});
+          start=goodDays[i];end=goodDays[i];
+        }
+      }
+      if(end-start>=2)ranges.push({start:start,end:end});
+      // 최대 2개 범위만
+      ranges=ranges.slice(0,2);
+      if(ranges.length>0)results.push({year:yr,month:month,ranges:ranges});
+    }
+  }
+  return{results:results,yongshin:minOh};
+}
+
+// ── 재회운 캐릭터+날짜 카드 HTML 생성 ──
+function buildReunionCard(myName, partnerName, myGender, mySaju, partnerSaju){
+  var bearUrl='https://raw.githubusercontent.com/wnal951009-blip/sajumiri/main/images/images_Bear.png';
+  var catUrl='https://raw.githubusercontent.com/wnal951009-blip/sajumiri/main/images/images_Cat.png';
+
+  // 성별에 따라 캐릭터 배치
+  var myImg=myGender==='남'?bearUrl:catUrl;
+  var partnerImg=myGender==='남'?catUrl:bearUrl;
+  var myChar=myGender==='남'?'🐻':'🐱';
+  var partnerChar=myGender==='남'?'🐱':'🐻';
+
+  var goodDays=calcReunionGoodDays(mySaju, partnerSaju);
+  var yongshin=goodDays.yongshin;
+  var 오행한글={목:'목(木)',화:'화(火)',토:'토(土)',금:'금(金)',수:'수(水)'};
+  var monthNames=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+  // 날짜 카드 HTML
+  var dayCardsHtml='';
+  goodDays.results.forEach(function(item){
+    item.ranges.forEach(function(r){
+      dayCardsHtml+='<div style="display:flex;align-items:center;gap:10px;background:white;border:1.5px solid #FFD6E7;border-radius:14px;padding:12px 16px;margin-bottom:10px;">'
+        +'<div style="font-size:22px;">'+myChar+'♥'+partnerChar+'</div>'
+        +'<div>'
+        +'<div style="font-size:13px;font-weight:700;color:#D63B3B;">'+item.month+'월 '+r.start+'일 ~ '+item.month+'월 '+r.end+'일</div>'
+        +'<div style="font-size:11px;color:#9A7A7A;margin-top:2px;">'+오행한글[yongshin]+' 기운이 강해지는 날</div>'
+        +'</div>'
+        +'</div>';
+    });
+  });
+
+  if(!dayCardsHtml){
+    dayCardsHtml='<div style="text-align:center;padding:20px;color:#9A7A7A;font-size:13px;">이번 달은 잠시 마음을 준비하는 시간이에요 🌙</div>';
+  }
+
+  return '<div style="margin-top:0;">'
+    // 캐릭터 헤더
+    +'<div style="background:linear-gradient(135deg,#FFF0F5,#FFF5CC);border-radius:20px;padding:24px 20px;margin-bottom:16px;text-align:center;">'
+    +'<div style="display:flex;align-items:center;justify-content:center;gap:0;">'
+    // 사용자
+    +'<div style="text-align:center;flex:1;">'
+    +'<img src="'+myImg+'" style="width:72px;height:72px;object-fit:contain;" onerror="this.style.fontSize='48px';this.outerHTML='<div style=font-size:48px>'+myChar+'</div>'">'
+    +'<div style="font-size:12px;font-weight:700;color:#5A3A3A;margin-top:6px;">'+myName+'</div>'
+    +'<div style="font-size:10px;color:#9A7A7A;">'+(myGender==='남'?'남성':'여성')+'</div>'
+    +'</div>'
+    // 하트
+    +'<div style="font-size:28px;color:#D63B3B;padding:0 8px;margin-bottom:20px;">♥</div>'
+    // 상대방
+    +'<div style="text-align:center;flex:1;">'
+    +'<img src="'+partnerImg+'" style="width:72px;height:72px;object-fit:contain;" onerror="this.style.fontSize='48px';this.outerHTML='<div style=font-size:48px>'+partnerChar+'</div>'">'
+    +'<div style="font-size:12px;font-weight:700;color:#5A3A3A;margin-top:6px;">'+partnerName+'</div>'
+    +'<div style="font-size:10px;color:#9A7A7A;">'+(myGender==='남'?'여성':'남성')+'</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    // 재회 좋은 날
+    +'<div style="margin-bottom:8px;">'
+    +'<div style="font-size:14px;font-weight:700;color:#2A1A1A;margin-bottom:12px;display:flex;align-items:center;gap:6px;">'
+    +'<span>'+myChar+'♥'+partnerChar+'</span><span>재회하기 좋은 날</span>'
+    +'</div>'
+    +dayCardsHtml
+    +'</div>'
+    +'<div style="font-size:11px;color:#9A7A7A;text-align:center;margin-top:4px;">※ 용신 '+오행한글[yongshin]+' 기운 + 상대방 일지 합일(合日) 기준 계산</div>'
+    +'</div>';
+}
+
 function buildResultPages(text,manseResult,modeIcon,keywords,manseResult2){
   var sections=splitIntoSections(text);
   var track=document.getElementById('pagesTrack');
@@ -891,8 +1039,23 @@ function buildResultPages(text,manseResult,modeIcon,keywords,manseResult2){
     );
   }
 
-  // 마지막 페이지: 다른 운세 + 후기
+  // 마지막 페이지: 재회운이면 캐릭터+날짜 카드 추가
+  var reunionCardHtml='';
+  if(mode==='reunion'||mode==='couple'){
+    var myNm=document.getElementById('name').value||'나';
+    var ptNm=document.getElementById('name2').value||'상대방';
+    var mySj=null,ptSj=null;
+    try{
+      var myBd=parseBirthText(document.getElementById('birthText').value);
+      if(myBd){var myHi=getHI('btimeText','bsi');mySj=calcSaju(myBd.y,myBd.m,myBd.d,myHi);}
+      var ptBd=parseBirthText(document.getElementById('birthText2').value);
+      if(ptBd){var ptHi=getHI('btimeText2','bsi2');ptSj=calcSaju(ptBd.y,ptBd.m,ptBd.d,ptHi);}
+    }catch(e){}
+    if(mySj)reunionCardHtml=buildReunionCard(myNm,ptNm,gender,mySj,ptSj);
+  }
+
   addPage(
+    (reunionCardHtml?'<div style="margin-bottom:20px;">'+reunionCardHtml+'</div>':'')+
     '<div class="other-fortune-section">'+
     '<div class="other-fortune-title">✦ 다른 운세도 보러가기</div>'+
     otherHtml+
