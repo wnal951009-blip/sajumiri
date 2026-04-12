@@ -741,18 +741,12 @@ function getTodayData(){
   if(Math.abs(dGanIdx-2)===6)hc.push('오늘 일간과 병화(丙火) 천간충');
   if(jc2[dJiIdx]===6)hc.push('오늘 일지 '+지지Hd[dJiIdx]+'와 오화(午) 지지충');
 
-  var str=y+'년 '+m+'월 '+d+'일
-';
-  str+='오늘 년주: '+천간Hd[yGanIdx]+지지Hd[yJiIdx]+'('+천간d[yGanIdx]+지지d[yJiIdx]+') 병오년(丙午年)
-';
-  str+='오늘 월주: '+mp2.ganH+mp2.jiH+'('+mp2.gan+mp2.ji+') 절기: '+mp2.termName+'
-';
-  str+='오늘 일주: '+천간Hd[dGanIdx]+지지Hd[dJiIdx]+'('+천간d[dGanIdx]+지지d[dJiIdx]+') 오행: 천간('+dOhaeng+') 지지('+dJiOhaeng+')
-';
-  str+='오늘 지장간: '+(dJjg.join('·')||'-')+'
-';
-  str+='세운과의 관계: '+(hc.length>0?hc.join(', '):'특이 합충 없음')+'
-';
+  var str=y+'년 '+m+'월 '+d+'일\n';
+  str+='오늘 년주: '+천간Hd[yGanIdx]+지지Hd[yJiIdx]+'('+천간d[yGanIdx]+지지d[yJiIdx]+') 병오년(丙午年)\n';
+  str+='오늘 월주: '+mp2.ganH+mp2.jiH+'('+mp2.gan+mp2.ji+') 절기: '+mp2.termName+'\n';
+  str+='오늘 일주: '+천간Hd[dGanIdx]+지지Hd[dJiIdx]+'('+천간d[dGanIdx]+지지d[dJiIdx]+') 오행: 천간('+dOhaeng+') 지지('+dJiOhaeng+')\n';
+  str+='오늘 지장간: '+(dJjg.join('·')||'-')+'\n';
+  str+='세운과의 관계: '+(hc.length>0?hc.join(', '):'특이 합충 없음')+'\n';
 
   return {str:str,year:y,month:m,day:d,dayGanH:천간Hd[dGanIdx],dayJiH:지지Hd[dJiIdx],dayOhaeng:dOhaeng};
 }
