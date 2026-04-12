@@ -245,13 +245,12 @@ footer{background:var(--text-main);color:rgba(255,255,255,.5);padding:48px 24px;
       <h2 class="section-title">실제 이용자 후기</h2>
       <p class="section-desc">사주미리를 경험한 분들의 솔직한 이야기입니다</p>
     </div>
+    <!-- 페이지네이션 컨트롤 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="font-size:13px;color:var(--text-muted);" id="reviewPageInfo">1 / 1 페이지</div>
+      <div style="display:flex;gap:8px;" id="reviewPagination"></div>
+    </div>
     <div class="review-grid" id="reviewGrid">
-      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">🌸</div><div class="review-info"><div class="review-name">이**님</div><div class="review-meta">재회운 이용 · 3일 전</div></div><span class="review-tag">재회운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">헤어지고 6개월째 미련을 못 버리고 있었는데, 재회운 풀이를 보고 나서 마음이 정리됐어요. 억지로 연락하지 말고 내 자신을 먼저 채우라는 말이 너무 와닿았습니다.</p></div>
-      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">⭐</div><div class="review-info"><div class="review-name">박**님</div><div class="review-meta">직업·적성운 이용 · 5일 전</div></div><span class="review-tag">직업운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">이직을 고민하고 있었는데 올해 하반기가 이동수가 있다고 정확히 나왔어요. 사주에서도 그렇게 나오니까 더 확신이 생겼습니다.</p></div>
-      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">💫</div><div class="review-info"><div class="review-name">김**님</div><div class="review-meta">궁합 이용 · 1주일 전</div></div><span class="review-tag">궁합</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">남자친구랑 자꾸 같은 주제로 싸우는 이유가 있었는데, 궁합 풀이에서 정확히 짚어줘서 깜짝 놀랐어요. 관계가 오히려 더 좋아졌어요.</p></div>
-      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">🌿</div><div class="review-info"><div class="review-name">최**님</div><div class="review-meta">재물운 이용 · 1주일 전</div></div><span class="review-tag">재물운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">올해 재물운을 보니까 상반기는 안정 위주로 가고 하반기부터 서서히 회복된다고 나왔어요. 구체적인 조언이 있어서 실제로 생활에 적용하고 있습니다.</p></div>
-      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">💍</div><div class="review-info"><div class="review-name">윤**님</div><div class="review-meta">결혼운 이용 · 2주일 전</div></div><span class="review-tag">결혼운</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">30대 중반에 결혼을 못 하고 있어서 불안했는데, 풀이를 보니 내 사주가 늦은 인연 사주라서 조급할 필요가 없다고 나왔어요.</p></div>
-      <div class="review-card fade-in"><div class="review-header"><div class="review-avatar">🔮</div><div class="review-info"><div class="review-name">정**님</div><div class="review-meta">신년운세 이용 · 2주일 전</div></div><span class="review-tag">신년운세</span></div><div class="review-stars">★★★★★</div><p class="review-text" style="margin-top:12px;">연초에 신년운세 봤는데 3월에 중요한 결정이 생긴다고 나왔어요. 실제로 3월에 이직 제안이 들어왔고 그때 결정한 게 지금까지 잘 풀리고 있어요.</p></div>
     </div>
   </div>
 </section>
@@ -297,6 +296,75 @@ footer{background:var(--text-main);color:rgba(255,255,255,.5);padding:48px 24px;
 <script>
 const observer=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);observer.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
+
+// ── 후기 페이지네이션 ──
+var REVIEWS_PER_PAGE = 4;
+var currentReviewPage = 1;
+
+var ALL_REVIEWS = [
+  {avatar:'🌸',name:'이**님',meta:'재회운 이용 · 3일 전',tag:'재회운',stars:5,text:'헤어지고 6개월째 미련을 못 버리고 있었는데, 재회운 풀이를 보고 나서 마음이 정리됐어요. 억지로 연락하지 말고 내 자신을 먼저 채우라는 말이 너무 와닿았습니다.'},
+  {avatar:'⭐',name:'박**님',meta:'직업·적성운 이용 · 5일 전',tag:'직업운',stars:5,text:'이직을 고민하고 있었는데 올해 하반기가 이동수가 있다고 정확히 나왔어요. 사주에서도 그렇게 나오니까 더 확신이 생겼습니다.'},
+  {avatar:'💫',name:'김**님',meta:'궁합 이용 · 1주일 전',tag:'궁합',stars:5,text:'남자친구랑 자꾸 같은 주제로 싸우는 이유가 있었는데, 궁합 풀이에서 정확히 짚어줘서 깜짝 놀랐어요. 관계가 오히려 더 좋아졌어요.'},
+  {avatar:'🌿',name:'최**님',meta:'재물운 이용 · 1주일 전',tag:'재물운',stars:5,text:'올해 재물운을 보니까 상반기는 안정 위주로 가고 하반기부터 서서히 회복된다고 나왔어요. 구체적인 조언이 있어서 실제로 생활에 적용하고 있습니다.'},
+  {avatar:'💍',name:'윤**님',meta:'결혼운 이용 · 2주일 전',tag:'결혼운',stars:5,text:'30대 중반에 결혼을 못 하고 있어서 불안했는데, 풀이를 보니 내 사주가 늦은 인연 사주라서 조급할 필요가 없다고 나왔어요.'},
+  {avatar:'🔮',name:'정**님',meta:'신년운세 이용 · 2주일 전',tag:'신년운세',stars:5,text:'연초에 신년운세 봤는데 3월에 중요한 결정이 생긴다고 나왔어요. 실제로 3월에 이직 제안이 들어왔고 그때 결정한 게 지금까지 잘 풀리고 있어요.'},
+  {avatar:'☀️',name:'한**님',meta:'오늘의 운세 이용 · 3주일 전',tag:'오늘운세',stars:5,text:'매일 아침 오늘의 운세 보는 게 습관이 됐어요. 오늘 주의해야 할 부분을 미리 알고 있으니까 하루가 훨씬 수월해요.'},
+  {avatar:'🌙',name:'서**님',meta:'재회운 이용 · 1달 전',tag:'재회운',stars:5,text:'재회운 풀이가 너무 구체적이어서 놀랐어요. 제 상황을 정확히 짚어주는 것 같아서 신기했고, 마음의 위안이 많이 됐습니다.'},
+];
+
+function renderReviews(page){
+  var grid = document.getElementById('reviewGrid');
+  var info = document.getElementById('reviewPageInfo');
+  var pagination = document.getElementById('reviewPagination');
+  if(!grid) return;
+
+  var totalPages = Math.ceil(ALL_REVIEWS.length / REVIEWS_PER_PAGE);
+  var start = (page-1) * REVIEWS_PER_PAGE;
+  var end = Math.min(start + REVIEWS_PER_PAGE, ALL_REVIEWS.length);
+  var pageReviews = ALL_REVIEWS.slice(start, end);
+
+  // 리뷰 렌더링
+  grid.innerHTML = pageReviews.map(function(r){
+    var stars = '★'.repeat(r.stars) + '☆'.repeat(5-r.stars);
+    return '<div class="review-card fade-in">'
+      +'<div class="review-header"><div class="review-avatar">'+r.avatar+'</div>'
+      +'<div class="review-info"><div class="review-name">'+r.name+'</div>'
+      +'<div class="review-meta">'+r.meta+'</div></div>'
+      +'<span class="review-tag">'+r.tag+'</span></div>'
+      +'<div class="review-stars">'+stars+'</div>'
+      +'<p class="review-text" style="margin-top:12px;">'+r.text+'</p>'
+      +'</div>';
+  }).join('');
+
+  // 페이지 정보
+  if(info) info.textContent = page + ' / ' + totalPages + ' 페이지';
+
+  // 페이지 버튼
+  if(pagination){
+    var btns = '';
+    for(var i=1;i<=totalPages;i++){
+      var isActive = (i===page);
+      btns += '<button onclick="changReviewPage('+i+')" style="'
+        +'width:32px;height:32px;border-radius:50%;border:1.5px solid '+(isActive?'var(--red)':'var(--border-yellow)')+';'
+        +'background:'+(isActive?'var(--red)':'white')+';'
+        +'color:'+(isActive?'white':'var(--text-sub)')+';'
+        +'font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;">'
+        +i+'</button>';
+    }
+    pagination.innerHTML = btns;
+  }
+
+  currentReviewPage = page;
+  // 새로 렌더된 카드에 fade-in 적용
+  grid.querySelectorAll('.fade-in').forEach(function(el){
+    setTimeout(function(){el.classList.add('visible');}, 50);
+  });
+}
+
+function changReviewPage(page){ renderReviews(page); }
+
+// 초기 렌더링
+renderReviews(1);
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
 var selStars=5;
 document.querySelectorAll('.star-btn').forEach(btn=>{
