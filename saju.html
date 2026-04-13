@@ -414,18 +414,12 @@ function getTodayData(){
   var jc2={0:6,6:0,1:7,7:1,2:8,8:2,3:9,9:3,4:10,10:4,5:11,11:5};
   var hc=[];
   if(jc2[dJiIdx]===6)hc.push('오늘 일지와 오화(午) 지지충');
-  var str=y+'년 '+m+'월 '+d+'일
-';
-  str+='오늘 년주: '+CGH[yGanIdx]+CJH[yJiIdx]+'('+CG[yGanIdx]+CJ[yJiIdx]+')
-';
-  str+='오늘 월주: '+mp2.ganH+mp2.jiH+'('+mp2.gan+mp2.ji+') 절기:'+mp2.termName+'
-';
-  str+='오늘 일주: '+CGH[dGanIdx]+CJH[dJiIdx]+'('+CG[dGanIdx]+CJ[dJiIdx]+') 오행:천간('+OHM[dGanIdx]+')지지('+JJO[dJiIdx]+')
-';
-  str+='오늘 지장간: '+((JJG[CJ[dJiIdx]]||[]).map(jjgKR).join('·'))+'
-';
-  str+='세운과의 관계: '+(hc.length?hc.join(', '):'특이 합충 없음')+'
-';
+  var str=y+'년 '+m+'월 '+d+'일\n';
+  str+='오늘 년주: '+CGH[yGanIdx]+CJH[yJiIdx]+'('+CG[yGanIdx]+CJ[yJiIdx]+')\n';
+  str+='오늘 월주: '+mp2.ganH+mp2.jiH+'('+mp2.gan+mp2.ji+') 절기:'+mp2.termName+'\n';
+  str+='오늘 일주: '+CGH[dGanIdx]+CJH[dJiIdx]+'('+CG[dGanIdx]+CJ[dJiIdx]+') 오행:천간('+OHM[dGanIdx]+')지지('+JJO[dJiIdx]+')\n';
+  str+='오늘 지장간: '+((JJG[CJ[dJiIdx]]||[]).map(jjgKR).join('·'))+'\n';
+  str+='세운과의 관계: '+(hc.length?hc.join(', '):'특이 합충 없음')+'\n';
   return{str:str,year:y,month:m,day:d};
 }
 
@@ -914,29 +908,17 @@ function makeSajuText(birthId,btimeId,bsiId,nm,gd){
   var il=s.day.ganIdx;
   var ohC={목:0,화:0,토:0,금:0,수:0};
   [s.year,s.month,s.day,s.hour].forEach(function(p){if(!p)return;ohC[p.oh]++;ohC[JJO[p.jiIdx]]++;});
-  var t='이름: '+nm+'
-생년월일: '+bd.y+'년 '+bd.m+'월 '+bd.d+'일
-성별: '+gd+'
-
-[사주팔자]
-';
+  var t='이름: '+nm+'\n생년월일: '+bd.y+'년 '+bd.m+'월 '+bd.d+'일\n성별: '+gd+'\n\n[사주팔자]\n';
   [{l:'년주',p:s.year},{l:'월주',p:s.month},{l:'일주',p:s.day},{l:'시주',p:s.hour}].forEach(function(col){
-    if(!col.p){t+=col.l+': 모름
-';return;}
+    if(!col.p){t+=col.l+': 모름\n';return;}
     var ss=col.l==='일주'?'일주':getSS(il,col.p.ganIdx);
-    t+=col.l+': '+col.p.ganH+col.p.jiH+'('+col.p.gan+col.p.ji+') 오행:'+col.p.oh+' 십성:'+ss+' 12운성:'+getU12(col.p.gan,col.p.jiIdx)+' 지장간:'+((JJG[col.p.ji]||[]).map(jjgKR).join('·'))+'
-';
+    t+=col.l+': '+col.p.ganH+col.p.jiH+'('+col.p.gan+col.p.ji+') 오행:'+col.p.oh+' 십성:'+ss+' 12운성:'+getU12(col.p.gan,col.p.jiIdx)+' 지장간:'+((JJG[col.p.ji]||[]).map(jjgKR).join('·'))+'\n';
   });
-  t+='
-오행분포: 목'+ohC['목']+' 화'+ohC['화']+' 토'+ohC['토']+' 금'+ohC['금']+' 수'+ohC['수']+'
-';
-  t+='합충형파해: '+calcHC(s)+'
-공망: '+calcGM(s)+'
-';
+  t+='\n오행분포: 목'+ohC['목']+' 화'+ohC['화']+' 토'+ohC['토']+' 금'+ohC['금']+' 수'+ohC['수']+'\n';
+  t+='합충형파해: '+calcHC(s)+'\n공망: '+calcGM(s)+'\n';
   var du=calcDaeun(bd.y,gd,s.year,s.month);
   var curDu=du.filter(function(d){return d.isCur;})[0];
-  if(curDu)t+='현재대운: '+curDu.ganH+curDu.jiH+'('+curDu.gan+curDu.ji+') '+curDu.startY+'~'+(curDu.startY+9)+'년
-';
+  if(curDu)t+='현재대운: '+curDu.ganH+curDu.jiH+'('+curDu.gan+curDu.ji+') '+curDu.startY+'~'+(curDu.startY+9)+'년\n';
   return{text:t,saju:s,bd:bd,hi:hi};
 }
 
