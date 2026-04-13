@@ -339,11 +339,8 @@ var CJH=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'
 var OHM=['목','목','화','화','토','토','금','금','수','수'];
 var JJO=['수','토','목','목','토','화','화','토','금','금','토','수'];
 var SIKST=[0,2,4,6,8,10,12,14,16,18,20,22];
-// 천간 한글독음 매핑
 var CGK={'甲':'갑(甲)','乙':'을(乙)','丙':'병(丙)','丁':'정(丁)','戊':'무(戊)','己':'기(己)','庚':'경(庚)','辛':'신(辛)','壬':'임(壬)','癸':'계(癸)'};
-// 지장간표
 var JJG={자:['壬','癸'],축:['癸','辛','己'],인:['甲','丙','戊'],묘:['甲','乙'],진:['乙','癸','戊'],사:['丙','庚','戊'],오:['丙','己','丁'],미:['丁','乙','己'],신:['庚','壬','戊'],유:['庚','辛'],술:['辛','丁','戊'],해:['甲','壬']};
-// 12운성표
 var U12={갑:['절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘'],을:['제왕','쇠','병','사','묘','절','태','양','장생','목욕','관대','건록'],병:['태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘','절'],정:['묘','절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사'],무:['태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘','절'],기:['묘','절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사'],경:['사','묘','절','태','양','장생','목욕','관대','건록','제왕','쇠','병'],신:['장생','목욕','관대','건록','제왕','쇠','병','사','묘','절','태','양'],임:['절','태','양','장생','목욕','관대','건록','제왕','쇠','병','사','묘'],계:['제왕','쇠','병','사','묘','절','태','양','장생','목욕','관대','건록']};
 var SSN=['비견','겁재','식신','상관','편재','정재','편관','정관','편인','정인'];
 var OHE={목:'🌿',화:'🔥',토:'🏔️',금:'⚙️',수:'💧'};
@@ -367,7 +364,7 @@ function getHP(hi,dp){var sg=[0,2,4,6,8],gi=(sg[(dp.idx%10)%5]+hi)%10;return{gan
 function calcSaju(y,m,d,hi){var hasT=(hi!==null&&hi>=0),bd=birthToJD(y,m,d,hasT?hi:null);var yp=getYP(bd.jd,y),mp=getMP(bd.jd,y,yp),dp=getDP(y,m,bd.bday),hp=hasT?getHP(hi,dp):null;return{year:yp,month:mp,day:dp,hour:hp};}
 function timeToHI(h){h=h%24;if(h>=23||h<1)return 0;if(h<3)return 1;if(h<5)return 2;if(h<7)return 3;if(h<9)return 4;if(h<11)return 5;if(h<13)return 6;if(h<15)return 7;if(h<17)return 8;if(h<19)return 9;if(h<21)return 10;return 11;}
 function getSS(ilG,tG){return SSN[((tG-ilG)%10+10)%10]||'비견';}
-function getU12(gan,jiIdx){return (U12[gan]||[])[jiIdx]||'?';}
+function getU12(gan,jiIdx){return(U12[gan]||[])[jiIdx]||'?';}
 function getSSClass(ss){if(ss==='일주')return 'ss-il';if(ss.includes('인'))return 'ss-in';if(ss.includes('재'))return 'ss-jae';if(ss.includes('관'))return 'ss-gwan';if(ss.includes('식')||ss.includes('상'))return 'ss-sik';return 'ss-bi';}
 function jjgKR(h){return CGK[h]||h;}
 
@@ -375,13 +372,13 @@ function calcHC(s){
   var r=[],p=[s.year,s.month,s.day,s.hour].filter(Boolean),lb=['년','월','일','시'];
   var jh={0:11,11:0,1:10,10:1,2:9,9:2,3:8,8:3,4:7,7:4,5:6,6:5};
   var jc={0:6,6:0,1:7,7:1,2:8,8:2,3:9,9:3,4:10,10:4,5:11,11:5};
-  for(var i=0;i<p.length;i++)for(var j=i+1;j<p.length;j++){
+  for(var i=0;i<p.length;i++){for(var j=i+1;j<p.length;j++){
     var gi=p[i].ganIdx,gj=p[j].ganIdx,ji2=p[i].jiIdx,jj=p[j].jiIdx;
     if(Math.abs(gi-gj)===5)r.push(lb[i]+'간+'+lb[j]+'간 천간합');
     if(Math.abs(gi-gj)===6)r.push(lb[i]+'간+'+lb[j]+'간 충');
     if(jh[ji2]===jj)r.push(lb[i]+'지+'+lb[j]+'지 지지합');
     if(jc[ji2]===jj)r.push(lb[i]+'지+'+lb[j]+'지 충');
-  }
+  }}
   var sam=[[2,6,10],[5,9,1],[8,0,4],[11,3,7]],sn=['인오술 화국','사유축 금국','신자진 수국','해묘미 목국'];
   var ja=p.map(function(x){return x.jiIdx;});
   for(var k=0;k<4;k++){var c=0;for(var m2=0;m2<3;m2++)if(ja.indexOf(sam[k][m2])>=0)c++;if(c>=2)r.push(sn[k]+(c===3?' 삼합':' 반합'));}
@@ -403,7 +400,6 @@ function calcDaeun(y,gd,yp,mp){
   return d;
 }
 
-// 오늘 날짜 자동화
 function getTodayData(){
   var now=new Date(),y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();
   var yGanIdx=((y-4)%10+10)%10,yJiIdx=((y-4)%12+12)%12;
@@ -423,25 +419,20 @@ function getTodayData(){
   return{str:str,year:y,month:m,day:d};
 }
 
-// 입력 처리
 function parseBirth(txt){var t=(txt||'').replace(/\D/g,'');if(t.length===8)return{y:+t.slice(0,4),m:+t.slice(4,6),d:+t.slice(6,8)};return null;}
 function parseTime(txt){var t=(txt||'').replace(/\D/g,'');if(t.length>=3){var h=+t.slice(0,2),mn=+(t.slice(2,4)||0);if(h>=0&&h<=23)return h+mn/60;}return null;}
 function getHI(btId,bsId){var tv=document.getElementById(btId).value;if(tv){var h=parseTime(tv);if(h!==null)return timeToHI(h-.5);}var sv=document.getElementById(bsId).value;return sv===''?null:parseInt(sv,10);}
 
-// localStorage
 function saveToLS(){
   try{
     localStorage.setItem('sj_name',document.getElementById('name').value);
     localStorage.setItem('sj_g',gender);
     localStorage.setItem('sj_birth',document.getElementById('birthText').value);
     localStorage.setItem('sj_time',document.getElementById('btimeText').value);
-    var n2=document.getElementById('name2');
-    if(n2){localStorage.setItem('sj_name2',n2.value||'');}
+    var n2=document.getElementById('name2');if(n2)localStorage.setItem('sj_name2',n2.value||'');
     localStorage.setItem('sj_g2',gender2);
-    var b2=document.getElementById('birthText2');
-    if(b2&&b2.value.length===8)localStorage.setItem('sj_birth2',b2.value);
-    var t2=document.getElementById('btimeText2');
-    if(t2)localStorage.setItem('sj_time2',t2.value||'');
+    var b2=document.getElementById('birthText2');if(b2&&b2.value.length===8)localStorage.setItem('sj_birth2',b2.value);
+    var t2=document.getElementById('btimeText2');if(t2)localStorage.setItem('sj_time2',t2.value||'');
   }catch(e){}
 }
 function loadFromLS(){
@@ -455,8 +446,11 @@ function loadFromLS(){
       if(g){gender=g;setGender(g);}
       var nm=n||'이전 정보',bs=b.slice(0,4)+'.'+b.slice(4,6)+'.'+b.slice(6,8);
       var sn=document.getElementById('savedNotice');
-      sn.innerHTML='💾 <strong>'+nm+'</strong> ('+bs+', '+(g==='여'?'여성':'남성')+') 정보를 불러왔어요! <button onclick="clearLS()" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;text-decoration:underline;margin-left:8px;">다른 정보 입력</button>';
+      sn.innerHTML='💾 <strong>'+nm+'</strong> ('+bs+', '+(g==='여'?'여성':'남성')+') 정보를 불러왔어요! <button id="clearBtn" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;text-decoration:underline;margin-left:8px;">다른 정보 입력</button>';
       sn.className='saved-notice show';
+      var cb=document.getElementById('clearBtn');
+      if(cb)cb.addEventListener('click',clearLS);
+      setTimeout(function(){document.getElementById('savedNotice').className='saved-notice';},4000);
       showSaju();
     }
     if(b2&&b2.length===8){
@@ -480,21 +474,22 @@ function clearLS(){
   document.getElementById('savedNotice').className='saved-notice';
 }
 
-// 사주 미리보기 그리드
 function showSaju(){var bd=parseBirth(document.getElementById('birthText').value);if(!bd)return;var hi=getHI('btimeText','bsi');try{var s=calcSaju(bd.y,bd.m,bd.d,hi);renderGrid('sajuGrid','jeolgiInfo',s,bd.y);document.getElementById('sajuBox').className='saju-box show';}catch(e){}}
 function showSaju2(){var bd=parseBirth(document.getElementById('birthText2').value);if(!bd)return;var hi=getHI('btimeText2','bsi2');try{var s=calcSaju(bd.y,bd.m,bd.d,hi);renderGrid('sajuGrid2','jeolgiInfo2',s,bd.y);document.getElementById('sajuBox2').className='saju-box show';}catch(e){}}
+
 function renderGrid(gId,iId,s,y){
   var cols=[{l:'년주',p:s.year},{l:'월주',p:s.month},{l:'일주',p:s.day},{l:'시주',p:s.hour}];
   var h='';
-  cols.forEach(function(c){if(!c.p)h+='<div class="saju-col"><div class="saju-label">'+c.l+'</div><span class="saju-gan" style="color:#ccc">?</span><span class="saju-ji" style="color:#ccc">?</span></div>';else h+='<div class="saju-col"><div class="saju-label">'+c.l+'</div><span class="saju-gan">'+c.p.gan+'('+c.p.ganH+')</span><span class="saju-ji">'+c.p.ji+'('+c.p.jiH+')</span><div class="saju-sub">'+c.p.oh+'</div></div>';});
+  cols.forEach(function(c){
+    if(!c.p)h+='<div class="saju-col"><div class="saju-label">'+c.l+'</div><span class="saju-gan" style="color:#ccc">?</span><span class="saju-ji" style="color:#ccc">?</span></div>';
+    else h+='<div class="saju-col"><div class="saju-label">'+c.l+'</div><span class="saju-gan">'+c.p.gan+'('+c.p.ganH+')</span><span class="saju-ji">'+c.p.ji+'('+c.p.jiH+')</span><div class="saju-sub">'+c.p.oh+'</div></div>';
+  });
   document.getElementById(gId).innerHTML=h;
   var ip=getTermJD(y,1),info=y+'년 입춘: '+jdKST(ip)+' KST';
-  if(s.month.termName&&s.month.termJD)info+='
-'+s.month.termName+': '+jdKST(s.month.termJD)+' KST';
+  if(s.month.termName&&s.month.termJD)info+='\n'+s.month.termName+': '+jdKST(s.month.termJD)+' KST';
   document.getElementById(iId).textContent=info;
 }
 
-// 만세력 카드 HTML 생성
 function buildManseCard(s,y,m,d,hi,timeStr,nm,gd,isPartner){
   var il=s.day.ganIdx;
   var pillars=[{l:'시주(時柱)',p:s.hour},{l:'일주(日柱)',p:s.day,isIl:true},{l:'월주(月柱)',p:s.month},{l:'년주(年柱)',p:s.year}];
@@ -504,7 +499,6 @@ function buildManseCard(s,y,m,d,hi,timeStr,nm,gd,isPartner){
   var gL=gd==='여'?'여성':'남성';
   var tL=timeStr?'<span class="manse-info-dot">·</span><span class="manse-info-item">'+timeStr+'시</span>':'';
   var nL=nm&&nm!=='의뢰인'&&nm!=='상대방'?'<span class="manse-info-dot">·</span><span class="manse-info-item">'+nm+'</span>':'';
-
   var pH=pillars.map(function(col){
     if(!col.p)return '<div class="manse-pillar"><div class="manse-pillar-label">'+col.l+'</div><div class="oh-char metal">?</div><span class="manse-hanja">??</span><div class="manse-hangul">시간모름</div><span class="manse-sipsung ss-bi">-</span></div>';
     var ss=col.isIl?'일주':getSS(il,col.p.ganIdx);
@@ -513,51 +507,32 @@ function buildManseCard(s,y,m,d,hi,timeStr,nm,gd,isPartner){
     var sc=getSSClass(ss);
     return '<div class="manse-pillar"><div class="manse-pillar-label">'+col.l+'</div><div class="oh-char '+oc+'">'+oe+'</div><span class="manse-hanja">'+col.p.ganH+col.p.jiH+'</span><div class="manse-hangul">'+col.p.gan+col.p.ji+'</div><span class="manse-sipsung '+sc+'">'+ss+'</span></div>';
   }).join('');
-
-  // 지장간 행 (한글 독음 포함)
   var jjgH='<div class="manse-extra-row">'+pillars.map(function(col){
     if(!col.p)return '<div class="manse-extra-cell"><div class="manse-extra-label">지장간</div><div class="manse-extra-val">-</div></div>';
     var jjg=(JJG[col.p.ji]||[]).map(function(h2){return CGK[h2]||h2;}).join('<br>');
     return '<div class="manse-extra-cell"><div class="manse-extra-label">지장간</div><div class="manse-extra-val">'+jjg+'</div></div>';
   }).join('')+'</div>';
-
-  // 12운성 행
   var u12H='<div class="manse-extra-row">'+pillars.map(function(col){
     if(!col.p)return '<div class="manse-extra-cell"><div class="manse-extra-label">12운성</div><div class="manse-extra-val">-</div></div>';
     return '<div class="manse-extra-cell"><div class="manse-extra-label">12운성</div><div class="manse-extra-val">'+getU12(col.p.gan,col.p.jiIdx)+'</div></div>';
   }).join('')+'</div>';
-
-  // 합충/공망
   var hc=calcHC(s),gm=calcGM(s);
   var hcH='<div class="manse-hc"><div class="manse-hc-title">합충형파해 · 공망</div><div class="manse-hc-grid"><div class="manse-hc-item"><div class="manse-hc-lbl">합충형파해</div><div class="manse-hc-val">'+hc+'</div></div><div class="manse-hc-item"><div class="manse-hc-lbl">공망(空亡)</div><div class="manse-hc-val">'+gm+'</div></div></div></div>';
-
-  // 오행 도넛
   var ohOrder=['목','화','토','금','수'];
-  var total=ohOrder.reduce(function(a,o){return a+ohC[o];},0)||1;
   var dId='dnt_'+Date.now()+(isPartner?'_2':'');
-  var legendH=ohOrder.map(function(o){
-    return '<div class="oh-donut-item"><div class="oh-donut-dot" style="background:'+OHCLR[o]+'"></div><div class="oh-donut-lbl">'+OHE[o]+' '+o+'</div><div class="oh-donut-cnt">'+(ohC[o]||0)+'</div></div>';
-  }).join('');
+  var legendH=ohOrder.map(function(o){return '<div class="oh-donut-item"><div class="oh-donut-dot" style="background:'+OHCLR[o]+'"></div><div class="oh-donut-lbl">'+OHE[o]+' '+o+'</div><div class="oh-donut-cnt">'+(ohC[o]||0)+'</div></div>';}).join('');
+  var total=ohOrder.reduce(function(a,o){return a+(ohC[o]||0);},0)||1;
   var donutH='<div class="oh-donut-section"><div class="oh-donut-title">오행 분포</div><div class="oh-donut-wrap"><div class="oh-donut-canvas-wrap"><canvas id="'+dId+'" width="120" height="120"></canvas><div class="oh-donut-center"><div class="oh-donut-center-lbl">총</div><div class="oh-donut-center-val">'+total+'</div></div></div><div class="oh-donut-legend">'+legendH+'</div></div></div>';
-
-  // 대운 2줄
   var daeuns=calcDaeun(y,gd,s.year,s.month);
   var first5=daeuns.slice(0,5),last4=daeuns.slice(5);
   function duRow(arr){
     var ths=arr.map(function(du){return '<th'+(du.isCur?' class="du-cur"':'')+'>'+du.age+'세'+(du.isCur?'<span class="du-badge">현재</span>':'')+'<br><small style="font-size:9px;font-weight:400;color:#9A7A7A">'+du.startY+'~'+(du.startY+9)+'</small></th>';}).join('');
     var tds=arr.map(function(du){return '<td'+(du.isCur?' class="du-cur"':'')+'>'+du.ganH+du.jiH+'</td>';}).join('');
-    return '<table class="daeun-table" style="margin-bottom:8px"><thead><tr>'+ths+'</tr></thead><tbody><tr>'+tds+'</tr></tbody></table>';
+    return '<table class="daeun-table"><thead><tr>'+ths+'</tr></thead><tbody><tr>'+tds+'</tr></tbody></table>';
   }
   var duH='<div class="daeun-section"><div class="daeun-title">대운(大運) 흐름</div>'+duRow(first5)+duRow(last4)+'</div>';
-
   var lblH=isPartner?'<div class="partner-label">상대방 사주팔자</div>':'';
-
-  return {
-    html: lblH+'<div class="manse-card"><div class="manse-header"><div class="manse-info-row"><span class="manse-info-item">'+bStr+'</span>'+tL+'<span class="manse-info-dot">·</span><span class="manse-info-item">'+gL+'</span>'+nL+'</div></div><div class="manse-pillars">'+pH+'</div>'+jjgH+u12H+hcH+'</div>'+donutH+duH,
-    donutId: dId,
-    donutData: ohOrder.map(function(o){return{val:ohC[o]||0,color:OHCLR[o]};}),
-    total: total
-  };
+  return{html:lblH+'<div class="manse-card"><div class="manse-header"><div class="manse-info-row"><span class="manse-info-item">'+bStr+'</span>'+tL+'<span class="manse-info-dot">·</span><span class="manse-info-item">'+gL+'</span>'+nL+'</div></div><div class="manse-pillars">'+pH+'</div>'+jjgH+u12H+hcH+'</div>'+donutH+duH,donutId:dId,donutData:ohOrder.map(function(o){return{val:ohC[o]||0,color:OHCLR[o]};}),total:total,saju:s};
 }
 
 function drawDonut(id,data,total){
@@ -569,20 +544,19 @@ function drawDonut(id,data,total){
   ctx.beginPath();ctx.arc(W/2,W/2,r,0,Math.PI*2);ctx.fillStyle='white';ctx.fill();
 }
 
-// 재회 좋은 날 계산
 function calcReunionDays(mySaju,partnerSaju){
   var now=new Date(),y=now.getFullYear(),m=now.getMonth()+1;
   var ohCount={목:0,화:0,토:0,금:0,수:0};
   [mySaju.year,mySaju.month,mySaju.day,mySaju.hour].forEach(function(p){if(!p)return;ohCount[p.oh]++;ohCount[JJO[p.jiIdx]]++;});
   var minOh='목',minVal=999;
   Object.keys(ohCount).forEach(function(o){if(ohCount[o]<minVal){minVal=ohCount[o];minOh=o;}});
-  var 용신천간={목:[0,1],화:[2,3],토:[4,5],금:[6,7],수:[8,9]};
-  var goodGan=용신천간[minOh]||[0,1];
+  var goodGan={목:[0,1],화:[2,3],토:[4,5],금:[6,7],수:[8,9]};
+  var gans=goodGan[minOh]||[0,1];
   var partnerJi=partnerSaju?partnerSaju.day.jiIdx:-1;
-  var 합맵={0:11,11:0,1:10,10:1,2:9,9:2,3:8,8:3,4:7,7:4,5:6,6:5};
-  var 충맵={0:6,6:0,1:7,7:1,2:8,8:2,3:9,9:3,4:10,10:4,5:11,11:5};
-  var goodJi=partnerJi>=0?합맵[partnerJi]:-1;
-  var badJi=partnerJi>=0?충맵[partnerJi]:-1;
+  var hapMap={0:11,11:0,1:10,10:1,2:9,9:2,3:8,8:3,4:7,7:4,5:6,6:5};
+  var chungMap={0:6,6:0,1:7,7:1,2:8,8:2,3:9,9:3,4:10,10:4,5:11,11:5};
+  var goodJi=partnerJi>=0?hapMap[partnerJi]:-1;
+  var badJi=partnerJi>=0?chungMap[partnerJi]:-1;
   var results=[];
   for(var mi=0;mi<5;mi++){
     var nd=new Date(y,m-1+mi+1,1),ny=nd.getFullYear(),nm=nd.getMonth()+1;
@@ -591,10 +565,7 @@ function calcReunionDays(mySaju,partnerSaju){
     for(var dd=1;dd<=days;dd++){
       var jdn=Math.round(toJD(ny,nm,dd,12)),idx2=((jdn-2451545+54)%60+60)%60;
       var gan=idx2%10,ji=idx2%12;
-      var isGoodG=goodGan.indexOf(gan)>=0;
-      var isGoodJ=goodJi>=0&&ji===goodJi;
-      var isBadJ=badJi>=0&&ji===badJi;
-      if((isGoodG||isGoodJ)&&!isBadJ)goodDays.push(dd);
+      if((gans.indexOf(gan)>=0||ji===goodJi)&&ji!==badJi)goodDays.push(dd);
     }
     if(goodDays.length>0){
       var ranges=[],s2=goodDays[0],e2=goodDays[0];
@@ -607,7 +578,6 @@ function calcReunionDays(mySaju,partnerSaju){
   return{results:results,yongshin:minOh};
 }
 
-// 재회 캐릭터 카드 (이미지 JS 동적 로드로 따옴표 충돌 완전 차단)
 function buildReunionCard(myName,partnerName,myGender,mySaju,partnerSaju){
   var BEAR='https://raw.githubusercontent.com/wnal951009-blip/sajumiri/main/images/images_Bear.png';
   var CAT='https://raw.githubusercontent.com/wnal951009-blip/sajumiri/main/images/images_Cat.png';
@@ -617,89 +587,59 @@ function buildReunionCard(myName,partnerName,myGender,mySaju,partnerSaju){
   var ptChar=myGender==='남'?'🐱':'🐻';
   var myGL=myGender==='남'?'남성':'여성';
   var ptGL=myGender==='남'?'여성':'남성';
-  var rd=calcReunionDays(mySaju,partnerSaju);
   var ohKor={목:'목(木)',화:'화(火)',토:'토(土)',금:'금(金)',수:'수(水)'};
+  var rd=calcReunionDays(mySaju,partnerSaju);
   var dayCards=rd.results.map(function(item){
     return item.ranges.map(function(r){
       return '<div class="reunion-day-card"><div class="reunion-day-emoji">'+myChar+'♥'+ptChar+'</div><div><div class="reunion-day-date">'+item.m+'월 '+r.s+'일 ~ '+item.m+'월 '+r.e+'일</div><div class="reunion-day-sub">'+(ohKor[rd.yongshin]||rd.yongshin)+' 기운이 강해지는 날</div></div></div>';
     }).join('');
   }).join('');
   if(!dayCards)dayCards='<div style="text-align:center;padding:20px;color:#9A7A7A;font-size:13px;">이번 기간은 마음을 준비하는 시간이에요 🌙</div>';
-
-  // 이미지 컨테이너 ID 생성 (타임스탬프로 유일성 보장)
   var myImgId='rci_my_'+Date.now();
-  var ptImgId='rci_pt_'+Date.now()+'1';
-
-  // setTimeout으로 이미지 동적 로드 (HTML 속성에 따옴표 전혀 없음)
+  var ptImgId='rci_pt_'+(Date.now()+1);
   setTimeout(function(){
-    function loadImg(elId,src,fallbackChar){
-      var el=document.getElementById(elId);
-      if(!el)return;
+    function loadImg(elId,src,fallback){
+      var el=document.getElementById(elId);if(!el)return;
       var img=document.createElement('img');
-      img.style.width='72px';
-      img.style.height='72px';
-      img.style.objectFit='contain';
+      img.style.width='72px';img.style.height='72px';img.style.objectFit='contain';
       img.onload=function(){el.innerHTML='';el.appendChild(img);};
-      img.onerror=function(){el.textContent=fallbackChar;el.style.fontSize='52px';el.style.lineHeight='72px';};
+      img.onerror=function(){el.textContent=fallback;el.style.fontSize='52px';el.style.lineHeight='72px';};
       img.src=src;
     }
     loadImg(myImgId,myImg,myChar);
     loadImg(ptImgId,ptImg,ptChar);
   },300);
-
-  return '<div class="reunion-char-card">'
-    +'<div class="reunion-char-row">'
-    +'<div class="reunion-char-box">'
-    +'<div class="reunion-char-img" id="'+myImgId+'" style="font-size:52px;line-height:72px;text-align:center;">'+myChar+'</div>'
-    +'<div class="reunion-char-name">'+myName+'</div>'
-    +'<div class="reunion-char-gender">'+myGL+'</div>'
-    +'</div>'
-    +'<div class="reunion-heart">♥</div>'
-    +'<div class="reunion-char-box">'
-    +'<div class="reunion-char-img" id="'+ptImgId+'" style="font-size:52px;line-height:72px;text-align:center;">'+ptChar+'</div>'
-    +'<div class="reunion-char-name">'+partnerName+'</div>'
-    +'<div class="reunion-char-gender">'+ptGL+'</div>'
-    +'</div>'
-    +'</div>'
-    +'</div>'
-    +'<div class="reunion-good-days">'
-    +'<div class="reunion-good-title">'+myChar+'♥'+ptChar+' 재회하기 좋은 날</div>'
-    +dayCards
-    +'</div>'
-    +'<div class="reunion-note">※ 용신 '+(ohKor[rd.yongshin]||rd.yongshin)+' 기운 + 상대방 일지 합일(合日) 기준 계산</div>';
+  return '<div class="reunion-char-card"><div class="reunion-char-row"><div class="reunion-char-box"><div class="reunion-char-img" id="'+myImgId+'" style="font-size:52px;line-height:72px;text-align:center;">'+myChar+'</div><div class="reunion-char-name">'+myName+'</div><div class="reunion-char-gender">'+myGL+'</div></div><div class="reunion-heart">♥</div><div class="reunion-char-box"><div class="reunion-char-img" id="'+ptImgId+'" style="font-size:52px;line-height:72px;text-align:center;">'+ptChar+'</div><div class="reunion-char-name">'+partnerName+'</div><div class="reunion-char-gender">'+ptGL+'</div></div></div></div><div class="reunion-good-days"><div class="reunion-good-title">'+myChar+'♥'+ptChar+' 재회하기 좋은 날</div>'+dayCards+'</div><div class="reunion-note">※ 용신 '+(ohKor[rd.yongshin]||rd.yongshin)+' 기운 + 상대방 일지 합일 기준 계산</div>';
 }
 
-// 로딩 명언
 var QUOTES={
-  today:['지금 이 순간에도 하늘의 기운은\n당신의 하루를 만들고 있어요.','오늘 하루의 기운을 알면\n선택이 달라집니다.','일진을 알면 피할 것과\n잡을 것이 보여요.','오늘 당신에게 유리한 시간대가 있어요.\n잠시 후 알려드릴게요.','오늘 주의해야 할 한 가지가\n당신의 하루를 지켜줄 거예요.'],
-  love:['당신의 사주에 인연의 실이\n숨어 있어요.','연애가 안 풀리는 건 노력 부족이 아니라\n타이밍의 문제일 수 있어요.','지금 당신 주변에 인연이\n가까이 있을 수도 있어요.','당신에게 맞는 상대는\n생각보다 구체적으로 보여요.','사주를 보면 어떤 사람이\n당신 곁에 오게 될지 보여요.'],
-  reunion:['그 인연이 다시 올 수 있는지,\n사주는 알고 있어요.','미련이 남는 데는 이유가 있어요.\n사주로 확인해볼게요.','재회의 기운이 열리는 시기가\n따로 있어요.','그 사람과의 인연이 끝인지\n이어지는지 지금 분석 중이에요.','이별도, 재회도 사주에 흔적을\n남깁니다.'],
-  couple:['두 사람의 오행이 만나는 방식이\n관계의 모든 것을 결정해요.','싸움의 원인도, 끌림의 이유도\n사주에 있어요.','이 인연이 당신에게 어떤 의미인지\n지금 분석 중이에요.','궁합이 좋다는 건 서로를\n이해할 수 있다는 뜻이에요.','두 사람의 대운이 교차하는 시기가\n관계의 분기점이 돼요.'],
-  marriage:['결혼 인연은 사주에 이미\n적혀 있어요.','배우자의 직업, 외모, 성격이\n사주에서 보여요.','지금 당신의 결혼운이 열리고 있는지\n분석 중이에요.','결혼이 늦어지는 건 이유가 있어요.\n사주로 확인해볼게요.','인연의 문이 언제 열리는지\n대운으로 확인할 수 있어요.'],
-  money:['돈이 들어오는 방식은\n사람마다 달라요.','올해 당신에게 돈이 들어오는\n구체적인 구간이 있어요.','재물운의 흐름을 알면\n돈 버는 방식이 달라져요.','지출이 많은 데는\n사주적인 이유가 있어요.','재물운은 노력만으로 안 되는\n타이밍이 있어요.'],
-  career:['지금 하는 일이 당신 사주와\n맞는지 확인해볼게요.','적성에 맞는 일을 하면\n노력이 10배가 돼요.','당신이 빛나는 환경이\n사주에 적혀 있어요.','이직 타이밍을 잘못 잡으면\n손해를 봐요.','지금이 커리어를 바꿀 때인지\n대운으로 확인 중이에요.'],
-  new:['올해는 당신에게 어떤 해가 될까요?','올해 기회가 열리는 달이\n따로 있어요.','한 해의 흐름을 알면\n후회 없는 선택을 할 수 있어요.','올해 당신이 가장 조심해야 할\n한 가지를 알려드릴게요.','세운의 기운이 당신 사주와\n어떻게 만나는지 분석 중이에요.']
+  today:['지금 이 순간에도 하늘의 기운은 당신의 하루를 만들고 있어요.','오늘 하루의 기운을 알면 선택이 달라집니다.','일진을 알면 피할 것과 잡을 것이 보여요.','오늘 당신에게 유리한 시간대가 있어요. 잠시 후 알려드릴게요.','오늘 주의해야 할 한 가지가 당신의 하루를 지켜줄 거예요.'],
+  love:['당신의 사주에 인연의 실이 숨어 있어요.','연애가 안 풀리는 건 노력 부족이 아니라 타이밍의 문제일 수 있어요.','지금 당신 주변에 인연이 가까이 있을 수도 있어요.','당신에게 맞는 상대는 생각보다 구체적으로 보여요.','사주를 보면 어떤 사람이 당신 곁에 오게 될지 보여요.'],
+  reunion:['그 인연이 다시 올 수 있는지, 사주는 알고 있어요.','미련이 남는 데는 이유가 있어요. 사주로 확인해볼게요.','재회의 기운이 열리는 시기가 따로 있어요.','그 사람과의 인연이 끝인지 이어지는지 지금 분석 중이에요.','이별도, 재회도 사주에 흔적을 남깁니다.'],
+  couple:['두 사람의 오행이 만나는 방식이 관계의 모든 것을 결정해요.','싸움의 원인도, 끌림의 이유도 사주에 있어요.','이 인연이 당신에게 어떤 의미인지 지금 분석 중이에요.','궁합이 좋다는 건 서로를 이해할 수 있다는 뜻이에요.','두 사람의 대운이 교차하는 시기가 관계의 분기점이 돼요.'],
+  marriage:['결혼 인연은 사주에 이미 적혀 있어요.','배우자의 직업, 외모, 성격이 사주에서 보여요.','지금 당신의 결혼운이 열리고 있는지 분석 중이에요.','결혼이 늦어지는 건 이유가 있어요. 사주로 확인해볼게요.','인연의 문이 언제 열리는지 대운으로 확인할 수 있어요.'],
+  money:['돈이 들어오는 방식은 사람마다 달라요.','올해 당신에게 돈이 들어오는 구체적인 구간이 있어요.','재물운의 흐름을 알면 돈 버는 방식이 달라져요.','지출이 많은 데는 사주적인 이유가 있어요.','재물운은 노력만으로 안 되는 타이밍이 있어요.'],
+  career:['지금 하는 일이 당신 사주와 맞는지 확인해볼게요.','적성에 맞는 일을 하면 노력이 10배가 돼요.','당신이 빛나는 환경이 사주에 적혀 있어요.','이직 타이밍을 잘못 잡으면 손해를 봐요.','지금이 커리어를 바꿀 때인지 대운으로 확인 중이에요.'],
+  new:['올해는 당신에게 어떤 해가 될까요?','올해 기회가 열리는 달이 따로 있어요.','한 해의 흐름을 알면 후회 없는 선택을 할 수 있어요.','올해 당신이 가장 조심해야 할 한 가지를 알려드릴게요.','세운의 기운이 당신 사주와 어떻게 만나는지 분석 중이에요.']
 };
 var _qTimer=null,_qIdx=0;
 function startQuotes(mk){
   var qs=QUOTES[mk]||QUOTES.today;_qIdx=0;
   var el=document.getElementById('loadingQuote');if(!el)return;
-  function show(){el.style.opacity='0';setTimeout(function(){el.textContent=qs[_qIdx%qs.length].replace(/\n/g,'
-');el.style.opacity='1';_qIdx++;},400);}
+  function show(){el.style.opacity='0';setTimeout(function(){el.textContent=qs[_qIdx%qs.length];el.style.opacity='1';_qIdx++;},400);}
   show();_qTimer=setInterval(show,3500);
 }
 function stopQuotes(){if(_qTimer){clearInterval(_qTimer);_qTimer=null;}}
 
-// 모드 설정
 var MODES={
-  today:{badge:"\u2600\ufe0f \uc624\ub298\uc758 \uc6b4\uc138",title:"\uc624\ub298 \ud558\ub8e8, <em>\uc5b4\ub5a4 \uae30\uc6b4</em>\uc774 \ud750\ub974\uace0 \uc788\uc744\uae4c\uc694?",icon:"\u2600\ufe0f",body:'<p>지금 이 순간에도 하늘의 기운은 당신의 일주(日柱)와 얽히며 오늘 하루의 흐름을 만들어내고 있어요. 생년월일만 입력하면 <span class=\'intro-highlight\'>30초 안에 오늘의 운세</span>를 정확히 풀이해드립니다.</p>',formTitle:"\uc624\ub298\uc758 \uc6b4\uc138 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc624\ub298\uc758 \uc6b4\uc138 \ud480\uc774 \uc2dc\uc791",isCouple:false},
-  love:{badge:"\ud83c\udf38 \uc5f0\uc560\uc6b4",title:"\ub0b4 \uc6b4\uba85\uc758 \uc0c1\ub300\ub294 <em>\uc5b8\uc81c, \uc5b4\ub514\uc11c</em> \ub098\ud0c0\ub0a0\uae4c\uc694?",icon:"\ud83c\udf38",body:'<p>연애가 잘 안 풀린다는 느낌, 좋은 사람을 만나도 뭔가 어긋나는 느낌 — 모두 사주에 답이 있어요. <span class=\'intro-highlight\'>자미두수의 부처궁은 인연의 외모, 직업, 성격까지</span> 구체적으로 읽어낼 수 있어요.</p>',formTitle:"\uc5f0\uc560\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc5f0\uc560\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
-  reunion:{badge:"\ud83c\udf19 \uc7ac\ud68c\uc6b4",title:"\uadf8 \uc0ac\ub78c, \ub2e4\uc2dc \ub3cc\uc544\uc62c <em>\uac00\ub2a5\uc131</em>\uc774 \uc788\uc744\uae4c\uc694?",icon:"\ud83c\udf19",body:'<p>아직도 그 사람 생각이 나서 잠 못 드는 밤이 있으신가요? <span class=\'intro-highlight\'>재회 가능성과 그 시기를 명확하게 풀이해드릴게요.</span></p>',formTitle:"\uc7ac\ud68c\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc7ac\ud68c\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:true},
-  couple:{badge:"\ud83d\udcab \uad81\ud569",title:"\uc774 \uc0ac\ub78c, \uc9c4\uc9dc \ub098\uc640 <em>\uc798 \ub9de\ub294 \uc0ac\ub78c</em>\uc77c\uae4c\uc694?",icon:"\ud83d\udcab",body:'<p>두 사람의 오행이 어떻게 만나느냐에 따라 서로를 살리는 관계가 되기도 하고, 갉아먹는 관계가 되기도 해요. <span class=\'intro-highlight\'>두 사람의 일주를 비교 분석해 인연의 깊이를 풀이해드릴게요.</span></p>',formTitle:"\uad81\ud569 \u2014 \ub450 \uc0ac\ub78c \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uad81\ud569 \ubd84\uc11d \uc2dc\uc791",isCouple:true},
-  marriage:{badge:"\ud83d\udc8d \uacb0\ud63c\uc6b4",title:"\ub098\uc758 \uacb0\ud63c \uc2dc\uae30\uc640 <em>\ubc30\uc6b0\uc790</em>\ub294 \uc5b4\ub5a4 \uc0ac\ub78c\uc77c\uae4c\uc694?",icon:"\ud83d\udc8d",body:'<p>사주를 보면 <span class=\'intro-highlight\'>결혼 인연이 들어오는 시기, 배우자의 외모, 직업, 성격</span>이 놀랍도록 구체적으로 보여요.</p>',formTitle:"\uacb0\ud63c\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uacb0\ud63c\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
-  money:{badge:"\ud83c\udf3f \uc7ac\ubb3c\uc6b4",title:"\ub0b4\uac00 \ub3c8\uc744 \uc798 \ubabb \ubc84\ub294 \uac74 <em>\uc0ac\uc8fc \ub54c\ubb38</em>\uc77c\uae4c\uc694?",icon:"\ud83c\udf3f",body:'<p>사주에는 재물이 들어오는 통로가 있어요. 이게 노력의 차이가 아니라 <span class=\'intro-highlight\'>사주의 재물 구조 차이</span>예요.</p>',formTitle:"\uc7ac\ubb3c\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc7ac\ubb3c\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
-  career:{badge:"\u2b50 \uc9c1\uc5c5\u00b7\uc801\uc131\uc6b4",title:"\uc9c0\uae08 \uc774 \uc77c\uc774 \uc815\ub9d0 <em>\ub098\uc5d0\uac8c \ub9de\ub294 \uc77c</em>\uc77c\uae4c\uc694?",icon:"\u2b50",body:'<p>사주는 당신이 어떤 환경에서 가장 빛나는지를 알고 있어요. <span class=\'intro-highlight\'>자미두수의 관록궁은 당신의 직업 운명을 담는 공간이에요.</span></p>',formTitle:"\uc9c1\uc5c5\u00b7\uc801\uc131\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc9c1\uc5c5\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
-  new:{badge:"\ud83d\udd2e \uc2e0\ub144\uc6b4\uc138",title:"\uc62c\ud574, \ub2f9\uc2e0\uc5d0\uac8c <em>\uc5b4\ub5a4 \ud574</em>\uac00 \ub420\uae4c\uc694?",icon:"\ud83d\udd2e",body:'<p>올해의 기운이 당신의 사주와 어떻게 만나는지 <span class=\'intro-highlight\'>세운·대운·월운 중심으로 깊이 풀이해드릴게요.</span></p>',formTitle:"\uc2e0\ub144\uc6b4\uc138 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc2e0\ub144\uc6b4\uc138 \ud480\uc774 \uc2dc\uc791",isCouple:false}
+  today:{badge:'☀️ 오늘의 운세',title:'오늘 하루, <em>어떤 기운</em>이 흐르고 있을까요?',icon:'☀️',body:'<p>지금 이 순간에도 하늘의 기운은 당신의 일주(日柱)와 얽히며 오늘 하루의 흐름을 만들어내고 있어요. 생년월일만 입력하면 <span class="intro-highlight">30초 안에 오늘의 운세</span>를 정확히 풀이해드립니다.</p>',formTitle:'오늘의 운세 — 내 정보 입력',btnLabel:'✦ 오늘의 운세 풀이 시작',isCouple:false},
+  love:{badge:'🌸 연애운',title:'내 운명의 상대는 <em>언제, 어디서</em> 나타날까요?',icon:'🌸',body:'<p>연애가 잘 안 풀린다는 느낌, 좋은 사람을 만나도 뭔가 어긋나는 느낌 — 모두 사주에 답이 있어요. <span class="intro-highlight">자미두수의 부처궁은 인연의 외모, 직업, 성격까지</span> 구체적으로 읽어낼 수 있어요.</p>',formTitle:'연애운 — 내 정보 입력',btnLabel:'✦ 연애운 풀이 시작',isCouple:false},
+  reunion:{badge:'🌙 재회운',title:'그 사람, 다시 돌아올 <em>가능성</em>이 있을까요?',icon:'🌙',body:'<p>아직도 그 사람 생각이 나서 잠 못 드는 밤이 있으신가요? <span class="intro-highlight">재회 가능성과 그 시기를 명확하게 풀이해드릴게요.</span></p>',formTitle:'재회운 — 내 정보 입력',btnLabel:'✦ 재회운 풀이 시작',isCouple:true},
+  couple:{badge:'💫 궁합',title:'이 사람, 진짜 나와 <em>잘 맞는 사람</em>일까요?',icon:'💫',body:'<p>두 사람의 오행이 어떻게 만나느냐에 따라 서로를 살리는 관계가 되기도 해요. <span class="intro-highlight">두 사람의 일주를 비교 분석해 인연의 깊이를 풀이해드릴게요.</span></p>',formTitle:'궁합 — 두 사람 정보 입력',btnLabel:'✦ 궁합 분석 시작',isCouple:true},
+  marriage:{badge:'💍 결혼운',title:'나의 결혼 시기와 <em>배우자</em>는 어떤 사람일까요?',icon:'💍',body:'<p>사주를 보면 <span class="intro-highlight">결혼 인연이 들어오는 시기, 배우자의 외모, 직업, 성격</span>이 놀랍도록 구체적으로 보여요.</p>',formTitle:'결혼운 — 내 정보 입력',btnLabel:'✦ 결혼운 풀이 시작',isCouple:false},
+  money:{badge:'🌿 재물운',title:'내가 돈을 잘 못 버는 건 <em>사주 때문</em>일까요?',icon:'🌿',body:'<p>사주에는 재물이 들어오는 통로가 있어요. 이게 노력의 차이가 아니라 <span class="intro-highlight">사주의 재물 구조 차이</span>예요.</p>',formTitle:'재물운 — 내 정보 입력',btnLabel:'✦ 재물운 풀이 시작',isCouple:false},
+  career:{badge:'⭐ 직업·적성운',title:'지금 이 일이 정말 <em>나에게 맞는 일</em>일까요?',icon:'⭐',body:'<p>사주는 당신이 어떤 환경에서 가장 빛나는지를 알고 있어요. <span class="intro-highlight">자미두수의 관록궁은 당신의 직업 운명을 담는 공간이에요.</span></p>',formTitle:'직업·적성운 — 내 정보 입력',btnLabel:'✦ 직업운 풀이 시작',isCouple:false},
+  new:{badge:'🔮 신년운세',title:'올해, 당신에게 <em>어떤 해</em>가 될까요?',icon:'🔮',body:'<p>올해의 기운이 당신의 사주와 어떻게 만나는지 <span class="intro-highlight">세운·대운·월운 중심으로 깊이 풀이해드릴게요.</span></p>',formTitle:'신년운세 — 내 정보 입력',btnLabel:'✦ 신년운세 풀이 시작',isCouple:false}
 };
 var ALL_MODES=[{id:'today',name:'오늘의 운세',icon:'☀️'},{id:'love',name:'연애운',icon:'🌸'},{id:'reunion',name:'재회운',icon:'🌙'},{id:'couple',name:'궁합',icon:'💫'},{id:'marriage',name:'결혼운',icon:'💍'},{id:'money',name:'재물운',icon:'🌿'},{id:'career',name:'직업운',icon:'⭐'},{id:'new',name:'신년운세',icon:'🔮'}];
 var mode='today',gender='남',gender2='남';
@@ -708,17 +648,14 @@ function setGender(v){gender=v;document.getElementById('gm').className=v==='남'
 function setGender2(v){gender2=v;document.getElementById('gm2').className=v==='남'?'gbtn on':'gbtn';document.getElementById('gf2').className=v==='여'?'gbtn on':'gbtn';}
 
 function initPage(){
-  var params=new URLSearchParams(window.location.search),m=params.get('mode');
-  if(m&&MODES[m])mode=m;else mode='today';
+  var params=new URLSearchParams(window.location.search),mk=params.get('mode');
+  if(mk&&MODES[mk])mode=mk;else mode='today';
   var cfg=MODES[mode];
-  document.getElementById('introInner').innerHTML='<div class="intro-badge">'+cfg.badge+'</div><h1 class="intro-title">'+cfg.title.replace('
-','<br>')+'</h1><div class="intro-body">'+cfg.body+'</div>';
+  document.getElementById('introInner').innerHTML='<div class="intro-badge">'+cfg.badge+'</div><h1 class="intro-title">'+cfg.title+'</h1><div class="intro-body">'+cfg.body+'</div>';
   document.getElementById('formTitle').textContent=cfg.formTitle;
   document.getElementById('mainBtn').textContent=cfg.btnLabel;
   if(cfg.isCouple)document.getElementById('partnerSection').style.display='block';
   document.title='사주미리 — '+cfg.badge;
-
-  // 이벤트 바인딩 (onclick 속성 대신 addEventListener 사용 - 따옴표 충돌 원천 차단)
   document.getElementById('gm').addEventListener('click',function(){setGender('남');});
   document.getElementById('gf').addEventListener('click',function(){setGender('여');});
   document.getElementById('gm2').addEventListener('click',function(){setGender2('남');});
@@ -734,36 +671,32 @@ function initPage(){
   document.getElementById('btnPdf').addEventListener('click',downloadPDF);
   document.getElementById('prevBtn').addEventListener('click',function(){changePage(-1);});
   document.getElementById('nextBtn').addEventListener('click',function(){changePage(1);});
-
   loadFromLS();
 }
 
-// 결과 페이지
 var currentPage=0,totalPages=0;
 
 function splitSections(text){
   var sections=[],parts=text.split(/\[([^\]]+)\]/g);
   for(var i=1;i<parts.length;i+=2){
     var ti=parts[i].trim(),co=(parts[i+1]||'').trim();
-    co=co.replace(/^#+\s*/gm,'').replace(/\*\*/g,'').replace(/^\*+\s*/gm,'').trim();
+    co=co.replace(/^#+\s*/gm,'').replace(/\*\*/g,'').trim();
     if(ti&&co)sections.push({title:ti,content:co});
   }
   return sections;
 }
 
-function buildResultPages(text,manseCards,modeIcon,keywords){
+function buildResultPages(text,myCard,partnerCard){
   var sections=splitSections(text);
   var track=document.getElementById('pagesTrack'),dots=document.getElementById('pageDots');
   track.innerHTML='';dots.innerHTML='';
-  var kwH=(keywords||[]).map(function(k){return '<span style="background:var(--red-soft);color:var(--red);font-size:12px;font-weight:600;padding:5px 12px;border-radius:100px;border:1px solid rgba(214,59,59,.2);">#'+k+'</span>';}).join('');
   var otherH='<div class="other-grid">'+ALL_MODES.filter(function(m){return m.id!==mode;}).map(function(m){return '<a href="saju.html?mode='+m.id+'" class="other-card"><span class="other-icon">'+m.icon+'</span><span class="other-name">'+m.name+'</span></a>';}).join('')+'</div>';
-  // 재회/궁합 마지막 페이지 재회 카드
-  var reunionCardH='';
-  if((mode==='reunion'||mode==='couple')&&manseCards.my){
-    var mn=document.getElementById('name').value||'나',pn=document.getElementById('name2').value||'상대방';
-    reunionCardH=buildReunionCard(mn,pn,gender,manseCards.my.saju,manseCards.partner?manseCards.partner.saju:null);
+  var reunionH='';
+  if((mode==='reunion'||mode==='couple')&&myCard){
+    var mn=document.getElementById('name').value||'나';
+    var pn=document.getElementById('name2').value||'상대방';
+    reunionH='<div style="margin-bottom:16px">'+buildReunionCard(mn,pn,gender,myCard.saju,partnerCard?partnerCard.saju:null)+'</div>';
   }
-  // 오늘의 운세 점수
   var scoreH='';
   if(mode==='today'){
     var sc=null,sm=text.match(/종합\s*점수[:\s]*(\d{2,3})\s*점/);
@@ -772,43 +705,29 @@ function buildResultPages(text,manseCards,modeIcon,keywords){
     var scComment=sc>=90?'오늘은 모든 기운이 당신 편이에요. 적극적으로 움직이세요!':sc>=80?'전반적으로 좋은 흐름이에요. 중요한 일은 오늘 추진해보세요.':sc>=70?'무난하고 안정적인 하루예요. 큰 욕심보다 안정을 선택하세요.':sc>=60?'에너지가 다소 약한 날이에요. 컨디션 관리에 신경 쓰세요.':'오늘은 쉬어가는 날로 삼아요. 무리한 결정은 잠시 미루세요.';
     scoreH='<div class="today-score-box"><div class="today-score-lbl">오늘의 종합 운세 점수</div><div><span class="today-score-num">'+sc+'</span><span class="today-score-suffix">점</span></div><div class="today-score-comment">'+scComment+'</div></div>';
   }
-
   totalPages=sections.length+2;
-
   function addPage(html,idx){
     var p=document.createElement('div');p.className='result-page';
     p.innerHTML='<div class="page-inner">'+html+'</div>';
     track.appendChild(p);
-    var d=document.createElement('div');d.className='page-dot'+(idx===0?' active':'');
-    d.addEventListener('click',(function(i){return function(){goToPage(i);};})(idx));
-    dots.appendChild(d);
+    var dt=document.createElement('div');dt.className='page-dot'+(idx===0?' active':'');
+    dt.addEventListener('click',(function(ii){return function(){goToPage(ii);};})(idx));
+    dots.appendChild(dt);
   }
-
-  // 1페이지: 만세력
-  var manseH='';
-  if(manseCards.my)manseH+=manseCards.my.html;
-  if(manseCards.partner)manseH+=manseCards.partner.html;
-  var p1Label=manseCards.partner?'사주팔자 비교':'사주팔자';
-  var p1Title=manseCards.partner?'두 사람의 사주팔자':'나의 사주팔자';
-  addPage('<div class="page-num-badge">'+modeIcon+' 1 / '+totalPages+' · '+p1Label+'</div><div class="page-section-title">'+p1Title+'</div><div class="page-divider"></div>'+manseH,0);
-
-  // 섹션 페이지들
+  var manseH=(myCard?myCard.html:'')+(partnerCard?partnerCard.html:'');
+  var p1title=partnerCard?'두 사람의 사주팔자':'나의 사주팔자';
+  addPage('<div class="page-num-badge">'+MODES[mode].icon+' 1 / '+totalPages+' · 사주팔자</div><div class="page-section-title">'+p1title+'</div><div class="page-divider"></div>'+manseH,0);
   for(var i=0;i<sections.length;i++){
     var isLast=(i===sections.length-1);
-    addPage('<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">'+kwH+'</div><div class="page-num-badge">'+modeIcon+' '+(i+2)+' / '+totalPages+'</div><div class="page-section-title">'+sections[i].title+'</div><div class="page-divider"></div><div class="page-text">'+sections[i].content+'</div>'+(isLast?scoreH:''),i+1);
+    addPage('<div class="page-num-badge">'+MODES[mode].icon+' '+(i+2)+' / '+totalPages+'</div><div class="page-section-title">'+sections[i].title+'</div><div class="page-divider"></div><div class="page-text">'+sections[i].content+'</div>'+(isLast?scoreH:''),i+1);
   }
-
-  // 마지막 페이지
-  var reviewH='<div class="review-section"><div class="review-title">📝 후기 남기기</div><div class="review-sub">풀이가 도움이 됐나요? 솔직한 후기를 남겨주세요.</div><div id="rvForm"><input type="text" id="rvName" class="review-inp" placeholder="이름 (익명 처리됩니다)"><div class="star-row" id="rvStars"><button class="star-btn on" data-v="1">★</button><button class="star-btn on" data-v="2">★</button><button class="star-btn on" data-v="3">★</button><button class="star-btn on" data-v="4">★</button><button class="star-btn on" data-v="5">★</button></div><textarea id="rvText" class="review-textarea" placeholder="풀이를 받고 느낀 점을 자유롭게 작성해 주세요."></textarea><button class="btn-review" id="rvSubmit">후기 등록하기</button><div class="review-notice">이름은 성(姓)만 표시되고 나머지는 **로 익명 처리됩니다.</div></div><div class="review-done" id="rvDone">🌸 후기를 남겨주셔서 감사해요!<br>소중한 의견이 다른 분들께 도움이 됩니다.</div></div>';
-  addPage('<div class="page-num-badge">'+modeIcon+' '+totalPages+' / '+totalPages+'</div><div class="page-section-title">✦ 풀이 완료</div><div class="page-divider"></div>'+(reunionCardH?'<div style="margin-bottom:16px">'+reunionCardH+'</div>':'')+'<div class="other-fortune-section"><div class="other-fortune-title">✦ 다른 운세도 보러가기</div>'+otherH+'</div>'+reviewH,totalPages-1);
-
+  var reviewH='<div class="review-section"><div class="review-title">📝 후기 남기기</div><div class="review-sub">풀이가 도움이 됐나요? 솔직한 후기를 남겨주세요.</div><div id="rvForm"><input type="text" id="rvName" class="review-inp" placeholder="이름 (익명 처리됩니다)"><div class="star-row" id="rvStars"><button class="star-btn on" data-v="1">★</button><button class="star-btn on" data-v="2">★</button><button class="star-btn on" data-v="3">★</button><button class="star-btn on" data-v="4">★</button><button class="star-btn on" data-v="5">★</button></div><textarea id="rvText" class="review-textarea" placeholder="풀이를 받고 느낀 점을 자유롭게 작성해 주세요."></textarea><button class="btn-review" id="rvSubmit">후기 등록하기</button><div class="review-notice">이름은 성(姓)만 표시되고 나머지는 **로 익명 처리됩니다.</div></div><div class="review-done" id="rvDone">🌸 후기를 남겨주셔서 감사해요!</div></div>';
+  addPage('<div class="page-num-badge">'+MODES[mode].icon+' '+totalPages+' / '+totalPages+'</div><div class="page-section-title">✦ 풀이 완료</div><div class="page-divider"></div>'+reunionH+'<div class="other-fortune-section"><div class="other-fortune-title">✦ 다른 운세도 보러가기</div>'+otherH+'</div>'+reviewH,totalPages-1);
   currentPage=0;updatePageNav();
-  // 도넛 그리기
   setTimeout(function(){
-    if(manseCards.my)drawDonut(manseCards.my.donutId,manseCards.my.donutData,manseCards.my.total);
-    if(manseCards.partner)drawDonut(manseCards.partner.donutId,manseCards.partner.donutData,manseCards.partner.total);
+    if(myCard)drawDonut(myCard.donutId,myCard.donutData,myCard.total);
+    if(partnerCard)drawDonut(partnerCard.donutId,partnerCard.donutData,partnerCard.total);
   },200);
-  // 후기 별점
   setTimeout(function(){
     var btns=document.querySelectorAll('#rvStars .star-btn');
     var sel=5;
@@ -845,20 +764,11 @@ function updatePageNav(){
 }
 function closeResult(){document.getElementById('resultContainer').className='result-container';document.body.style.overflow='';}
 
-// PDF 다운로드
 function downloadPDF(){
   var pages=document.querySelectorAll('.result-page');
   var pw=window.open('','_blank');
-  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+document.getElementById('resultHeaderTitle').textContent+'</title>';
-  h+='<style>body{font-family:sans-serif;color:#2A1A1A;max-width:700px;margin:0 auto;padding:32px 24px;}';
-  h+='.pg{page-break-after:always;border-bottom:2px solid #FFD6E7;margin-bottom:32px;padding-bottom:32px;}';
-  h+='.pt{font-size:20px;font-weight:700;color:#2A1A1A;margin-bottom:16px;}';
-  h+='.pc{font-size:14px;line-height:2.1;color:#5A3A3A;white-space:pre-wrap;}';
-  h+='.hd{text-align:center;margin-bottom:40px;padding-bottom:20px;border-bottom:2px solid #FFD6E7;}';
-  h+='.ht{font-size:26px;font-weight:700;color:#D63B3B;}';
-  h+='.hs{font-size:13px;color:#9A7A7A;margin-top:8px;}';
-  h+='@media print{.pg{page-break-after:always;}}</style></head><body>';
-  h+='<div class="hd"><div class="ht">사주미리 풀이 결과</div><div class="hs">'+document.getElementById('resultHeaderTitle').textContent+' · '+new Date().toLocaleDateString('ko-KR')+'</div></div>';
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>사주미리 풀이</title><style>body{font-family:sans-serif;color:#2A1A1A;max-width:700px;margin:0 auto;padding:32px 24px;}.pg{page-break-after:always;border-bottom:2px solid #FFD6E7;margin-bottom:32px;padding-bottom:32px;}.pt{font-size:20px;font-weight:700;margin-bottom:16px;}.pc{font-size:14px;line-height:2.1;white-space:pre-wrap;}.hd{text-align:center;margin-bottom:40px;padding-bottom:20px;border-bottom:2px solid #FFD6E7;}.ht{font-size:26px;font-weight:700;color:#D63B3B;}@media print{.pg{page-break-after:always;}}</style></head><body>';
+  h+='<div class="hd"><div class="ht">사주미리 풀이 결과</div><div style="font-size:13px;color:#9A7A7A;margin-top:8px;">'+document.getElementById('resultHeaderTitle').textContent+' · '+new Date().toLocaleDateString('ko-KR')+'</div></div>';
   pages.forEach(function(page,i){
     if(i===pages.length-1)return;
     var pt=page.querySelector('.page-section-title'),pc=page.querySelector('.page-text');
@@ -868,39 +778,11 @@ function downloadPDF(){
     if(pc)h+='<div class="pc">'+pc.textContent+'</div>';
     h+='</div>';
   });
-  h+='<div style="text-align:center;margin-top:32px;font-size:12px;color:#9A7A7A;">사주미리 · sajumiri.vercel.app · 본 풀이는 참고용입니다</div>';
-  h+='</body></html>';
+  h+='<div style="text-align:center;margin-top:32px;font-size:12px;color:#9A7A7A;">사주미리 · sajumiri.vercel.app</div></body></html>';
   pw.document.write(h);pw.document.close();
   pw.onload=function(){pw.print();};
 }
 
-// 프롬프트 생성
-function buildPrompt(myText,my2Text){
-  var cy=new Date().getFullYear();
-  var cgY=['갑','을','병','정','무','기','경','신','임','계'];
-  var cjY=['자','축','인','묘','진','사','오','미','신','유','술','해'];
-  var cgHY=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-  var cjHY=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-  var gi=((cy-4)%10+10)%10,ji=((cy-4)%12+12)%12;
-  var yGJ=cgY[gi]+cjY[ji]+'('+cgHY[gi]+cjHY[ji]+')';
-  var p2=my2Text?'[상대방 사주 정보]\n'+my2Text+'\n':'';
-var common='[분석 지침]\n- 사주 용어는 반드시 쉬운 말로 풀어 설명하세요. 예: 식신(食神)은 내가 만들어내는 에너지로 창의력과 표현력을 뜻해요.\n- 현대인 생활에 맞는 구체적 상황으로 풀이하세요 (직장, SNS, 부업, 연애앱 등).\n- 소제목은 반드시 [제목] 형식으로만. ##, *, #, → 등 마크다운 기호 절대 사용 금지.\n- 각 항목은 400~500자 내외로 충실하게 서술하세요.\n- 이 사람만의 사주 특징을 구체적으로 짚어주세요. 일반론 금지.\n- 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 유(酉).\n- 마지막 문장은 반드시 마침표로 끝내세요.\n- 마지막에 관리해야 할 리스크 1가지, 잡아야 할 기회 1가지를 제시하세요.';
-var sys='당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.\n\n[절대 원칙]\n1. 소제목은 반드시 [제목] 형식으로만. ##, *, #, →, ● 등 마크다운 특수기호 절대 금지.\n2. 각 항목은 400~500자 내외로 충실하게 서술하세요.\n3. 사주 용어는 반드시 쉬운 말로 풀어서 설명하세요.\n4. 입력된 실제 생년월일, 이름, 성별, 사주팔자를 반드시 구체적으로 언급하며 풀이하세요.\n5. 같은 주제라도 사주팔자가 다르면 완전히 다른 풀이를 해야 합니다.\n6. 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 병화(丙火).\n7. 마지막 문장은 반드시 마침표로 끝내세요.\n8. 현대인이 공감할 수 있는 구체적인 상황으로 풀이하세요.';
-
-var p={
-    today:(function(){var td=getTodayData();return '[내 사주 정보]\n\'+myText+\'\n[오늘의 일진]\n\'+td.str+\'\n이 사람의 사주팔자와 오늘의 일진을 결합해 오늘의 운세를 풀이해 주세요.\n\n[오늘의 핵심 기운과 일진 분석]\n[오전과 오후의 에너지 흐름]\n[일과 학업 — 집중 시간대]\n[대인관계와 감정선]\n[금전과 소비]\n[건강과 컨디션]\n[오늘 하루를 잘 보내는 법]\n\n마지막에 오늘의 종합 운세 점수를 100점 만점으로 적어주세요. 형식: 종합 점수: OO점'+common;}()),
-    love:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자를 바탕으로 연애운을 풀이해 주세요.\n\n[타고난 연애 성향과 매력]\n[인연의 외모와 직업 — 구체적으로]\n[잘 맞는 상대 유형과 피해야 할 상대]\n[2026년 인연이 찾아오는 시기]\n[연애의 걸림돌과 반복 패턴]\n[연애운 핵심 조언]'+common,
-    reunion:'[내 사주 정보]\n\'+myText+p2+\'\n두 사람의 사주팔자를 분석해 재회운을 풀이해 주세요.\n\n[이 사주가 이별을 경험하는 방식]\n[그 인연의 사주적 의미]\n[재회 가능성과 열리는 시기]\n[지금 해야 할 것과 하지 말아야 할 것]\n[재회가 어려운 경우 마음을 정리하는 법]\n[재회운 핵심 조언]'+common,
-    couple:'[내 사주 정보]\n\'+myText+p2+\'\n두 사람의 사주팔자를 비교 분석해 궁합을 풀이해 주세요.\n\n[두 사람의 일주 비교와 첫 끌림의 이유]\n[오행으로 본 관계 구조]\n[갈등이 반복되는 패턴]\n[함께할 때 빛나는 시너지]\n[이 인연의 미래 — 결혼 가능성]\n[궁합 총평]'+common,
-    marriage:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자를 바탕으로 결혼운을 풀이해 주세요.\n\n[이 사주의 결혼 성향]\n[배우자의 외모와 직업 — 구체적으로]\n[결혼 시기]\n[2026년 결혼운]\n[결혼을 방해하는 요소]\n[결혼운 핵심 조언]'+common,
-    money:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자와 재성을 분석해 재물운을 풀이해 주세요.\n\n[타고난 재물 구조]\n[재물이 들어오는 방식]\n[2026년 상반기 재물 흐름]\n[2026년 하반기 재물 흐름]\n[재물을 잃게 되는 패턴]\n[재물운 핵심 전략]'+common,
-    career:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자와 관록궁을 분석해 직업·적성운을 풀이해 주세요.\n\n[타고난 재능과 적성]\n[잘 맞는 직종과 환경]\n[직장 vs 독립 창업]\n[2026년 커리어 흐름과 이직 타이밍]\n[직장 내 인간관계 운]\n[직업운 핵심 조언]'+common,
-    new:'[내 사주 정보]\n\'+myText+\'\n2026년 병오년 신년운세를 세운·대운·월운 중심으로 풀이해 주세요.\n\n[2026년 핵심 키워드와 병오년의 영향]\n[직업과 커리어]\n[재물과 금전]\n[연애와 인연]\n[상반기 월별 흐름 (1~6월)]\n[하반기 월별 흐름 (7~12월)]\n[2026년 핵심 조언]'+common
-  };
-  return p[mode]||p.today;
-}
-
-// 사주 텍스트 생성
 function makeSajuText(birthId,btimeId,bsiId,nm,gd){
   var bd=parseBirth(document.getElementById(birthId).value);if(!bd)return null;
   var hi=getHI(btimeId,bsiId);
@@ -922,7 +804,23 @@ function makeSajuText(birthId,btimeId,bsiId,nm,gd){
   return{text:t,saju:s,bd:bd,hi:hi};
 }
 
-// 분석 실행
+function buildPrompt(myText,my2Text){
+  var cy=new Date().getFullYear();
+  var p2=my2Text?'\n[상대방 사주 정보]\n'+my2Text+'\n':'';
+  var common='\n\n[분석 지침]\n- 사주 용어는 반드시 쉬운 말로 풀어 설명하세요.\n- 소제목은 반드시 [제목] 형식으로만. ## * # → 등 마크다운 기호 절대 사용 금지.\n- 각 항목은 400~500자 내외로 충실하게 서술하세요.\n- 이 사람만의 사주 특징을 구체적으로 짚어주세요.\n- 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金).\n- 마지막 문장은 반드시 마침표로 끝내세요.\n- 마지막에 관리해야 할 리스크 1가지, 잡아야 할 기회 1가지를 제시하세요.';
+  var p={
+    today:'[내 사주 정보]\n'+myText+'\n[오늘의 일진]\n'+(function(){var td=getTodayData();return td.str;})()+'이 사람의 사주팔자와 오늘 일진을 결합해 오늘의 운세를 풀이해 주세요.\n\n[오늘의 핵심 기운과 일진 분석]\n[오전과 오후의 에너지 흐름]\n[일과 학업]\n[대인관계와 감정선]\n[금전과 소비]\n[건강과 컨디션]\n[오늘 하루를 잘 보내는 법]\n\n마지막에 종합 점수를 100점 만점으로 적어주세요. 형식: 종합 점수: OO점'+common,
+    love:'[내 사주 정보]\n'+myText+'\n이 사람의 사주팔자를 바탕으로 연애운을 풀이해 주세요.\n\n[타고난 연애 성향과 매력]\n[인연의 외모와 직업]\n[잘 맞는 상대 유형과 피해야 할 상대]\n['+cy+'년 인연이 찾아오는 시기]\n[연애의 걸림돌과 반복 패턴]\n[연애운 핵심 조언]'+common,
+    reunion:'[내 사주 정보]\n'+myText+p2+'두 사람의 사주팔자를 분석해 재회운을 풀이해 주세요.\n\n[이 사주가 이별을 경험하는 방식]\n[그 인연의 사주적 의미]\n[재회 가능성과 열리는 시기]\n[지금 해야 할 것과 하지 말아야 할 것]\n[재회가 어려운 경우 마음을 정리하는 법]\n[재회운 핵심 조언]'+common,
+    couple:'[내 사주 정보]\n'+myText+p2+'두 사람의 사주팔자를 비교 분석해 궁합을 풀이해 주세요.\n\n[두 사람의 일주 비교와 첫 끌림의 이유]\n[오행으로 본 관계 구조]\n[갈등이 반복되는 패턴]\n[함께할 때 빛나는 시너지]\n[이 인연의 미래와 결혼 가능성]\n[궁합 총평]'+common,
+    marriage:'[내 사주 정보]\n'+myText+'\n이 사람의 사주팔자를 바탕으로 결혼운을 풀이해 주세요.\n\n[이 사주의 결혼 성향]\n[배우자의 외모와 직업]\n[결혼 시기]\n['+cy+'년 결혼운]\n[결혼을 방해하는 요소]\n[결혼운 핵심 조언]'+common,
+    money:'[내 사주 정보]\n'+myText+'\n이 사람의 사주팔자와 재성을 분석해 재물운을 풀이해 주세요.\n\n[타고난 재물 구조]\n[재물이 들어오는 방식]\n['+cy+'년 상반기 재물 흐름]\n['+cy+'년 하반기 재물 흐름]\n[재물을 잃게 되는 패턴]\n[재물운 핵심 전략]'+common,
+    career:'[내 사주 정보]\n'+myText+'\n이 사람의 사주팔자와 관록궁을 분석해 직업·적성운을 풀이해 주세요.\n\n[타고난 재능과 적성]\n[잘 맞는 직종과 환경]\n[직장 vs 독립 창업]\n['+cy+'년 커리어 흐름과 이직 타이밍]\n[직장 내 인간관계 운]\n[직업운 핵심 조언]'+common,
+    new:'[내 사주 정보]\n'+myText+'\n'+cy+'년 신년운세를 세운·대운·월운 중심으로 풀이해 주세요.\n\n['+cy+'년 핵심 키워드와 세운의 영향]\n[직업과 커리어]\n[재물과 금전]\n[연애와 인연]\n[상반기 월별 흐름 1~6월]\n[하반기 월별 흐름 7~12월]\n['+cy+'년 핵심 조언]'+common
+  };
+  return p[mode]||p.today;
+}
+
 async function analyze(){
   var bd=parseBirth(document.getElementById('birthText').value);
   if(!bd){alert('생년월일을 8자리로 입력해주세요. (예: 19950315)');return;}
@@ -944,63 +842,36 @@ async function analyze(){
   document.getElementById('loadingOverlay').className='loading-overlay show';
   document.body.style.overflow='hidden';
   startQuotes(mode);
-  // 만세력 카드 생성
   var hi=getHI('btimeText','bsi');
   var s=calcSaju(myData.bd.y,myData.bd.m,myData.bd.d,hi);
-  var tStr=document.getElementById('btimeText').value||'';
-  var myCard=buildManseCard(s,myData.bd.y,myData.bd.m,myData.bd.d,hi,tStr,nm,gender,false);
+  var myCard=buildManseCard(s,myData.bd.y,myData.bd.m,myData.bd.d,hi,document.getElementById('btimeText').value,nm,gender,false);
   var partnerCard=null;
   if(my2Data){
     var hi2=getHI('btimeText2','bsi2');
     var s2=calcSaju(my2Data.bd.y,my2Data.bd.m,my2Data.bd.d,hi2);
-    var tStr2=document.getElementById('btimeText2').value||'';
     var nm2x=document.getElementById('name2').value||'상대방';
-    partnerCard=buildManseCard(s2,my2Data.bd.y,my2Data.bd.m,my2Data.bd.d,hi2,tStr2,nm2x,gender2,true);
-    partnerCard.saju=s2;
+    partnerCard=buildManseCard(s2,my2Data.bd.y,my2Data.bd.m,my2Data.bd.d,hi2,document.getElementById('btimeText2').value,nm2x,gender2,true);
   }
-  myCard.saju=s;
-
   var sys='당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.\n\n[절대 원칙]\n1. 소제목은 반드시 [제목] 형식으로만. ##, *, #, →, ● 등 마크다운 특수기호 절대 금지.\n2. 각 항목은 400~500자 내외로 충실하게 서술하세요.\n3. 사주 용어는 반드시 쉬운 말로 풀어서 설명하세요.\n4. 입력된 실제 생년월일, 이름, 성별, 사주팔자를 반드시 구체적으로 언급하며 풀이하세요.\n5. 같은 주제라도 사주팔자가 다르면 완전히 다른 풀이를 해야 합니다.\n6. 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 병화(丙火).\n7. 마지막 문장은 반드시 마침표로 끝내세요.\n8. 현대인이 공감할 수 있는 구체적인 상황으로 풀이하세요.';
-
   try{
-    var res=await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-5',
-        max_tokens:8000,
-        system:sys,
-        messages:[{role:'user',content:buildPrompt(myData.text,my2Data?my2Data.text:null)}]
-      })
-    });
-    if(!res.ok){
-      var err=await res.json().catch(function(){return{};});
-      stopQuotes();
-      document.getElementById('loadingOverlay').className='loading-overlay';
-      document.body.style.overflow='';
-      alert('오류 '+res.status+': '+(err.error&&err.error.message||'다시 시도해주세요.'));
-      return;
-    }
-    // SSE 스트리밍 수집
+    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:8000,system:sys,messages:[{role:'user',content:buildPrompt(myData.text,my2Data?my2Data.text:null)}]})});
+    if(!res.ok){var err=await res.json().catch(function(){return{};});stopQuotes();document.getElementById('loadingOverlay').className='loading-overlay';document.body.style.overflow='';alert('오류 '+res.status+': '+(err.error&&err.error.message||'다시 시도해주세요.'));return;}
     var reader=res.body.getReader(),decoder=new TextDecoder(),buf='',fullText='';
     while(true){
       var chunk=await reader.read();if(chunk.done)break;
       buf+=decoder.decode(chunk.value,{stream:true});
-      var lines=buf.split('
-');buf=lines.pop();
+      var lines=buf.split('\n');buf=lines.pop();
       for(var li=0;li<lines.length;li++){
         var line=lines[li].trim();
         if(!line||line==='data: [DONE]')continue;
-        if(line.startsWith('data: ')){
-          try{var j=JSON.parse(line.slice(6));if(j.type==='content_block_delta'&&j.delta&&j.delta.text)fullText+=j.delta.text;}catch(e){}
-        }
+        if(line.startsWith('data: ')){try{var j=JSON.parse(line.slice(6));if(j.type==='content_block_delta'&&j.delta&&j.delta.text)fullText+=j.delta.text;}catch(e){}}
       }
     }
-    var text=fullText||'결과를 가져오지 못했습니다.';
+    var resultText=fullText||'결과를 가져오지 못했습니다.';
     stopQuotes();
     document.getElementById('loadingOverlay').className='loading-overlay';
     document.getElementById('resultHeaderTitle').textContent=cfg.badge+' 풀이';
-    buildResultPages(text,{my:myCard,partner:partnerCard},cfg.icon,cfg.keywords);
+    buildResultPages(resultText,myCard,partnerCard);
     document.getElementById('resultContainer').className='result-container show';
   }catch(e){
     stopQuotes();
@@ -1013,12 +884,12 @@ async function analyze(){
     window._sajuRetrying=false;
     document.getElementById('loadingOverlay').className='loading-overlay';
     document.body.style.overflow='';
-    alert('오류가 발생했어요. 잠시 후 다시 시도해 주세요.
-('+e.message+')');
+    alert('오류가 발생했어요. 잠시 후 다시 시도해 주세요.\n('+e.message+')');
   }
 }
 
 initPage();
+
 </script>
 </body>
 </html>
