@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사주미리 — AI 사주 풀이</title>
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -696,22 +698,14 @@ function stopQuotes(){if(_qTimer){clearInterval(_qTimer);_qTimer=null;}}
 
 // 모드 설정
 var MODES={
-  today:{badge:'☀️ 오늘의 운세',title:'오늘 하루,
-<em>어떤 기운</em>이 흐르고 있을까요?',icon:'☀️',body:'<p>지금 이 순간에도 하늘의 기운은 당신의 일주(日柱)와 얽히며 오늘 하루의 흐름을 만들어내고 있어요. <span class="intro-highlight">30초 안에 오늘의 운세</span>를 정확히 풀이해드립니다.</p>',formTitle:'오늘의 운세 — 내 정보 입력',btnLabel:'✦ 오늘의 운세 풀이 시작',keywords:['일진 분석','금전운','대인관계','건강']},
-  love:{badge:'🌸 연애운',title:'내 운명의 상대는
-<em>언제, 어디서</em> 나타날까요?',icon:'🌸',body:'<p>연애가 잘 안 풀린다는 느낌 — 모두 사주에 답이 있어요. <span class="intro-highlight">자미두수의 부처궁은 인연의 외모, 직업, 성격까지</span> 구체적으로 읽어낼 수 있어요.</p>',formTitle:'연애운 — 내 정보 입력',btnLabel:'✦ 연애운 풀이 시작',keywords:['인연 시기','이상형','연애 패턴','2026 운세']},
-  reunion:{badge:'🌙 재회운',title:'그 사람, 다시 돌아올
-<em>가능성</em>이 있을까요?',icon:'🌙',body:'<p>아직도 그 사람 생각이 나서 잠 못 드는 밤이 있으신가요? <span class="intro-highlight">재회 가능성과 그 시기를 명확하게 풀이해드릴게요.</span></p>',formTitle:'재회운 — 내 정보 입력',btnLabel:'✦ 재회운 풀이 시작',isCouple:true,keywords:['재회 가능성','이별 패턴','연락 타이밍','기회 구간']},
-  couple:{badge:'💫 궁합',title:'이 사람, 진짜 나와
-<em>잘 맞는 사람</em>일까요?',icon:'💫',body:'<p>두 사람의 오행이 어떻게 만나느냐에 따라 서로를 살리는 관계가 되기도 해요. <span class="intro-highlight">두 사람의 일주를 비교 분석해 인연의 깊이를 풀이해드릴게요.</span></p>',formTitle:'궁합 — 두 사람 정보 입력',btnLabel:'✦ 궁합 분석 시작',isCouple:true,keywords:['오행 궁합','갈등 원인','시너지','결혼 가능성']},
-  marriage:{badge:'💍 결혼운',title:'나의 결혼 시기와
-<em>배우자</em>는 어떤 사람일까요?',icon:'💍',body:'<p>사주를 보면 <span class="intro-highlight">결혼 인연이 들어오는 시기, 배우자의 외모, 직업, 성격</span>이 놀랍도록 구체적으로 보여요.</p>',formTitle:'결혼운 — 내 정보 입력',btnLabel:'✦ 결혼운 풀이 시작',keywords:['결혼 시기','배우자 특징','가정운','인연운']},
-  money:{badge:'🌿 재물운',title:'내가 돈을 잘 못 버는 건
-<em>사주 때문</em>일까요?',icon:'🌿',body:'<p>사주에는 재물이 들어오는 통로가 있어요. 이게 노력의 차이가 아니라 <span class="intro-highlight">사주의 재물 구조 차이</span>예요.</p>',formTitle:'재물운 — 내 정보 입력',btnLabel:'✦ 재물운 풀이 시작',keywords:['재물 구조','투자 타이밍','2026 금전','주의 시기']},
-  career:{badge:'⭐ 직업·적성운',title:'지금 이 일이 정말
-<em>나에게 맞는 일</em>일까요?',icon:'⭐',body:'<p>사주는 당신이 어떤 환경에서 가장 빛나는지를 알고 있어요. <span class="intro-highlight">자미두수의 관록궁은 당신의 직업 운명을 담는 공간이에요.</span></p>',formTitle:'직업·적성운 — 내 정보 입력',btnLabel:'✦ 직업운 풀이 시작',keywords:['적성 분석','이직 타이밍','창업 여부','커리어 방향']},
-  new:{badge:'🔮 신년운세',title:'올해, 당신에게
-<em>어떤 해</em>가 될까요?',icon:'🔮',body:'<p>올해의 기운이 당신의 사주와 어떻게 만나는지 <span class="intro-highlight">세운·대운·월운 중심으로 깊이 풀이해드릴게요.</span></p>',formTitle:'신년운세 — 내 정보 입력',btnLabel:'✦ 신년운세 풀이 시작',keywords:['세운 분석','기회 구간','주의 구간','월별 흐름']}
+  today:{badge:"\u2600\ufe0f \uc624\ub298\uc758 \uc6b4\uc138",title:"\uc624\ub298 \ud558\ub8e8, <em>\uc5b4\ub5a4 \uae30\uc6b4</em>\uc774 \ud750\ub974\uace0 \uc788\uc744\uae4c\uc694?",icon:"\u2600\ufe0f",body:'<p>지금 이 순간에도 하늘의 기운은 당신의 일주(日柱)와 얽히며 오늘 하루의 흐름을 만들어내고 있어요. 생년월일만 입력하면 <span class=\'intro-highlight\'>30초 안에 오늘의 운세</span>를 정확히 풀이해드립니다.</p>',formTitle:"\uc624\ub298\uc758 \uc6b4\uc138 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc624\ub298\uc758 \uc6b4\uc138 \ud480\uc774 \uc2dc\uc791",isCouple:false},
+  love:{badge:"\ud83c\udf38 \uc5f0\uc560\uc6b4",title:"\ub0b4 \uc6b4\uba85\uc758 \uc0c1\ub300\ub294 <em>\uc5b8\uc81c, \uc5b4\ub514\uc11c</em> \ub098\ud0c0\ub0a0\uae4c\uc694?",icon:"\ud83c\udf38",body:'<p>연애가 잘 안 풀린다는 느낌, 좋은 사람을 만나도 뭔가 어긋나는 느낌 — 모두 사주에 답이 있어요. <span class=\'intro-highlight\'>자미두수의 부처궁은 인연의 외모, 직업, 성격까지</span> 구체적으로 읽어낼 수 있어요.</p>',formTitle:"\uc5f0\uc560\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc5f0\uc560\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
+  reunion:{badge:"\ud83c\udf19 \uc7ac\ud68c\uc6b4",title:"\uadf8 \uc0ac\ub78c, \ub2e4\uc2dc \ub3cc\uc544\uc62c <em>\uac00\ub2a5\uc131</em>\uc774 \uc788\uc744\uae4c\uc694?",icon:"\ud83c\udf19",body:'<p>아직도 그 사람 생각이 나서 잠 못 드는 밤이 있으신가요? <span class=\'intro-highlight\'>재회 가능성과 그 시기를 명확하게 풀이해드릴게요.</span></p>',formTitle:"\uc7ac\ud68c\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc7ac\ud68c\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:true},
+  couple:{badge:"\ud83d\udcab \uad81\ud569",title:"\uc774 \uc0ac\ub78c, \uc9c4\uc9dc \ub098\uc640 <em>\uc798 \ub9de\ub294 \uc0ac\ub78c</em>\uc77c\uae4c\uc694?",icon:"\ud83d\udcab",body:'<p>두 사람의 오행이 어떻게 만나느냐에 따라 서로를 살리는 관계가 되기도 하고, 갉아먹는 관계가 되기도 해요. <span class=\'intro-highlight\'>두 사람의 일주를 비교 분석해 인연의 깊이를 풀이해드릴게요.</span></p>',formTitle:"\uad81\ud569 \u2014 \ub450 \uc0ac\ub78c \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uad81\ud569 \ubd84\uc11d \uc2dc\uc791",isCouple:true},
+  marriage:{badge:"\ud83d\udc8d \uacb0\ud63c\uc6b4",title:"\ub098\uc758 \uacb0\ud63c \uc2dc\uae30\uc640 <em>\ubc30\uc6b0\uc790</em>\ub294 \uc5b4\ub5a4 \uc0ac\ub78c\uc77c\uae4c\uc694?",icon:"\ud83d\udc8d",body:'<p>사주를 보면 <span class=\'intro-highlight\'>결혼 인연이 들어오는 시기, 배우자의 외모, 직업, 성격</span>이 놀랍도록 구체적으로 보여요.</p>',formTitle:"\uacb0\ud63c\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uacb0\ud63c\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
+  money:{badge:"\ud83c\udf3f \uc7ac\ubb3c\uc6b4",title:"\ub0b4\uac00 \ub3c8\uc744 \uc798 \ubabb \ubc84\ub294 \uac74 <em>\uc0ac\uc8fc \ub54c\ubb38</em>\uc77c\uae4c\uc694?",icon:"\ud83c\udf3f",body:'<p>사주에는 재물이 들어오는 통로가 있어요. 이게 노력의 차이가 아니라 <span class=\'intro-highlight\'>사주의 재물 구조 차이</span>예요.</p>',formTitle:"\uc7ac\ubb3c\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc7ac\ubb3c\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
+  career:{badge:"\u2b50 \uc9c1\uc5c5\u00b7\uc801\uc131\uc6b4",title:"\uc9c0\uae08 \uc774 \uc77c\uc774 \uc815\ub9d0 <em>\ub098\uc5d0\uac8c \ub9de\ub294 \uc77c</em>\uc77c\uae4c\uc694?",icon:"\u2b50",body:'<p>사주는 당신이 어떤 환경에서 가장 빛나는지를 알고 있어요. <span class=\'intro-highlight\'>자미두수의 관록궁은 당신의 직업 운명을 담는 공간이에요.</span></p>',formTitle:"\uc9c1\uc5c5\u00b7\uc801\uc131\uc6b4 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc9c1\uc5c5\uc6b4 \ud480\uc774 \uc2dc\uc791",isCouple:false},
+  new:{badge:"\ud83d\udd2e \uc2e0\ub144\uc6b4\uc138",title:"\uc62c\ud574, \ub2f9\uc2e0\uc5d0\uac8c <em>\uc5b4\ub5a4 \ud574</em>\uac00 \ub420\uae4c\uc694?",icon:"\ud83d\udd2e",body:'<p>올해의 기운이 당신의 사주와 어떻게 만나는지 <span class=\'intro-highlight\'>세운·대운·월운 중심으로 깊이 풀이해드릴게요.</span></p>',formTitle:"\uc2e0\ub144\uc6b4\uc138 \u2014 \ub0b4 \uc815\ubcf4 \uc785\ub825",btnLabel:"\u2726 \uc2e0\ub144\uc6b4\uc138 \ud480\uc774 \uc2dc\uc791",isCouple:false}
 };
 var ALL_MODES=[{id:'today',name:'오늘의 운세',icon:'☀️'},{id:'love',name:'연애운',icon:'🌸'},{id:'reunion',name:'재회운',icon:'🌙'},{id:'couple',name:'궁합',icon:'💫'},{id:'marriage',name:'결혼운',icon:'💍'},{id:'money',name:'재물운',icon:'🌿'},{id:'career',name:'직업운',icon:'⭐'},{id:'new',name:'신년운세',icon:'🔮'}];
 var mode='today',gender='남',gender2='남';
@@ -895,116 +889,19 @@ function buildPrompt(myText,my2Text){
   var cjHY=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
   var gi=((cy-4)%10+10)%10,ji=((cy-4)%12+12)%12;
   var yGJ=cgY[gi]+cjY[ji]+'('+cgHY[gi]+cjHY[ji]+')';
-  var p2=my2Text?'
-[상대방 사주 정보]
-'+my2Text+'
-':'';
-  var common='
+  var p2=my2Text?'[상대방 사주 정보]\n'+my2Text+'\n':'';
+var common='[분석 지침]\n- 사주 용어는 반드시 쉬운 말로 풀어 설명하세요. 예: 식신(食神)은 내가 만들어내는 에너지로 창의력과 표현력을 뜻해요.\n- 현대인 생활에 맞는 구체적 상황으로 풀이하세요 (직장, SNS, 부업, 연애앱 등).\n- 소제목은 반드시 [제목] 형식으로만. ##, *, #, → 등 마크다운 기호 절대 사용 금지.\n- 각 항목은 400~500자 내외로 충실하게 서술하세요.\n- 이 사람만의 사주 특징을 구체적으로 짚어주세요. 일반론 금지.\n- 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 유(酉).\n- 마지막 문장은 반드시 마침표로 끝내세요.\n- 마지막에 관리해야 할 리스크 1가지, 잡아야 할 기회 1가지를 제시하세요.';
+var sys='당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.\n\n[절대 원칙]\n1. 소제목은 반드시 [제목] 형식으로만. ##, *, #, →, ● 등 마크다운 특수기호 절대 금지.\n2. 각 항목은 400~500자 내외로 충실하게 서술하세요.\n3. 사주 용어는 반드시 쉬운 말로 풀어서 설명하세요.\n4. 입력된 실제 생년월일, 이름, 성별, 사주팔자를 반드시 구체적으로 언급하며 풀이하세요.\n5. 같은 주제라도 사주팔자가 다르면 완전히 다른 풀이를 해야 합니다.\n6. 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 병화(丙火).\n7. 마지막 문장은 반드시 마침표로 끝내세요.\n8. 현대인이 공감할 수 있는 구체적인 상황으로 풀이하세요.';
 
-[분석 지침]
-'
-    +'- 사주 용어는 반드시 쉬운 말로 풀어 설명하세요. 예: 식신(食神)은 내가 만들어내는 에너지로 창의력과 표현력을 뜻해요.
-'
-    +'- 현대인 생활에 맞는 구체적 상황으로 풀이하세요 (직장, SNS, 부업, 연애앱 등).
-'
-    +'- 소제목은 반드시 [제목] 형식으로만. ##, *, #, → 등 마크다운 기호 절대 사용 금지.
-'
-    +'- 각 항목은 400~500자 내외로 충실하게 서술하세요.
-'
-    +'- 이 사람만의 사주 특징을 구체적으로 짚어주세요. 일반론 금지.
-'
-    +'- 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 유(酉).
-'
-    +'- 마지막 문장은 반드시 마침표로 끝내세요.
-'
-    +'- 마지막에 관리해야 할 리스크 1가지, 잡아야 할 기회 1가지를 제시하세요.';
-  var p={
-    today:(function(){var td=getTodayData();return '[내 사주 정보]
-'+myText+'
-[오늘의 일진]
-'+td.str+'
-이 사람의 사주팔자와 오늘의 일진을 결합해 오늘의 운세를 풀이해 주세요.
-
-[오늘의 핵심 기운과 일진 분석]
-[오전과 오후의 에너지 흐름 변화]
-[일과 학업 — 집중하기 좋은 시간대]
-[대인관계와 감정선]
-[금전과 소비 주의사항]
-[건강과 컨디션 관리]
-[오늘 하루를 가장 잘 보내는 법]
-
-마지막에 반드시 오늘의 종합 운세 점수를 100점 만점으로 적어주세요. 형식: 종합 점수: OO점'+common;})(),
-    love:'[내 사주 정보]
-'+myText+'
-이 사람의 사주팔자를 바탕으로 연애운을 풀이해 주세요.
-
-[타고난 연애 성향과 매력]
-[인연의 외모와 직업 — 구체적으로]
-[잘 맞는 상대 유형과 피해야 할 상대]
-['+cy+'년 인연이 찾아오는 시기와 방식]
-[연애의 걸림돌과 반복 패턴]
-[연애운 핵심 조언]'+common,
-    reunion:'[내 사주 정보]
-'+myText+p2+'
-두 사람의 사주팔자를 분석해 재회운을 풀이해 주세요.
-
-[이 사주가 이별을 경험하는 방식]
-[그 인연의 사주적 의미]
-[재회 가능성과 열리는 시기]
-[지금 해야 할 것과 하지 말아야 할 것]
-[재회가 어려운 경우 마음을 정리하는 법]
-[재회운 핵심 조언]'+common,
-    couple:'[내 사주 정보]
-'+myText+p2+'
-두 사람의 사주팔자를 비교 분석해 궁합을 풀이해 주세요.
-
-[두 사람의 일주 비교와 첫 끌림의 이유]
-[오행 상생상극으로 본 관계 구조]
-[갈등이 반복되는 패턴]
-[함께할 때 빛나는 시너지]
-[이 인연의 미래 — 결혼 가능성]
-[궁합 총평]'+common,
-    marriage:'[내 사주 정보]
-'+myText+'
-이 사람의 사주팔자를 바탕으로 결혼운을 풀이해 주세요.
-
-[이 사주의 결혼 성향]
-[배우자의 외모와 직업 — 구체적으로]
-[결혼 시기 — 대운과 세운으로 본 인연의 문]
-['+cy+'년 결혼운의 흐름]
-[결혼을 방해하는 요소]
-[결혼운 핵심 조언]'+common,
-    money:'[내 사주 정보]
-'+myText+'
-이 사람의 사주팔자와 재성을 분석해 재물운을 풀이해 주세요.
-
-[타고난 재물 구조]
-[재물이 들어오는 방식 — 직장/사업/투자 중 무엇이 맞나]
-['+cy+'년 상반기 재물 흐름 (1월~6월)]
-['+cy+'년 하반기 재물 흐름 (7월~12월)]
-[재물을 잃게 되는 패턴]
-[재물운 핵심 전략]'+common,
-    career:'[내 사주 정보]
-'+myText+'
-이 사람의 사주팔자와 관록궁을 분석해 직업·적성운을 풀이해 주세요.
-
-[타고난 재능과 적성]
-[잘 맞는 직종과 업무 환경]
-[직장 vs 독립 창업 — 어느 쪽이 맞나]
-['+cy+'년 커리어 흐름과 이직 타이밍]
-[직장 내 인간관계와 상사·동료 운]
-[직업운 핵심 조언]'+common,
-    new:(function(){return '[내 사주 정보]
-'+myText+'
-'+cy+'년 '+yGJ+'년 신년운세를 세운·대운·월운 중심으로 풀이해 주세요.
-
-['+cy+'년 핵심 키워드와 '+yGJ+'년이 이 사주에 미치는 영향]
-[직업과 커리어 — 기회와 주의 시점]
-[재물과 금전]
-[연애와 인연]
-[상반기 월별 흐름 (1월~6월)]
-[하반기 월별 흐름 (7월~12월)]
-['+cy+'년 핵심 조언]'+common;})()
+var p={
+    today:(function(){var td=getTodayData();return '[내 사주 정보]\n\'+myText+\'\n[오늘의 일진]\n\'+td.str+\'\n이 사람의 사주팔자와 오늘의 일진을 결합해 오늘의 운세를 풀이해 주세요.\n\n[오늘의 핵심 기운과 일진 분석]\n[오전과 오후의 에너지 흐름]\n[일과 학업 — 집중 시간대]\n[대인관계와 감정선]\n[금전과 소비]\n[건강과 컨디션]\n[오늘 하루를 잘 보내는 법]\n\n마지막에 오늘의 종합 운세 점수를 100점 만점으로 적어주세요. 형식: 종합 점수: OO점'+common;}()),
+    love:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자를 바탕으로 연애운을 풀이해 주세요.\n\n[타고난 연애 성향과 매력]\n[인연의 외모와 직업 — 구체적으로]\n[잘 맞는 상대 유형과 피해야 할 상대]\n[2026년 인연이 찾아오는 시기]\n[연애의 걸림돌과 반복 패턴]\n[연애운 핵심 조언]'+common,
+    reunion:'[내 사주 정보]\n\'+myText+p2+\'\n두 사람의 사주팔자를 분석해 재회운을 풀이해 주세요.\n\n[이 사주가 이별을 경험하는 방식]\n[그 인연의 사주적 의미]\n[재회 가능성과 열리는 시기]\n[지금 해야 할 것과 하지 말아야 할 것]\n[재회가 어려운 경우 마음을 정리하는 법]\n[재회운 핵심 조언]'+common,
+    couple:'[내 사주 정보]\n\'+myText+p2+\'\n두 사람의 사주팔자를 비교 분석해 궁합을 풀이해 주세요.\n\n[두 사람의 일주 비교와 첫 끌림의 이유]\n[오행으로 본 관계 구조]\n[갈등이 반복되는 패턴]\n[함께할 때 빛나는 시너지]\n[이 인연의 미래 — 결혼 가능성]\n[궁합 총평]'+common,
+    marriage:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자를 바탕으로 결혼운을 풀이해 주세요.\n\n[이 사주의 결혼 성향]\n[배우자의 외모와 직업 — 구체적으로]\n[결혼 시기]\n[2026년 결혼운]\n[결혼을 방해하는 요소]\n[결혼운 핵심 조언]'+common,
+    money:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자와 재성을 분석해 재물운을 풀이해 주세요.\n\n[타고난 재물 구조]\n[재물이 들어오는 방식]\n[2026년 상반기 재물 흐름]\n[2026년 하반기 재물 흐름]\n[재물을 잃게 되는 패턴]\n[재물운 핵심 전략]'+common,
+    career:'[내 사주 정보]\n\'+myText+\'\n이 사람의 사주팔자와 관록궁을 분석해 직업·적성운을 풀이해 주세요.\n\n[타고난 재능과 적성]\n[잘 맞는 직종과 환경]\n[직장 vs 독립 창업]\n[2026년 커리어 흐름과 이직 타이밍]\n[직장 내 인간관계 운]\n[직업운 핵심 조언]'+common,
+    new:'[내 사주 정보]\n\'+myText+\'\n2026년 병오년 신년운세를 세운·대운·월운 중심으로 풀이해 주세요.\n\n[2026년 핵심 키워드와 병오년의 영향]\n[직업과 커리어]\n[재물과 금전]\n[연애와 인연]\n[상반기 월별 흐름 (1~6월)]\n[하반기 월별 흐름 (7~12월)]\n[2026년 핵심 조언]'+common
   };
   return p[mode]||p.today;
 }
@@ -1081,26 +978,7 @@ async function analyze(){
   }
   myCard.saju=s;
 
-  var sys='당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.
-
-'
-    +'[절대 원칙]
-'
-    +'1. 소제목은 반드시 [제목] 형식으로만. ##, *, #, →, ● 등 마크다운 특수기호 절대 금지.
-'
-    +'2. 각 항목은 400~500자 내외로 충실하게 서술하세요.
-'
-    +'3. 사주 용어는 반드시 쉬운 말로 풀어서 설명하세요.
-'
-    +'4. 입력된 실제 생년월일, 이름, 성별, 사주팔자를 반드시 구체적으로 언급하며 풀이하세요.
-'
-    +'5. 같은 주제라도 사주팔자가 다르면 완전히 다른 풀이를 해야 합니다.
-'
-    +'6. 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 병화(丙火).
-'
-    +'7. 마지막 문장은 반드시 마침표로 끝내세요.
-'
-    +'8. 현대인이 공감할 수 있는 구체적인 상황으로 풀이하세요.';
+  var sys='당신은 30년 경력의 한국 전통 명리학 전문가이자 자미두수 전문가입니다.\n\n[절대 원칙]\n1. 소제목은 반드시 [제목] 형식으로만. ##, *, #, →, ● 등 마크다운 특수기호 절대 금지.\n2. 각 항목은 400~500자 내외로 충실하게 서술하세요.\n3. 사주 용어는 반드시 쉬운 말로 풀어서 설명하세요.\n4. 입력된 실제 생년월일, 이름, 성별, 사주팔자를 반드시 구체적으로 언급하며 풀이하세요.\n5. 같은 주제라도 사주팔자가 다르면 완전히 다른 풀이를 해야 합니다.\n6. 한자를 사용할 때는 반드시 한글 독음을 함께 표기하세요. 예: 경금(庚金), 병화(丙火).\n7. 마지막 문장은 반드시 마침표로 끝내세요.\n8. 현대인이 공감할 수 있는 구체적인 상황으로 풀이하세요.';
 
   try{
     var res=await fetch('/api/chat',{
